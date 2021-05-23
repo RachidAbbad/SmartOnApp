@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">SmartOnApp</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="title_intervention">Interventions</string>
+    <string name="title_profile">Profile</string>
+    <string name="hintEmail">Email</string>
+    <string name="hintPass">Mot de passe</string>
+    <string name="login_btn_text">Se connecter</string>
+    <string name="app_logo">Application Logo</string>
+    <string name="temp1Text">Temp N1</string>
+    <string name="temp2Text">Temp N2</string>
+    <string name="temp3Text">Temp N3</string>
+    <string name="temp4Text">Temp N4</string>
+    <string name="temp5Text">Temp N5</string>
+    <string name="temp6Text">Temp N6</string>
+    <string name="temp7Text">Temp N7</string>
+    <string name="temp8Text">Temp N8</string>
+
+
+</resources>
