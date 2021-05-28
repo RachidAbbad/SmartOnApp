@@ -26,11 +26,14 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+    }
 }
 
 dependencies {
 
-    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.appcompat:appcompat:1.3.0'
     implementation 'com.google.android.material:material:1.3.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'androidx.navigation:navigation-fragment:2.3.5'
@@ -44,4 +47,9 @@ dependencies {
 
     //Added libraries
     implementation 'com.github.anastr:speedviewlib:1.5.5'
+    implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5'
+    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.github.florent37:materialtextfield:1.0.7'
+    implementation 'br.com.simplepass:loading-button-android:2.2.0'
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.22'
 }

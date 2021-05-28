@@ -9,4 +9,17 @@
     <color name="white">#FFFFFFFF</color>
     <color name="uiBg">#F5F5F5</color>
     <color name="uiTextColor">#2d2d2d</color>
+    <color name="firstColor">#5E72E4</color>
+    <color name="secondColor">#825EE4</color>
+    <color name="uiWhite">#f5f6fa</color>
+
+
+    <color name="colorPrimary">#3F51B5</color>
+
+    <color name="colorPrimaryDark">#303F9F</color>
+
+    <color name="colorAccent">#FF4081</color>
+
+
+
 </resources>
