@@ -24,10 +24,10 @@
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingBottom="@dimen/activity_vertical_margin"
 >
 
         <com.github.florent37.materialtextfield.MaterialTextField
+            android:id="@+id/email_layout"
             android:layout_width="320dp"
             android:layout_height="wrap_content"
             app:mtf_animationDuration="700"
@@ -47,6 +47,7 @@
         </com.github.florent37.materialtextfield.MaterialTextField>
 
         <com.github.florent37.materialtextfield.MaterialTextField
+            android:id="@+id/pass_layout"
             android:layout_width="320dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -75,12 +76,27 @@
         android:gravity="center_horizontal"
         android:orientation="vertical"
         >
-        <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
-            android:id="@+id/btn_login"
-            android:layout_width="match_parent"
-            android:layout_marginTop="50dp"
-            android:background="@drawable/btn_loading_shape"
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/error_login_text"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:fontFamily="sans-serif-condensed-medium"
+            android:textColor="@color/uiRed"
+            android:layout_marginTop="10dp"/>
+        <com.dx.dxloadingbutton.lib.LoadingButton
+            android:id="@+id/btn_login"
+            android:layout_marginTop="18dp"
+            android:layout_gravity="center"
+            android:layout_width="228dp"
+            android:layout_height="60dp"
+            app:lb_resetAfterFailed="true"
+            app:lb_textColor="@color/uiTextColor"
+            app:lb_btnText="@string/login_btn_text"
+            app:lb_btnRippleColor="@color/uiWhite"
+            app:lb_btnColor="@color/uiWhite"
+            app:lb_cornerRadius="15dp"
+            app:lb_rippleEnable="true"
             android:text="@string/login_btn_text"/>
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/forgot_pass"

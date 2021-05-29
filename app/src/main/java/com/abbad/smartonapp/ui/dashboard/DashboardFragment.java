@@ -49,4 +49,21 @@ public class DashboardFragment extends Fragment {
         }
         return root;
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        dashboardViewModel.cancelTimer();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        try {
+            dashboardViewModel.getChaudiereValues(s1, s2, s3, s4, s5, s6, getContext());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
 }
