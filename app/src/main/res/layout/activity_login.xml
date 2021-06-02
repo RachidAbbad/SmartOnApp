@@ -88,16 +88,14 @@
             android:id="@+id/btn_login"
             android:layout_marginTop="18dp"
             android:layout_gravity="center"
-            android:layout_width="228dp"
+            android:layout_width="225dp"
             android:layout_height="60dp"
-            app:lb_resetAfterFailed="true"
+            android:padding="10dp"
+            app:lb_cornerRadius="15dp"
             app:lb_textColor="@color/uiTextColor"
             app:lb_btnText="@string/login_btn_text"
-            app:lb_btnRippleColor="@color/uiWhite"
             app:lb_btnColor="@color/uiWhite"
-            app:lb_cornerRadius="15dp"
-            app:lb_rippleEnable="true"
-            android:text="@string/login_btn_text"/>
+            />
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/forgot_pass"
             android:layout_width="wrap_content"

@@ -52,5 +52,7 @@ dependencies {
     implementation 'com.github.florent37:materialtextfield:1.0.7'
     implementation 'br.com.simplepass:loading-button-android:2.2.0'
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.22'
+    implementation 'com.github.GrenderG:Toasty:1.5.0'
     compile 'com.github.StevenDXC:DxLoadingButton:2.4'
-}
+    implementation 'com.budiyev.android:code-scanner:2.1.0'
+    compile 'me.weyye.hipermission:library:1.0.7'}

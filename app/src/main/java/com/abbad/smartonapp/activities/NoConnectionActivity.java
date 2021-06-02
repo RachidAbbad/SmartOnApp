@@ -24,7 +24,7 @@ public class NoConnectionActivity extends AppCompatActivity {
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             public void run() {
-                Log.i("sys_output","run time");
+                System.out.print("No Connection, Retrying...");
                 if(WebServiceConnection.isNetworkAvailable(getApplicationContext())){
                     Intent i = new Intent(NoConnectionActivity.this, LoginActivity.class);
                     startActivity(i);

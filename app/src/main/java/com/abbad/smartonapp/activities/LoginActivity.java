@@ -21,6 +21,7 @@ import android.widget.EditText;
 
 import com.abbad.smartonapp.R;
 import com.abbad.smartonapp.ui.dashboard.DashboardFragment;
+import com.abbad.smartonapp.utils.SessionManager;
 import com.abbad.smartonapp.utils.WebServiceConnection;
 import com.dx.dxloadingbutton.lib.LoadingButton;
 import com.github.florent37.materialtextfield.MaterialTextField;
@@ -35,8 +36,11 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import br.com.simplepass.loadingbutton.customViews.CircularProgressButton;
+import es.dmoral.toasty.Toasty;
 
 public class LoginActivity extends AppCompatActivity {
     EditText emailInput;
@@ -45,86 +49,47 @@ public class LoginActivity extends AppCompatActivity {
     MaterialTextField passLayout;
     AppCompatTextView errorLoginText;
     LoadingButton btnLogin;
+    SessionManager sessionManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        sessionManager = new SessionManager(getApplicationContext());
+        if(!sessionManager.isUserLoggedOut()){
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+        }
         emailInput = findViewById(R.id.emailInput);
         passInput = findViewById(R.id.passwordInput);
         emailLayout = findViewById(R.id.email_layout);
         passLayout = findViewById(R.id.pass_layout);
         btnLogin = findViewById(R.id.btn_login);
         errorLoginText = findViewById(R.id.error_login_text);
-        btnLogin.setOnClickListener(new BtnClickEvent(getApplicationContext()));
+        btnLogin.setOnClickListener(new BtnClickEvent(this));
     }
 
-    public class BtnClickEvent implements View.OnClickListener{
-        private Context context;
-        public BtnClickEvent(Context _context){
-            this.context = _context;
+    public class BtnClickEvent implements View.OnClickListener {
+        private AppCompatActivity activity;
+        public BtnClickEvent(AppCompatActivity a){
+            activity = a;
         }
-        @SuppressLint("ResourceAsColor")
-        @RequiresApi(api = Build.VERSION_CODES.O)
+
         @Override
         public void onClick(View v) {
-
-            btnLogin.startLoading();
-            AsyncTask.execute(new Runnable() {
-                @SuppressLint("ResourceAsColor")
-                @Override
-                public void run() {
-                    try{
-                        URL url = new URL("http://smartonviatoile.com/api/Auth/login");
-                        HttpURLConnection http = (HttpURLConnection)url.openConnection();
-                        http.setRequestMethod("POST");
-                        http.setDoOutput(true);
-                        http.setRequestProperty("Content-Type", "application/json");
-
-                        String data = "{\"email\": \""+emailInput.getText().toString()
-                                +"\",\n \"password\": \""+passInput.getText().toString()+"\"}";
-
-                        byte[] out = data.getBytes(StandardCharsets.UTF_8);
-
-                        OutputStream stream = http.getOutputStream();
-                        stream.write(out);
-
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(http.getInputStream()));
-                        StringBuilder sb = new StringBuilder();
-                        String line;
-                        while ((line = reader.readLine()) != null) {
-                            sb.append(line);
-                        }
-                        JSONObject obj = new JSONObject(sb.toString());
-                        getValide((boolean) obj.getBoolean("status"));
-
-                        http.disconnect();
-                    }catch(IOException | JSONException e){
-                        e.printStackTrace();
-                    }
-
-                }
-            });
-            if(bool){
-                btnLogin.loadingSuccessful();
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(intent);
-            }
-            else{
-                        emailLayout.setOutlineAmbientShadowColor(R.color.uiRed);
-                        passLayout.setOutlineAmbientShadowColor(R.color.uiRed);
-                        passLayout.setBackgroundColor(R.color.uiRed);
-                        emailLayout.setBackgroundColor(R.color.uiRed);
-                        errorLoginText.setText("Email ou Mot de passe incorrect");
-                        btnLogin.loadingFailed();
-
-            }
-
-
+            new WebServiceConnection.loginSyncTask((LoginActivity) activity).execute();
         }
+
     }
 
-    boolean bool;
-    public void getValide(boolean b){
-        bool = b;
+    public EditText getEmailInput() {
+        return emailInput;
+    }
+
+    public EditText getPassInput() {
+        return passInput;
+    }
+
+    public LoadingButton getBtnLogin() {
+        return btnLogin;
     }
 }

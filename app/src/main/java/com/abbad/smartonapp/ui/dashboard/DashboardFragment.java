@@ -25,8 +25,7 @@ import java.net.URISyntaxException;
 public class DashboardFragment extends Fragment {
 
     private DashboardViewModel dashboardViewModel;
-    private SpeedView s1,s2,s3,s4,s5,s6,s7,s8;
-    private TextView textView;
+    private SpeedView s1,s2,s3,s4,s5,s6;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -41,9 +40,8 @@ public class DashboardFragment extends Fragment {
         s5 = root.findViewById(R.id.depression_indicator);
         s6 = root.findViewById(R.id.luminosité_indicator);
 
-        textView = root.findViewById(R.id.test);
         try {
-            dashboardViewModel.getChaudiereValues(s1,s2,s3,s4,s5,s6, getContext());
+            dashboardViewModel.refreshData(this);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -56,14 +54,29 @@ public class DashboardFragment extends Fragment {
         dashboardViewModel.cancelTimer();
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        try {
-            dashboardViewModel.getChaudiereValues(s1, s2, s3, s4, s5, s6, getContext());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
+
+    public SpeedView getS1() {
+        return s1;
+    }
+
+    public SpeedView getS2() {
+        return s2;
+    }
+
+    public SpeedView getS3() {
+        return s3;
+    }
+
+    public SpeedView getS4() {
+        return s4;
+    }
+
+    public SpeedView getS5() {
+        return s5;
+    }
+
+    public SpeedView getS6() {
+        return s6;
     }
 }

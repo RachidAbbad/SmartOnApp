@@ -1,136 +1,187 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.profile.ProfileFragment">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-        <LinearLayout
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        tools:context="ui.profile.DashboardFragment">
+
+        <RelativeLayout
+            android:id="@+id/rellay1"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
-            <androidx.appcompat.widget.AppCompatImageView
+            android:layout_height="wrap_content"
+            android:background="@drawable/login_bg_color"
+            android:paddingBottom="20dp">
+
+            <RelativeLayout
+                android:id="@+id/imgUser"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/user_dp"/>
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp">
+
+                <ImageView
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_margin="9dp"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/profile_image" />
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/userName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/imgUser"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10sp"
+                android:fontFamily="sans-serif-light"
+                android:text="Rachid Abbad"
+                android:textColor="@color/uiWhite"
+                android:textSize="32sp" />
+
+
+            <TextView
+                android:id="@+id/userType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/userName"
+                android:layout_centerHorizontal="true"
+                android:fontFamily="sans-serif"
+                android:text="ElQuaria, Rabat"
+                android:textAllCaps="true"
+                android:textColor="@color/uiWhite"
+                android:textSize="14sp" />
+
+
+        </RelativeLayout>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            app:cardCornerRadius="15dp"
+            android:background="@color/uiWhite">
+
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:layout_marginHorizontal="30dp"
+                android:layout_marginVertical="10dp"
+                android:gravity="center"
                 android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-medium"
-                    android:text="@string/title_profile"
-                    android:textColor="@color/uiTextColor"
-                    android:textSize="18sp" />
+                    android:id="@+id/emailLayout"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Email"
+                        android:textColor="@color/uiTextColor"
+                        android:textSize="13sp" />
+
+                    <TextView
+                        android:id="@+id/userEmail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-light"
+                        android:textColor="#000000"
+                        android:textSize="18sp" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-medium"
-                    android:text="@string/title_profile"
-                    android:textColor="@color/uiTextColor"
-                    android:textSize="18sp" />
+                    android:layout_marginTop="15dp"
+                    android:id="@+id/gsmLayout"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Phone"
+                        android:textColor="@color/uiTextColor"
+                        android:textSize="13sp" />
+
+                    <TextView
+                        android:id="@+id/userGsm"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-light"
+                        android:textColor="#000000"
+                        android:textSize="18sp" />
+                </LinearLayout>
             </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/interventions_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btn_ui_style"
+                android:textAlignment="textStart"
+                android:paddingHorizontal="20dp"
+                android:drawableStart="@drawable/ic_dashboard_black_24dp"
+                android:text="Interventions"
+                android:textSize="18sp"
+                android:paddingVertical="10dp"
+                android:layout_margin="10dp"
+                android:textAllCaps="false"
+                />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/auth_site_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btn_ui_style"
+                android:textAlignment="textStart"
+                android:paddingHorizontal="20dp"
+                android:drawableStart="@drawable/ic_account_24"
+                android:text="Authentification au site"
+                android:textSize="18sp"
+                android:paddingVertical="10dp"
+                android:layout_margin="10dp"
+                android:textAllCaps="false"
+                />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/logout_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btn_ui_style"
+                android:textAlignment="textStart"
+                android:paddingHorizontal="20dp"
+                android:drawableStart="@drawable/ic_logout_24"
+                android:text="Déconnexion"
+                android:textSize="18sp"
+                android:paddingVertical="10dp"
+                android:layout_margin="10dp"
+                android:textAllCaps="false"
+                />
+
         </LinearLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="10dp"
-            android:layout_marginLeft="10dp"
-            android:fontFamily="sans-serif-medium"
-            android:text="General"
-            android:textColor="@color/firstColor"
-            android:textSize="18sp" />
-        <androidx.cardview.widget.CardView
-            android:layout_height="40dp"
-            android:layout_width="match_parent"
-            app:cardCornerRadius="20dp"
-            android:layout_margin="2dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginVertical="10dp"
-                android:layout_marginLeft="14dp"
-                android:fontFamily="sans-serif-medium"
-                android:text="Interventions"
-                android:drawableLeft="@drawable/ic_dashboard_black_24dp"
-                android:textColor="@color/uiTextColor"
-                android:textSize="16sp" />
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
-            android:layout_height="40dp"
-            android:layout_width="match_parent"
-            app:cardCornerRadius="20dp"
-            android:layout_margin="2dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginVertical="10dp"
-                android:layout_marginLeft="14dp"
-                android:fontFamily="sans-serif-medium"
-                android:text="Authentification au site"
-                android:textColor="@color/uiTextColor"
-                android:textSize="16sp" />
-        </androidx.cardview.widget.CardView>
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="10dp"
-            android:layout_marginLeft="10dp"
-            android:fontFamily="sans-serif-medium"
-            android:text="Info"
-            android:textColor="@color/firstColor"
-            android:textSize="18sp" />
-
-        <androidx.cardview.widget.CardView
-            android:layout_height="40dp"
-            android:layout_width="match_parent"
-            app:cardCornerRadius="20dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginVertical="10dp"
-                android:layout_marginLeft="14dp"
-                android:fontFamily="sans-serif-medium"
-                android:text="À propos"
-                android:textColor="@color/uiTextColor"
-                android:textSize="16sp" />
-        </androidx.cardview.widget.CardView>
-        <androidx.cardview.widget.CardView
-            android:layout_height="40dp"
-            android:layout_width="match_parent"
-            app:cardCornerRadius="20dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginVertical="10dp"
-                android:layout_marginLeft="14dp"
-                android:fontFamily="sans-serif-medium"
-                android:text="À propos"
-                android:textColor="@color/uiTextColor"
-                android:textSize="16sp" />
-        </androidx.cardview.widget.CardView>
     </LinearLayout>
-
-
 </ScrollView>

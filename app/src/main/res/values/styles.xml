@@ -17,5 +17,14 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="PermissionBlueStyle">
+        <item name="PermissionTitleColor">@color/uiTextColor</item>
+        <item name="PermissionMsgColor">@color/uiTextColor</item>
+        <item name="PermissionItemTextColor">@color/uiTextColor</item>
+        <item name="PermissionButtonBackground">@drawable/login_bg_color</item>
+        <item name="PermissionBackround">@drawable/btn_loading_shape</item>
+        <item name="PermissionButtonTextColor">@android:color/white</item>
+    </style>
+
 
 </resources>
