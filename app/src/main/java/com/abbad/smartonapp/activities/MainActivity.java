@@ -1,6 +1,8 @@
 package com.abbad.smartonapp.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -9,6 +11,7 @@ import com.abbad.smartonapp.ui.dashboard.DashboardFragment;
 import com.abbad.smartonapp.ui.interventions.Intervention;
 import com.abbad.smartonapp.ui.notifications.NotificationsFragment;
 import com.abbad.smartonapp.ui.profile.ProfileFragment;
+import com.abbad.smartonapp.utils.WebServiceConnection;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.annotation.NonNull;
@@ -19,6 +22,9 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -44,6 +50,21 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
   //      NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
+
+
+                Timer timer = new Timer();
+                timer.schedule(new TimerTask() {
+                    public void run() {
+                        Log.i("ChekingCnxMain","ChekingConnectionMainActivity");
+                        if(!WebServiceConnection.isNetworkAvailable(getApplicationContext())){
+                            Intent intent = new Intent(MainActivity.this, NoConnectionActivity.class);
+                            startActivity(intent);
+                            MainActivity.this.finish();
+                            this.cancel();
+                        }
+                    }
+                },0, 2000);
+
 
     }
 

@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaRouter;
+import android.nfc.NfcAdapter;
+import android.nfc.NfcManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -79,11 +81,18 @@ public class ProfileViewModel extends ViewModel {
         @Override
         public void onClick(View v) {
             List<PermissionItem> permissionItems = new ArrayList<PermissionItem>();
-            permissionItems.add(new PermissionItem(Manifest.permission.CAMERA, "CAMERA", R.drawable.permission_ic_camera));
+            if(checkNFC()==1){
+                permissionItems.add(new PermissionItem(Manifest.permission.NFC, "CAMERA", R.drawable.permission_ic_sensors));
+            }
+            else if (checkNFC()==2){
+
+            }
+            else if (checkNFC()==3){
+                permissionItems.add(new PermissionItem(Manifest.permission.CAMERA, "CAMERA", R.drawable.permission_ic_camera));
+            }
             HiPermission.create(f.getActivity())
                     .title("Ask for permission")
                     .permissions(permissionItems)
-                    .msg("Asking for camera permission to scan Qr codes")
                     .style(R.style.PermissionBlueStyle)
                     .checkMutiPermission(new PermissionCallback() {
                         @Override
@@ -113,6 +122,19 @@ public class ProfileViewModel extends ViewModel {
 
 
 
+        }
+    }
+
+    public int checkNFC(){
+        NfcManager manager = (NfcManager) f.getContext().getSystemService(Context.NFC_SERVICE);
+        NfcAdapter adapter = manager.getDefaultAdapter();
+        if (adapter != null && adapter.isEnabled()) {
+            return 1;
+        }else if(adapter != null && !adapter.isEnabled()){
+            f.getActivity().startActivity(new Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS));
+            return 2;
+        }else{
+            return 3;
         }
     }
 
