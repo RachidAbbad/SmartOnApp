@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">SmartOnApp</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="title_intervention">Interventions</string>
+    <string name="title_auth_site">Login to the site</string>
+    <string name="title_profile">Profile</string>
+    <string name="hintEmail">Email</string>
+    <string name="hintPass">Password</string>
+    <string name="login_btn_text">Login</string>
+    <string name="logout_btn_text" translatable="false">Logout</string>
+    <string name="language_btn_text" translatable="false">Language</string>
+    <string name="login_btn_forgot_pass">Forgotten password ?</string>
+    <string name="app_logo">Application Logo</string>
+    <string name="infos_incorrect_msg" translatable="false">Invalid email or password</string>
+    <string name="temp1Text">T° of starting</string>
+    <string name="temp2Text">T° of return</string>
+    <string name="temp3Text">T° of inertia</string>
+    <string name="temp4Text">T° of fumes</string>
+    <string name="temp5Text">Depression</string>
+    <string name="temp6Text">Brightness</string>
+    <string name="temp7Text">Temp N7</string>
+    <string name="temp8Text">Temp N8</string>
+
+
+</resources>

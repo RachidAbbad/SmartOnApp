@@ -41,6 +41,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.cardview:cardview:1.0.0'
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
@@ -55,4 +56,9 @@ dependencies {
     implementation 'com.github.GrenderG:Toasty:1.5.0'
     compile 'com.github.StevenDXC:DxLoadingButton:2.4'
     implementation 'com.budiyev.android:code-scanner:2.1.0'
-    compile 'me.weyye.hipermission:library:1.0.7'}
+    compile 'me.weyye.hipermission:library:1.0.7'
+    implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.2'
+    compile 'net.steamcrafted:load-toast:1.0.12'
+    compile 'com.github.shivam301296:Android-CustomToast:1.0.1'
+    implementation 'com.github.ybq:Android-SpinKit:1.4.0'
+}

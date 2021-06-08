@@ -1,15 +1,20 @@
 <resources>
     <string name="app_name">SmartOnApp</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
+    <string name="title_home">Accueil</string>
+    <string name="title_dashboard">Accueil</string>
     <string name="title_notifications">Notifications</string>
     <string name="title_intervention">Interventions</string>
-    <string name="title_profile">Profile</string>
+    <string name="title_auth_site" translatable="false">Authentification au site</string>
+    <string name="title_profile">Profil</string>
     <string name="hintEmail">Email</string>
     <string name="hintPass">Mot de passe</string>
     <string name="login_btn_text">Se connecter</string>
+    <string name="logout_btn_text" translatable="false">Déconnexion</string>
+    <string name="language_btn_text" translatable="false">Langue</string>
     <string name="login_btn_forgot_pass">Mot de passe oublié ?</string>
     <string name="app_logo">Application Logo</string>
+    <string name="infos_incorrect_msg" translatable="false">Email ou Mot de passe incorrect</string>
+
     <string name="temp1Text">T° de départ</string>
     <string name="temp2Text">T° de retoure</string>
     <string name="temp3Text">T° d\'inertie</string>

@@ -21,6 +21,11 @@ public class SessionManager {
             sharedPreferences = context.getSharedPreferences("LoginDetails", Context.MODE_PRIVATE);
         }
 
+        public static boolean isTheFirstTime(){
+            Log.i("FirstTime",Boolean.toString(sharedPreferences.getBoolean("isFirstTime", true)));
+            return sharedPreferences.getBoolean("isFirstTime", true);
+        }
+
         public static void saveUserInfos(JSONObject userJson,String pass,String AuthToken) throws JSONException {
             Log.i("userJson",userJson.toString());
             SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -38,9 +43,11 @@ public class SessionManager {
             Log.i("userInfos",sharedPreferences.getString("Token",null)+"   -   "+AuthToken);
         }
 
-
-
-
+        public static void setFirsTimeUse(boolean b){
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean("isFirstTime",false);
+            editor.apply();
+        }
 
         public boolean isUserLoggedOut() {
             boolean isEmailEmpty = sharedPreferences.getString("Email", "").isEmpty();
@@ -57,7 +64,6 @@ public class SessionManager {
             editor.putString("Gsm","");
             editor.putString("Token","");
             editor.putString("Type","");
-
             editor.putString("Password", "");
             editor.apply();
         }

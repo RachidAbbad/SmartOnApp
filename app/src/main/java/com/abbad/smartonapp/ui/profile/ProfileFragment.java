@@ -31,6 +31,7 @@ public class ProfileFragment extends Fragment {
     private TextView typeUser;
     private LinearLayout gsmLayout;
     private AppCompatButton authSite;
+    private AppCompatButton languge_btn;
 
     public static ProfileFragment newInstance() {
         return new ProfileFragment();
@@ -49,9 +50,11 @@ public class ProfileFragment extends Fragment {
         gsmLayout = root.findViewById(R.id.gsmLayout);
         email = root.findViewById(R.id.userEmail);
         authSite = root.findViewById(R.id.auth_site_btn);
+        languge_btn = root.findViewById(R.id.langue_btn);
         mViewModel.authClickHandeler(authSite);
         mViewModel.logoutClickHandler(logouBtn);
         mViewModel.fillUserInfos(fullname,typeUser,gsm,email,gsmLayout,getContext());
+        mViewModel.changeLanguageHandler(languge_btn);
 
 
 

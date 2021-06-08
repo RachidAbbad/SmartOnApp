@@ -11,6 +11,10 @@
     <color name="uiTextColor">#2d2d2d</color>
     <color name="firstColor">#5E72E4</color>
     <color name="secondColor">#825EE4</color>
+    <color name="secondPointColor">#825EE4</color>
+    <color name="thirdPointColor">#7665E4</color>
+    <color name="transparent">#007665E4</color>
+
     <color name="uiWhite">#f5f6fa</color>
     <color name="uiRed">#f22613</color>
     <color name="uiGreen">#4DD637</color>

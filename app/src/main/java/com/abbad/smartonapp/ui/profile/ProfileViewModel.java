@@ -4,9 +4,11 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.media.MediaRouter;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcManager;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -23,12 +25,20 @@ import com.abbad.smartonapp.R;
 import com.abbad.smartonapp.activities.AuthSiteActivity;
 import com.abbad.smartonapp.activities.LoginActivity;
 import com.abbad.smartonapp.activities.MainActivity;
+import com.abbad.smartonapp.adapters.LanguagePickerDialog;
+import com.abbad.smartonapp.adapters.LoadingBottomDialog;
 import com.abbad.smartonapp.utils.Comun;
 import com.abbad.smartonapp.utils.SessionManager;
+import com.dx.dxloadingbutton.lib.LoadingButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.tree.rh.ctlib.CT;
+
+import net.steamcrafted.loadtoast.LoadToast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import me.weyye.hipermission.HiPermission;
 import me.weyye.hipermission.PermissionCallback;
@@ -47,14 +57,40 @@ public class ProfileViewModel extends ViewModel {
         btn.setOnClickListener(new LogoutClickEvent());
     }
 
-    public class LogoutClickEvent implements View.OnClickListener {
+    public void changeLanguageHandler(AppCompatButton btn) {
+        btn.setOnClickListener(new LanguageChangeHandler());
+    }
 
+    public class LogoutClickEvent implements View.OnClickListener {
+        LoadingBottomDialog loadingBottomDialog;
         @Override
         public void onClick(View v) {
+            loadingBottomDialog = new LoadingBottomDialog(f.getResources().getString(R.string.logout_btn_text)+" ...");
+            loadingBottomDialog.setCancelable(false);
+            loadingBottomDialog.show(f.getFragmentManager(),null);
+
             sessionManager.logout();
-            Intent intent = new Intent(f.getActivity(), LoginActivity.class);
-            f.startActivity(intent);
-            f.getActivity().finish();
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    loadingBottomDialog.dismiss();
+                }
+            }, 3000);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Intent intent = new Intent(f.getActivity(), LoginActivity.class);
+                    f.startActivity(intent);
+                    f.getActivity().finish();
+                }
+            }, 4000);
+
+
+
+
+
+
         }
     }
 
@@ -122,6 +158,16 @@ public class ProfileViewModel extends ViewModel {
 
 
 
+        }
+    }
+
+    public class LanguageChangeHandler implements View.OnClickListener{
+
+        @Override
+        public void onClick(View v) {
+
+            LanguagePickerDialog languagePickerDialog = new LanguagePickerDialog();
+            languagePickerDialog.show(f.getActivity().getSupportFragmentManager(),"BottomSheet Fragment");
         }
     }
 

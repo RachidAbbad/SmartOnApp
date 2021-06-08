@@ -3,13 +3,20 @@ package com.abbad.smartonapp.utils;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import androidx.core.content.res.ResourcesCompat;
+
+import com.abbad.smartonapp.R;
 import com.abbad.smartonapp.activities.LoginActivity;
 import com.abbad.smartonapp.activities.MainActivity;
 import com.abbad.smartonapp.classes.User;
 import com.google.gson.JsonObject;
+import com.tree.rh.ctlib.CT;
+
+import net.steamcrafted.loadtoast.LoadToast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,12 +31,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.Timer;
 import java.util.TimerTask;
 
+
 public class WebServiceConnection {
 
     public static class loginSyncTask extends AsyncTask<Void, Void, Void> {
         LoginActivity loginActivity;
         boolean isValid;
-
         public loginSyncTask(LoginActivity loginA) {
             this.loginActivity = loginA;
         }
@@ -37,6 +44,10 @@ public class WebServiceConnection {
         @Override
         protected void onPreExecute(){
             loginActivity.getBtnLogin().startLoading();
+            loginActivity.getBtnLogin().setEnabled(false);
+            loginActivity.getPassInput().setEnabled(false);
+            loginActivity.getEmailInput().setEnabled(false);
+
         }
 
         @Override
@@ -89,13 +100,16 @@ public class WebServiceConnection {
                     @Override
                     public void run() {
                         Intent intent = new Intent(loginActivity, MainActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         loginActivity.startActivity(intent);
                         loginActivity.finish();
                     }
                 },1000);
-
             }
             else{
+                loginActivity.getBtnLogin().setEnabled(true);
+                loginActivity.getPassInput().setEnabled(true);
+                loginActivity.getEmailInput().setEnabled(true);
                 loginActivity.getBtnLogin().loadingFailed();
             }
         }

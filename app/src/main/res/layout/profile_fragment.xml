@@ -143,8 +143,9 @@
                 android:textAlignment="textStart"
                 android:paddingHorizontal="20dp"
                 android:drawableStart="@drawable/ic_dashboard_black_24dp"
-                android:text="Interventions"
+                android:text="@string/title_intervention"
                 android:textSize="18sp"
+                android:drawablePadding="12dp"
                 android:paddingVertical="10dp"
                 android:layout_margin="10dp"
                 android:textAllCaps="false"
@@ -158,8 +159,9 @@
                 android:textAlignment="textStart"
                 android:paddingHorizontal="20dp"
                 android:drawableStart="@drawable/ic_account_24"
-                android:text="Authentification au site"
+                android:text="@string/title_auth_site"
                 android:textSize="18sp"
+                android:drawablePadding="12dp"
                 android:paddingVertical="10dp"
                 android:layout_margin="10dp"
                 android:textAllCaps="false"
@@ -173,7 +175,24 @@
                 android:textAlignment="textStart"
                 android:paddingHorizontal="20dp"
                 android:drawableStart="@drawable/ic_logout_24"
-                android:text="Déconnexion"
+                android:text="@string/logout_btn_text"
+                android:textSize="18sp"
+                android:drawablePadding="12dp"
+                android:paddingVertical="10dp"
+                android:layout_margin="10dp"
+                android:textAllCaps="false"
+                />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/langue_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btn_ui_style"
+                android:textAlignment="textStart"
+                android:paddingHorizontal="20dp"
+                android:drawablePadding="12dp"
+                android:drawableStart="@drawable/ic_language"
+                android:text="@string/language_btn_text"
                 android:textSize="18sp"
                 android:paddingVertical="10dp"
                 android:layout_margin="10dp"
@@ -182,6 +201,7 @@
 
         </LinearLayout>
 
+        </LinearLayout>
 
-    </LinearLayout>
+
 </ScrollView>

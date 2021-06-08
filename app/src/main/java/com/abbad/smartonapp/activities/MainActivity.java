@@ -1,17 +1,24 @@
 package com.abbad.smartonapp.activities;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toolbar;
 
 import com.abbad.smartonapp.R;
 import com.abbad.smartonapp.ui.dashboard.DashboardFragment;
 import com.abbad.smartonapp.ui.interventions.Intervention;
 import com.abbad.smartonapp.ui.notifications.NotificationsFragment;
 import com.abbad.smartonapp.ui.profile.ProfileFragment;
+import com.abbad.smartonapp.utils.SessionManager;
+import com.abbad.smartonapp.utils.TapTargetGuide;
 import com.abbad.smartonapp.utils.WebServiceConnection;
+import com.getkeepsafe.taptargetview.TapTarget;
+import com.getkeepsafe.taptargetview.TapTargetView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.annotation.NonNull;
@@ -25,6 +32,8 @@ import androidx.navigation.ui.NavigationUI;
 
 import java.util.Timer;
 import java.util.TimerTask;
+
+import static com.abbad.smartonapp.utils.SessionManager.isTheFirstTime;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -63,11 +72,9 @@ public class MainActivity extends AppCompatActivity {
                             this.cancel();
                         }
                     }
-                },0, 2000);
-
-
+                },0, 1500);
+        new TapTargetGuide(navView,this).firstGuide();
     }
-
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
