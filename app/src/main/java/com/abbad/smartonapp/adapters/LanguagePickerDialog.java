@@ -35,25 +35,18 @@ public class LanguagePickerDialog extends BottomSheetDialogFragment {
             @Override
             public void onClick(View v) {
                 Comun.setLocale(LanguagePickerDialog.this.getActivity(), "en");
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+            }
+        });
+
+        french_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Comun.setLocale(LanguagePickerDialog.this.getActivity(), "fr");
             }
         });
     }
 
-    private static Context updateResources(Context context, String language) {
-        Locale locale = new Locale(language);
-        Locale.setDefault(locale);
 
-        Configuration configuration = context.getResources().getConfiguration();
-        configuration.setLocale(locale);
-        configuration.setLayoutDirection(locale);
-
-        return context.createConfigurationContext(configuration);
-    }
 
 
 }

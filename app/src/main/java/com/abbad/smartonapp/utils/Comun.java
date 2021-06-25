@@ -4,12 +4,15 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Build;
+
 import android.preference.PreferenceManager;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -19,6 +22,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.abbad.smartonapp.R;
+import com.abbad.smartonapp.activities.MainActivity;
 
 import java.util.Locale;
 import java.util.zip.Inflater;
@@ -35,24 +39,19 @@ public class Comun {
     }
 
 
-    public static void setLocale(Context context, String language) {
-        persist(context, language);
-
-        // updating the language for devices above android nougat
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            updateResources(context, language);
-            return;
-        }
-        // for devices having lower version of android os
-        updateResourcesLegacy(context, language);
+    public static void setLocale(Activity activity, String lang) {
+        Locale myLocale = new Locale(lang);
+        Resources res = activity.getResources();
+        DisplayMetrics dm = res.getDisplayMetrics();
+        Configuration conf = res.getConfiguration();
+        conf.locale = myLocale;
+        res.updateConfiguration(conf, dm);
+        SessionManager.putLanguage(lang);
+        Intent refresh = new Intent(activity, MainActivity.class);
+        activity.finish();
+        activity.startActivity(refresh);
     }
 
-    private static void persist(Context context, String language) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("selected_language", language);
-        editor.apply();
-    }
 
     private static Context updateResources(Context context, String language) {
         Locale locale = new Locale(language);

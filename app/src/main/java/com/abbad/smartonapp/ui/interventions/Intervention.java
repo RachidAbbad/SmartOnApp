@@ -19,9 +19,6 @@ public class Intervention extends Fragment {
 
     private InterventionViewModel mViewModel;
 
-    public static Intervention newInstance() {
-        return new Intervention();
-    }
     InterventionViewModel interventionViewModel;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,

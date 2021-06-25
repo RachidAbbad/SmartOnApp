@@ -22,6 +22,13 @@
     <string name="temp6Text">Brightness</string>
     <string name="temp7Text">Temp N7</string>
     <string name="temp8Text">Temp N8</string>
+    <string name="error404" translatable="false">404 Error</string>
+    <string name="coming_soon" translatable="false">Coming soon</string>
+
+    <string name="generalErreur" translatable="false">An error occurred during connecting to server</string>
+
+    <string name="cnxMainErreur" translatable="false">Unable to connect to the Internet</string>
+    <string name="cnxSecondErreur" translatable="false">The app cannot work offline, please check your connection and try.</string>
 
 
 </resources>

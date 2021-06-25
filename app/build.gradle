@@ -59,6 +59,5 @@ dependencies {
     compile 'me.weyye.hipermission:library:1.0.7'
     implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.2'
     compile 'net.steamcrafted:load-toast:1.0.12'
-    compile 'com.github.shivam301296:Android-CustomToast:1.0.1'
     implementation 'com.github.ybq:Android-SpinKit:1.4.0'
 }

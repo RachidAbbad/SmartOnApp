@@ -2,6 +2,7 @@ package com.abbad.smartonapp.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.abbad.smartonapp.classes.User;
@@ -80,5 +81,14 @@ public class SessionManager {
 
         public static String getAuthToken(){
             return sharedPreferences.getString("Token",null);
+        }
+
+        public static String getLanguage(){
+            return sharedPreferences.getString("selected_language","fr");
+        }
+        public static void putLanguage(String language){
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("selected_language", language);
+            editor.apply();
         }
 }

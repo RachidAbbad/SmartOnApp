@@ -14,7 +14,6 @@ import com.abbad.smartonapp.activities.LoginActivity;
 import com.abbad.smartonapp.activities.MainActivity;
 import com.abbad.smartonapp.classes.User;
 import com.google.gson.JsonObject;
-import com.tree.rh.ctlib.CT;
 
 import net.steamcrafted.loadtoast.LoadToast;
 

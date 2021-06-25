@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.abbad.smartonapp.R;
+import com.abbad.smartonapp.adapters.LoadingBottomDialog;
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
 import com.budiyev.android.codescanner.DecodeCallback;
@@ -57,6 +58,7 @@ public class AuthSiteActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         Toast.makeText(getApplicationContext(), result.getText(), Toast.LENGTH_SHORT).show();
+                        //LoadingBottomDialog loadingBottomDialog = new LoadingBottomDialog(getApplicationContext().getResources().getString(R.id.auth_site_loading_msg));
                     }
                 });
             }
