@@ -1,66 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="65dp"
+    app:cardCornerRadius="20dp"
+    android:layout_margin="5dp">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Mode opératoire"
-            android:drawableLeft="@drawable/ic_dashboard_black_24dp"/>
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:orientation="vertical">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Tache 1"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Tache 1"/>
-            </LinearLayout>
+            android:orientation="horizontal"
+            android:layout_weight="1.5"
+            android:gravity="center_vertical"
+            android:paddingLeft="10dp">
+            <androidx.cardview.widget.CardView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                app:cardCornerRadius="7dp">
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/interv_gravity"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp" />
+            </androidx.cardview.widget.CardView>
 
-        </androidx.cardview.widget.CardView>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Outils utilisés"
-            android:drawableLeft="@drawable/ic_tools_24"/>
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <com.google.android.material.textview.MaterialTextView
+            <TextView
+                android:id="@+id/interv_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tache 1"/>
-        </androidx.cardview.widget.CardView>
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="czjdoackejnckjankcjenkcanjenckneckjanekc"
+                android:fontFamily="sans-serif-condensed"
+                android:textColor="@color/uiTextColor"
+                android:textSize="@dimen/textTempSize"
+                android:layout_margin="10dp"
+                />
+        </LinearLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Description"
-            android:drawableLeft="@drawable/ic_info_24"/>
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <com.google.android.material.textview.MaterialTextView
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_weight=".4"
+            >
+            <TextView
+                android:id="@+id/interv_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tache 1"/>
-        </androidx.cardview.widget.CardView>
+                android:maxLines="1"
+                android:text="19/06/2021"
+                android:fontFamily="sans-serif-condensed"
+                android:textColor="@color/uiTextColor"
+                android:textSize="16sp"
+                />
+        </LinearLayout>
 
 
     </LinearLayout>
-
-</ScrollView>
+</androidx.cardview.widget.CardView>

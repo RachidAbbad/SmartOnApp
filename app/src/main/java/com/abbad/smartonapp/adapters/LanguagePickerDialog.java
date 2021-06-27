@@ -44,6 +44,7 @@ public class LanguagePickerDialog extends BottomSheetDialogFragment {
                 Comun.setLocale(LanguagePickerDialog.this.getActivity(), "fr");
             }
         });
+
     }
 
 

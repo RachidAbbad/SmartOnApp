@@ -24,8 +24,9 @@ import java.net.URISyntaxException;
 
 public class DashboardFragment extends Fragment {
 
-    private DashboardViewModel dashboardViewModel;
-    private SpeedView s1,s2,s3,s4,s5,s6;
+    public DashboardViewModel dashboardViewModel;
+    private SpeedView s1,s2,s3,s4,s5,s6,bal1_pres,bal2_pres,bal1_dep,bal2_dep;
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -39,6 +40,15 @@ public class DashboardFragment extends Fragment {
         s4 = root.findViewById(R.id.t_fumees_indicator);
         s5 = root.findViewById(R.id.depression_indicator);
         s6 = root.findViewById(R.id.luminosité_indicator);
+        bal1_dep = root.findViewById(R.id.ballon_depressure);
+        bal2_dep = root.findViewById(R.id.ballon_depressure1);
+        bal1_pres = root.findViewById(R.id.ballon_pressure);
+        bal2_pres = root.findViewById(R.id.ballon_pressure1);
+
+        bal1_dep.speedTo(9.2f);
+        bal2_dep.speedTo(8.3f);
+        bal1_pres.speedTo(8.7f);
+        bal2_pres.speedTo(9.4f);
 
         try {
             dashboardViewModel.refreshData(this);

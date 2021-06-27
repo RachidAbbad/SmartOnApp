@@ -26,5 +26,56 @@
         <item name="PermissionButtonTextColor">@android:color/white</item>
     </style>
 
+    <style name="TitlesInterventionStyle">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:fontFamily">sans-serif-condensed-medium</item>
+        <item name="drawableTint">@color/firstColor</item>
+
+        <item name="android:drawablePadding">8dp</item>
+        <item name="android:textColor">@color/secondColor</item>
+    </style>
+
+
+
+    <style name="SubTitlesInterventionStyle">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:fontFamily">sans-serif-condensed-medium</item>
+
+        <item name="android:padding">5dp</item>
+        <item name="android:textColor">@color/secondColor</item>
+    </style>
+
+    <style name="TaskTitlesInterventionStyle">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:fontFamily">sans-serif-condensed-medium</item>
+        <item name="android:layout_margin">7dp</item>
+        <item name="android:textColor">@color/uiTextColor</item>
+        <item name="android:textAllCaps">true</item>
+
+    </style>
+
+    <style name="TaskBodyInterventionStyle">
+        <item name="android:textStyle">normal</item>
+        <item name="android:layout_width">wrap_content</item>
+
+        <item name="android:textSize">18sp</item>
+        <item name="android:fontFamily">sans-serif-condensed-medium</item>
+        <item name="android:layout_margin">7dp</item>
+        <item name="android:textColor">@color/uiTextColor</item>
+    </style>
+
+    <style name="CnxStatusStyle">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:fontFamily">sans-serif-condensed-medium</item>
+
+        <item name="android:textColor">@color/uiTextColor</item>
+    </style>
+
+
 
 </resources>

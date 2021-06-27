@@ -60,7 +60,7 @@ import java.util.TimerTask;
 
 public class DashboardViewModel extends ViewModel {
 
-    private Timer timer;
+    private Timer timer = new Timer();
 public boolean stat_timer;
     public DashboardViewModel() {
 
@@ -78,12 +78,13 @@ public boolean stat_timer;
 
     public void refreshData(DashboardFragment dash) throws IOException {
 
-        timer = new Timer();
+
+        stat_timer = true;
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 Log.i("sys_output", "DashBoard values has been updated");
-                stat_timer = true;
+
                 AsyncTask.execute(new Runnable() {
                     @Override
                     public void run() {
@@ -135,7 +136,8 @@ public boolean stat_timer;
                 infosJson = (JSONObject) data.get(0);
                 http.disconnect();
             } catch (IOException | JSONException e) {
-                e.printStackTrace();
+                Log.i("Exception :","NoConnection to get chaudiere values");
+                this.cancel(true);
             }
             return null;
         }

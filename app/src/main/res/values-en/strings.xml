@@ -24,11 +24,21 @@
     <string name="temp8Text">Temp N8</string>
     <string name="error404" translatable="false">404 Error</string>
     <string name="coming_soon" translatable="false">Coming soon</string>
+    <string name="chaudiereName" translatable="false">Boiler</string>
+    <string name="ballonName" translatable="false">Boiler tank</string>
 
     <string name="generalErreur" translatable="false">An error occurred during connecting to server</string>
 
     <string name="cnxMainErreur" translatable="false">Unable to connect to the Internet</string>
     <string name="cnxSecondErreur" translatable="false">The app cannot work offline, please check your connection and try.</string>
 
+    <string name="modeOperatoire" translatable="false">Operating mode :</string>
+    <string name="usedToold" translatable="false">Used tools :</string>
+    <string name="Interv_desc" translatable="false">Description :</string>
+    <string name="task" translatable="false">Task  </string>
+
+    <string name="cnxStatusTitle" translatable="false">Connection status : </string>
+    <string name="cnxStatusMsgOnline" translatable="false">Online</string>
+    <string name="cnxStatusMsgOffline" translatable="false">Offline</string>
 
 </resources>

@@ -15,6 +15,8 @@
     <string name="app_logo">Application Logo</string>
     <string name="infos_incorrect_msg" translatable="false">Email ou Mot de passe incorrect</string>
     <string name="auth_site_loading_msg" translatable="false">Email ou Mot de passe incorrect</string>
+    <string name="chaudiereName" translatable="false">Chaudère</string>
+    <string name="ballonName" translatable="false">Ballon de chaudère</string>
 
     <string name="temp1Text">T° de départ</string>
     <string name="temp2Text">T° de retoure</string>
@@ -29,6 +31,17 @@
     <string name="generalErreur" translatable="false">Une erreur s\'est produite lors de la connexion au serveur</string>
     <string name="cnxMainErreur" translatable="false">Impossible de se connecter à Internet</string>
     <string name="cnxSecondErreur" translatable="false">L\'application ne peut pas fonctionner hors connexion, vérifiez votre connexion et essayez.</string>
+
+
+    <string name="modeOperatoire" translatable="false">Mode opératoire :</string>
+    <string name="usedToold" translatable="false">Outils utilisés :</string>
+    <string name="Interv_desc" translatable="false">Description :</string>
+    <string name="task" translatable="false">Tache </string>
+
+
+    <string name="cnxStatusTitle" translatable="false">Statut de connexion : </string>
+    <string name="cnxStatusMsgOnline" translatable="false">En Ligne</string>
+    <string name="cnxStatusMsgOffline" translatable="false">Hors ligne</string>
 
 
 </resources>

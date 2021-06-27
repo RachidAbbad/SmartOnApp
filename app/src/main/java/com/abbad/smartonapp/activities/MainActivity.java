@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toolbar;
 
 import com.abbad.smartonapp.R;
@@ -23,6 +24,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
@@ -43,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
     final Fragment fragment4 = new ProfileFragment();
     final FragmentManager fm = getSupportFragmentManager();
     Fragment active = fragment1;
+    private TextView cnxStatus;
+    private CardView cnxStatusColor;
 
 
     @Override
@@ -50,6 +54,34 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         BottomNavigationView navView = findViewById(R.id.nav_view);
+        cnxStatus = findViewById(R.id.cnxStatus);
+        cnxStatusColor = findViewById(R.id.cnxStatusColor);
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            public void run() {
+                Log.i("ChekingCnxMain","ChekingConnectionMainActivity");
+                if(!WebServiceConnection.isNetworkAvailable(getApplicationContext())){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            cnxStatus.setText(getResources().getString(R.string.cnxStatusMsgOffline));
+                            cnxStatusColor.setCardBackgroundColor(getResources().getColor(R.color.uiRed));
+
+                        }
+                    });
+
+                }
+                else{
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            cnxStatus.setText(getResources().getString(R.string.cnxStatusMsgOnline));
+                            cnxStatusColor.setCardBackgroundColor(getResources().getColor(R.color.uiGreen));
+                        }
+                    });
+                }
+            }
+        },0, 1500);
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -61,18 +93,7 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navView, navController);
 
 
-                Timer timer = new Timer();
-                timer.schedule(new TimerTask() {
-                    public void run() {
-                        Log.i("ChekingCnxMain","ChekingConnectionMainActivity");
-                        if(!WebServiceConnection.isNetworkAvailable(getApplicationContext())){
-                            Intent intent = new Intent(MainActivity.this, NoConnectionActivity.class);
-                            startActivity(intent);
-                            MainActivity.this.finish();
-                            this.cancel();
-                        }
-                    }
-                },0, 1500);
+
         new TapTargetGuide(navView,this).firstGuide();
     }
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener

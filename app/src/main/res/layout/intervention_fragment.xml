@@ -6,33 +6,10 @@
     android:layout_height="match_parent"
     tools:context=".ui.interventions.Intervention">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        android:gravity="center"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageView
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:src="@drawable/coming_soon"/>
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/content"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            android:fontFamily="sans-serif-condensed-medium"
-            android:text="@string/coming_soon"
-            android:textAlignment="center"
-            android:textColor="@color/uiTextColor"
-            android:textSize="20sp" />
-
-    </LinearLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/list_intervention"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="35dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
