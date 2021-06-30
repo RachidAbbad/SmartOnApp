@@ -2,33 +2,39 @@ package com.abbad.smartonapp.adapters;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.content.Context;
-import android.content.res.Configuration;
+import android.content.DialogInterface;
 import android.os.Build;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import com.abbad.smartonapp.R;
-import com.abbad.smartonapp.activities.MainActivity;
-import com.abbad.smartonapp.utils.Comun;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
-import java.util.Locale;
+public class ResultBottomDialog extends BottomSheetDialogFragment {
+    private String content;
+    private boolean eventType;
 
-public class LanguagePickerDialog extends BottomSheetDialogFragment {
-    CardView english_btn,french_btn;
+    public ResultBottomDialog(String content,boolean eventType){
+        this.content = content;
+        this.eventType = eventType;
+    }
+
+
     @SuppressLint("RestrictedApi")
     @Override
     public void setupDialog(@NonNull Dialog dialog, int style) {
         super.setupDialog(dialog, style);
-        View contentView = View.inflate(getContext(), R.layout.fragment_language_picker, null);
+        View contentView;
+        if (eventType)
+            contentView = View.inflate(getContext(), R.layout.custom_success_dialog, null);
+        else
+            contentView = View.inflate(getContext(), R.layout.custom_failed_dialog, null);
         contentView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -45,33 +51,17 @@ public class LanguagePickerDialog extends BottomSheetDialogFragment {
                 behavior.setPeekHeight(0); // Remove this line to hide a dark background if you manually hide the dialog.
             }
         });
+
+        ((TextView) contentView.findViewById(R.id.text_content)).setText(content);
         dialog.setContentView(contentView);
         ((View) contentView.getParent()).setBackgroundColor(getResources().getColor(android.R.color.transparent));
         dialog.setContentView(contentView);
-        english_btn = contentView.findViewById(R.id.english_btn);
-        french_btn = contentView.findViewById(R.id.french_btn);
-
-        english_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Comun.setLocale(LanguagePickerDialog.this.getActivity(), "en");
-                LanguagePickerDialog.this.getActivity().finish();
-                LanguagePickerDialog.this.getActivity().startActivity(getActivity().getIntent());
-            }
-        });
-
-        french_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Comun.setLocale(LanguagePickerDialog.this.getActivity(), "fr");
-                LanguagePickerDialog.this.getActivity().finish();
-                LanguagePickerDialog.this.getActivity().startActivity(getActivity().getIntent());
-            }
-        });
-
     }
 
+    @Override
+    public void onDismiss(@NonNull DialogInterface dialog) {
+        super.onDismiss(dialog);
+        getActivity().finish();
 
-
-
+    }
 }

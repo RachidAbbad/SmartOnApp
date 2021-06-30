@@ -46,11 +46,12 @@ public class Comun {
         Configuration conf = res.getConfiguration();
         conf.locale = myLocale;
         res.updateConfiguration(conf, dm);
-        SessionManager.putLanguage(lang);
+        new SessionManager(activity.getApplicationContext()).putLanguage(lang);
         Intent refresh = new Intent(activity, MainActivity.class);
-        activity.finish();
-        activity.startActivity(refresh);
+
     }
+
+
 
 
     private static Context updateResources(Context context, String language) {

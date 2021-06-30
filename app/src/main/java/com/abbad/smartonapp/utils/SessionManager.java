@@ -44,6 +44,10 @@ public class SessionManager {
             Log.i("userInfos",sharedPreferences.getString("Token",null)+"   -   "+AuthToken);
         }
 
+        public static String getLocale(Context context){
+            return context.getSharedPreferences("LoginDetails", Context.MODE_PRIVATE).getString("selected_language","en");
+        }
+
         public static void setFirsTimeUse(boolean b){
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean("isFirstTime",false);
@@ -86,7 +90,7 @@ public class SessionManager {
         public static String getLanguage(){
             return sharedPreferences.getString("selected_language","fr");
         }
-        public static void putLanguage(String language){
+        public void putLanguage(String language){
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString("selected_language", language);
             editor.apply();

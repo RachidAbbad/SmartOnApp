@@ -66,15 +66,6 @@ public boolean stat_timer;
 
     }
 
-    public void onLoadSpeedMeters(SpeedView s1,SpeedView s2,SpeedView s3,SpeedView s4,
-                                  SpeedView s5,SpeedView s6){
-            s1.speedTo((float) 500.5);
-            s2.speedTo((float) 380.6);
-            s3.speedTo((float) 460.3);
-            s4.speedTo((float) 720.4);
-            s5.speedTo((float) 840.8);
-            s6.speedTo((float) 460.2);
-    }
 
     public void refreshData(DashboardFragment dash) throws IOException {
 

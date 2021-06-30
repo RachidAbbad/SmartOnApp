@@ -27,10 +27,11 @@ public class SplashActivity extends AppCompatActivity {
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.setStatusBarColor(ContextCompat.getColor(this, R.color.firstColor));
-        //Comun.setLocale(this,SessionManager.getLanguage());
+
         new Timer().schedule(new TimerTask() {
 
             public void run() {
+                Comun.setLocale(SplashActivity.this,SessionManager.getLocale(getApplicationContext()));
                 if(WebServiceConnection.isNetworkAvailable(getApplicationContext())){
                     Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
                     startActivity(intent);

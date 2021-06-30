@@ -28,13 +28,13 @@
 
     <style name="TitlesInterventionStyle">
         <item name="android:textStyle">bold</item>
-        <item name="android:textSize">20sp</item>
-        <item name="android:padding">10dp</item>
-        <item name="android:fontFamily">sans-serif-condensed-medium</item>
+        <item name="android:textSize">19sp</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:fontFamily">sans-serif-condensed</item>
         <item name="drawableTint">@color/firstColor</item>
 
         <item name="android:drawablePadding">8dp</item>
-        <item name="android:textColor">@color/secondColor</item>
+        <item name="android:textColor">@color/firstColor</item>
     </style>
 
 
@@ -52,7 +52,7 @@
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">18sp</item>
         <item name="android:fontFamily">sans-serif-condensed-medium</item>
-        <item name="android:layout_margin">7dp</item>
+        <item name="android:layout_margin">10dp</item>
         <item name="android:textColor">@color/uiTextColor</item>
         <item name="android:textAllCaps">true</item>
 
@@ -64,7 +64,7 @@
 
         <item name="android:textSize">18sp</item>
         <item name="android:fontFamily">sans-serif-condensed-medium</item>
-        <item name="android:layout_margin">7dp</item>
+        <item name="android:layout_margin">10dp</item>
         <item name="android:textColor">@color/uiTextColor</item>
     </style>
 

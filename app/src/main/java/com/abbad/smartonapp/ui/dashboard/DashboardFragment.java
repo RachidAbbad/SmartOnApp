@@ -61,7 +61,7 @@ public class DashboardFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        dashboardViewModel.cancelTimer();
+        //dashboardViewModel.cancelTimer();
     }
 
 

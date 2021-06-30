@@ -41,4 +41,7 @@
     <string name="cnxStatusMsgOnline" translatable="false">Online</string>
     <string name="cnxStatusMsgOffline" translatable="false">Offline</string>
 
+    <string name="authSiteSuccess" translatable="false">Authentification to site success</string>
+    <string name="authSiteFailed" translatable="false">Authentification to site failed</string>
+
 </resources>

@@ -49,13 +49,24 @@
 
 
             <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/userName"
+                android:layout_centerHorizontal="true"
+                android:fontFamily="sans-serif"
+                android:text="Technicien en maintenance industrielle"
+                android:textAllCaps="true"
+                android:textColor="@color/uiWhite"
+                android:textSize="14sp" />
+            <TextView
                 android:id="@+id/userType"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/userName"
                 android:layout_centerHorizontal="true"
                 android:fontFamily="sans-serif"
-                android:text="ElQuaria, Rabat"
+                android:visibility="gone"
                 android:textAllCaps="true"
                 android:textColor="@color/uiWhite"
                 android:textSize="14sp" />
@@ -143,22 +154,7 @@
                     android:gravity="center_horizontal"
                     android:orientation="vertical">
 
-                    <androidx.appcompat.widget.AppCompatButton
-                        android:id="@+id/interventions_btn"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/btn_ui_style"
-                        android:textAlignment="textStart"
-                        android:paddingHorizontal="20dp"
-                        android:drawableStart="@drawable/ic_dashboard_black_24dp"
-                        android:text="@string/title_intervention"
-                        android:textSize="18sp"
-                        android:drawablePadding="12dp"
 
-                        android:paddingVertical="10dp"
-                        android:layout_margin="10dp"
-                        android:textAllCaps="false"
-                        />
 
                     <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/auth_site_btn"

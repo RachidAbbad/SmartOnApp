@@ -57,7 +57,55 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
         ));
         list_intervention.add(new Intervention("Vérification du cheminée (évacuation des fumées de combustion)"
                 ,"02-06-2021"
+                ,3
+                ,new String[]{"les échangeurs de chaleur","l’alimentation de gaz vers la chaudière","les fuites de gaz"}
+                ,new String[]{"Tournevis","lunettes de protection"}
+        ));
+        list_intervention.add(new Intervention("la dépose de la buse de fumée du raccordement au conduit"
+                ,"02-06-2021"
+                ,3
+                ,new String[]{"le nettoyage intérieur avec repose après travaux","le nettoyage des éléments et du local après intervention"}
+                ,new String[]{"Tournevis","lunettes de protection"}
+        ));
+        list_intervention.add(new Intervention("Effectuer une calibration des contrôles"
+                ,"02-06-2021"
+                ,4
+                ,new String[]{"Vérifiez les pompes","la lubrification","le fonctionnement du moteur","l’alignement"}
+                ,new String[]{"Tournevis","lunettes de protection"}
+        ));
+        list_intervention.add(new Intervention("Vérification le système de contrôle"
+                ,"02-06-2021"
                 ,1
+                ,new String[]{"les sondes de température intérieure et extérieure","les dispositifs de sécurité","la valve de relâche haute pression et haute température"}
+                ,new String[]{"Tournevis","lunettes de protection"}
+        ));
+        list_intervention.add(new Intervention("Vérification du cheminée (évacuation des fumées de combustion)"
+                ,"02-06-2021"
+                ,5
+                ,new String[]{"les échangeurs de chaleur","l’alimentation de gaz vers la chaudière","les fuites de gaz"}
+                ,new String[]{"Tournevis","lunettes de protection"}
+        ));
+        list_intervention.add(new Intervention("la dépose de la buse de fumée du raccordement au conduit"
+                ,"02-06-2021"
+                ,4
+                ,new String[]{"le nettoyage intérieur avec repose après travaux","le nettoyage des éléments et du local après intervention"}
+                ,new String[]{"Tournevis","lunettes de protection"}
+        ));
+        list_intervention.add(new Intervention("Effectuer une calibration des contrôles"
+                ,"02-06-2021"
+                ,5
+                ,new String[]{"Vérifiez les pompes","la lubrification","le fonctionnement du moteur","l’alignement"}
+                ,new String[]{"Tournevis","lunettes de protection"}
+        ));
+        list_intervention.add(new Intervention("Vérification le système de contrôle"
+                ,"02-06-2021"
+                ,1
+                ,new String[]{"les sondes de température intérieure et extérieure","les dispositifs de sécurité","la valve de relâche haute pression et haute température"}
+                ,new String[]{"Tournevis","lunettes de protection"}
+        ));
+        list_intervention.add(new Intervention("Vérification du cheminée (évacuation des fumées de combustion)"
+                ,"02-06-2021"
+                ,3
                 ,new String[]{"les échangeurs de chaleur","l’alimentation de gaz vers la chaudière","les fuites de gaz"}
                 ,new String[]{"Tournevis","lunettes de protection"}
         ));

@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="15dp"
+    android:id="@+id/parentPanel"
     android:background="@color/transparent"
     android:layout_height="wrap_content">
     <androidx.cardview.widget.CardView
@@ -26,10 +27,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Intervention"
+                    android:textAlignment="center"
                     android:layout_marginTop="8dp"
                     android:fontFamily="sans-serif-condensed-medium"
                     android:textColor="@color/uiTextColor"
-                    android:textSize="20dp"/>
+                    android:textSize="20sp"/>
                 <TextView
                     android:id="@+id/interv_id"
                     android:layout_width="wrap_content"
@@ -37,7 +39,7 @@
                     android:text="Num : 7363753"
                     android:fontFamily="sans-serif-condensed-medium"
                     android:textColor="@color/uiTextColor"
-                    android:textSize="15dp"/>
+                    android:textSize="13sp"/>
 
             </LinearLayout>
 
@@ -66,8 +68,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/usedToold"
                 style="@style/TitlesInterventionStyle"
-                android:drawableLeft="@drawable/ic_tools_24"
-                android:drawableTint="@color/uiTextColor" />
+                app:drawableLeftCompat="@drawable/ic_tools_24" />
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">

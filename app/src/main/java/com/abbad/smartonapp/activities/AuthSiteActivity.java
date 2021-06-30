@@ -13,11 +13,15 @@ import android.widget.Toast;
 
 import com.abbad.smartonapp.R;
 import com.abbad.smartonapp.adapters.LoadingBottomDialog;
+import com.abbad.smartonapp.adapters.ResultBottomDialog;
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
 import com.budiyev.android.codescanner.DecodeCallback;
 import com.budiyev.android.codescanner.ScanMode;
 import com.google.zxing.Result;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class AuthSiteActivity extends AppCompatActivity {
     private CodeScanner codeScanner;
@@ -57,8 +61,25 @@ public class AuthSiteActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(getApplicationContext(), result.getText(), Toast.LENGTH_SHORT).show();
-                        //LoadingBottomDialog loadingBottomDialog = new LoadingBottomDialog(getApplicationContext().getResources().getString(R.id.auth_site_loading_msg));
+                        LoadingBottomDialog loadingBottomDialog = new LoadingBottomDialog("Loading ...");
+
+                        loadingBottomDialog.show(getSupportFragmentManager(),null);
+                        Timer timer = new Timer();
+                        timer.schedule(new TimerTask() {
+                            @Override
+                            public void run() {
+                                loadingBottomDialog.dismiss();
+                                if(result.getText().equals("S7363Q87376")){
+                                    new ResultBottomDialog(getResources().getString(R.string.authSiteSuccess),true).show(getSupportFragmentManager(),null);
+                                }
+                                else{
+                                    new ResultBottomDialog(getResources().getString(R.string.authSiteFailed),false).show(getSupportFragmentManager(),null);
+                                }
+                            }
+                        },1600);
+
+
+
                     }
                 });
             }

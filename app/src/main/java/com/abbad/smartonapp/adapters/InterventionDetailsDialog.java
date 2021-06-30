@@ -6,6 +6,8 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -14,6 +16,8 @@ import androidx.annotation.RequiresApi;
 
 import com.abbad.smartonapp.R;
 import com.abbad.smartonapp.classes.Intervention;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.textview.MaterialTextView;
 
@@ -33,6 +37,22 @@ public class InterventionDetailsDialog extends BottomSheetDialogFragment {
     public void setupDialog(@NonNull Dialog dialog, int style) {
         super.setupDialog(dialog, style);
         View contentView = View.inflate(getContext(), R.layout.intervention_item_dialog, null);
+        contentView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if (Build.VERSION.SDK_INT < 16) {
+                    contentView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                } else {
+                    contentView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+                BottomSheetDialog dialog = (BottomSheetDialog) getDialog();
+                FrameLayout bottomSheet = (FrameLayout)
+                        dialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+                BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
+                behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                behavior.setPeekHeight(0); // Remove this line to hide a dark background if you manually hide the dialog.
+            }
+        });
         dialog.setContentView(contentView);
         ((View) contentView.getParent()).setBackgroundColor(getResources().getColor(android.R.color.transparent));
         tasksLayout = contentView.findViewById(R.id.tasks);
@@ -47,6 +67,8 @@ public class InterventionDetailsDialog extends BottomSheetDialogFragment {
         displayTasks(intervention.getTodos(),tasksLayout);
         displayTools(intervention.getTools(),toolsLayout);
     }
+
+
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void displayTasks(String[] tasks, LinearLayout tasksLayout){
@@ -64,11 +86,16 @@ public class InterventionDetailsDialog extends BottomSheetDialogFragment {
     }
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void displayTools(String[] tools, LinearLayout tasksLayout){
-        for (String tool : tools) {
+        for (int i=0;i<tools.length;i++) {
             TextView toolView = new TextView(getContext().getApplicationContext());
-            toolView.setText(tool);
+            TextView space = new TextView(getContext().getApplicationContext());
+            toolView.setText(tools[i]);
+            space.setText(" - ");
             toolView.setTextAppearance(R.style.TaskBodyInterventionStyle);
             tasksLayout.addView(toolView);
+            if (i+1 != tools.length)
+                tasksLayout.addView(space);
+
         }
     }
     private void displayDesc(String desc){
