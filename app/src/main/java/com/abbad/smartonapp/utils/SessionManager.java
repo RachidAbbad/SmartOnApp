@@ -45,7 +45,7 @@ public class SessionManager {
         }
 
         public static String getLocale(Context context){
-            return context.getSharedPreferences("LoginDetails", Context.MODE_PRIVATE).getString("selected_language","en");
+            return context.getSharedPreferences("LoginDetails", Context.MODE_PRIVATE).getString("selected_language","fr");
         }
 
         public static void setFirsTimeUse(boolean b){
