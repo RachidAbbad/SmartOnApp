@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="15dp"
+    android:id="@+id/parentPanel"
+    android:gravity="center"
+    android:background="@color/transparent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        app:cardCornerRadius="20dp"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="15dp"
+                android:gravity="center">
+                <TextView
+                    android:id="@+id/interv_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Intervention"
+                    android:textAlignment="center"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="sans-serif-condensed-medium"
+                    android:textColor="@color/uiTextColor"
+                    android:textSize="20sp"/>
+                <TextView
+                    android:id="@+id/interv_id"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Num : 7363753"
+                    android:fontFamily="sans-serif-condensed-medium"
+                    android:textColor="@color/uiTextColor"
+                    android:textSize="13sp"/>
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3">
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/modeOperatoire"
+                        style="@style/TitlesInterventionStyle"
+                        app:drawableLeftCompat="@drawable/ic_dashboard_black_24dp" />
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <ScrollView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+                            <LinearLayout
+                                android:id="@+id/tasks"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:padding="10dp"
+                                android:orientation="vertical">
+
+                            </LinearLayout>
+
+                        </ScrollView>
+
+                    </androidx.cardview.widget.CardView>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2">
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/usedToold"
+                            style="@style/TitlesInterventionStyle"
+                            app:drawableLeftCompat="@drawable/ic_tools_24" />
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                            <ScrollView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+                                <LinearLayout
+                                    android:id="@+id/tools"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:padding="10dp"
+                                    android:orientation="horizontal">
+
+                                </LinearLayout>
+                            </ScrollView>
+
+
+                        </androidx.cardview.widget.CardView>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/Interv_desc"
+                            style="@style/TitlesInterventionStyle"
+                            android:drawableTint="@color/uiTextColor"
+                            android:drawableLeft="@drawable/ic_info_24"/>
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                            <ScrollView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:padding="10dp"
+                                    android:orientation="vertical">
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:id="@+id/desc"
+                                        android:textColor="@color/uiTextColor"
+                                        android:fontFamily="sans-serif-condensed-medium"
+                                        android:textSize="17sp"
+                                        android:textStyle="normal"/>
+                                </LinearLayout>
+                            </ScrollView>
+
+                        </androidx.cardview.widget.CardView>
+                    </LinearLayout>
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+
+
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <com.ncorti.slidetoact.SlideToActView
+        android:id="@+id/confirmInterv"
+        android:layout_width="500dp"
+        android:layout_height="33dp"
+        android:layout_marginTop="10dp"
+        app:animation_duration="250"
+
+        app:area_margin="4dp"
+        app:border_radius="20dp"
+        app:bump_vibration="250"
+        app:inner_color="@color/firstColor"
+        app:outer_color="@color/white"
+        app:slider_height="70dp"
+        app:slider_locked="false"
+        app:text="@string/confirmInterv"
+        app:text_appearance="@style/TitlesInterventionStyle"
+        app:text_size="18sp"
+        app:text_style="normal" />
+</LinearLayout>
+
+

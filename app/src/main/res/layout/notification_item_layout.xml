@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginTop="6dp"
+    android:layout_marginHorizontal="6dp"
+    app:cardCornerRadius="8dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <androidx.cardview.widget.CardView
+            android:layout_width="10dp"
+            android:id="@+id/leftColor"
+            android:layout_height="match_parent"
+            app:cardBackgroundColor="@color/firstColor"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="3dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/mainTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Notification title"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:textSize="@dimen/textTempSize"
+                    android:textColor="@color/uiTextColor"
+                    android:fontFamily="sans-serif-condensed"/>
+                <TextView
+                    android:id="@+id/notifTime"
+                    android:layout_width="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:text="17-06-2021 18:32"
+                    android:textColor="@color/uiTextColor"
+                    android:fontFamily="sans-serif-condensed"
+                    />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/detailText"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:text="Notification detaills example"
+                android:textColor="@color/uiTextGray"
+                android:fontFamily="sans-serif-condensed"
+                />
+        </LinearLayout>
+    </LinearLayout>
+
+
+
+</androidx.cardview.widget.CardView>

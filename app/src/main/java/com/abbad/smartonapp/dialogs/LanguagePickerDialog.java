@@ -1,9 +1,7 @@
-package com.abbad.smartonapp.adapters;
+package com.abbad.smartonapp.dialogs;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.content.Context;
-import android.content.res.Configuration;
 import android.os.Build;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -11,16 +9,12 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import com.abbad.smartonapp.R;
-import com.abbad.smartonapp.activities.MainActivity;
 import com.abbad.smartonapp.utils.Comun;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-
-import java.util.Locale;
 
 public class LanguagePickerDialog extends BottomSheetDialogFragment {
     CardView english_btn,french_btn;

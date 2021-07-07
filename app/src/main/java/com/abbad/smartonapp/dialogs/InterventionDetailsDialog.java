@@ -1,15 +1,15 @@
-package com.abbad.smartonapp.adapters;
+package com.abbad.smartonapp.dialogs;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.content.Context;
-import android.graphics.Typeface;
 import android.os.Build;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -19,13 +19,17 @@ import com.abbad.smartonapp.classes.Intervention;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.google.android.material.textview.MaterialTextView;
+import com.ncorti.slidetoact.SlideToActView;
+
+import org.jetbrains.annotations.NotNull;
 
 public class InterventionDetailsDialog extends BottomSheetDialogFragment {
 
     private Intervention intervention;
     private LinearLayout tasksLayout,toolsLayout;
     private TextView inter_title,inter_desc;
+    private SlideToActView confirmInterv;
+
     public InterventionDetailsDialog(Intervention intervention) {
         this.intervention = intervention;
     }
@@ -59,10 +63,10 @@ public class InterventionDetailsDialog extends BottomSheetDialogFragment {
         toolsLayout = contentView.findViewById(R.id.tools);
         inter_desc = contentView.findViewById(R.id.desc);
         inter_title = contentView.findViewById(R.id.interv_name);
-
+        confirmInterv = contentView.findViewById(R.id.confirmInterv);
         inter_title.setText(intervention.getTitle());
-                inter_desc.setText("Lorem fefh diz fuziuf fzorf bviru");
-
+        inter_desc.setText("Lorem fefh diz fuziuf fzorf bviru");
+        confirmInterv.setOnSlideCompleteListener(new IntervConfirmedEvent());
         dialog.setContentView(contentView);
         displayTasks(intervention.getTodos(),tasksLayout);
         displayTools(intervention.getTools(),toolsLayout);
@@ -100,5 +104,18 @@ public class InterventionDetailsDialog extends BottomSheetDialogFragment {
     }
     private void displayDesc(String desc){
 
+    }
+
+    public class IntervConfirmedEvent implements SlideToActView.OnSlideCompleteListener {
+
+
+
+        @SuppressLint("ShowToast")
+        @Override
+        public void onSlideComplete(@NotNull SlideToActView slideToActView) {
+            Toast.makeText(getContext(),"Intervention confirmed",Toast.LENGTH_LONG);
+            Log.i("slideCompleted","Intervention confirmed");
+            InterventionDetailsDialog.this.dismiss();
+        }
     }
 }

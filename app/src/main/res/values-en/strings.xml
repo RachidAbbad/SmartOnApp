@@ -44,4 +44,13 @@
     <string name="authSiteSuccess" translatable="false">Authentification to site success</string>
     <string name="authSiteFailed" translatable="false">Authentification to site failed</string>
 
+    <string name="confirmInterv" translatable="false">Swipe to start the intervention</string>
+    <string name="nfcScanReady" translatable="false">Ready to scan ...</string>
+    <string name="nfcNotSupported" translatable="false">NFC is not supported in this device</string>
+    <string name="noDisponible" translatable="false">Not available</string>
+
+
+    <string name="intervTitle" translatable="false">Your intervention</string>
+    <string name="notifTitle" translatable="false">Notifications</string>
+
 </resources>

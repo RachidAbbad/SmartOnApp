@@ -5,6 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="15dp"
     android:id="@+id/parentPanel"
+    android:orientation="vertical"
     android:background="@color/transparent"
     android:layout_height="wrap_content">
     <androidx.cardview.widget.CardView
@@ -112,6 +113,26 @@
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
+
+    <com.ncorti.slidetoact.SlideToActView
+        android:id="@+id/confirmInterv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:text="@string/confirmInterv"
+        app:border_radius="20dp"
+
+        app:animation_duration="250"
+        app:text_appearance="@style/TitlesInterventionStyle"
+        app:outer_color="@color/white"
+        app:inner_color="@color/firstColor"
+        app:text_size="18sp"
+        app:text_style="normal"
+        android:layout_marginTop="10dp"
+        app:slider_height="70dp"
+        app:slider_locked="false"
+        app:area_margin="4dp"
+        app:bump_vibration="250"
+        />
 
 </LinearLayout>
 

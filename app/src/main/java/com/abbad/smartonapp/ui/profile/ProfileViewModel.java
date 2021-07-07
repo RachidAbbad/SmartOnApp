@@ -1,11 +1,8 @@
 package com.abbad.smartonapp.ui.profile;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.media.MediaRouter;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcManager;
 import android.os.Handler;
@@ -13,31 +10,20 @@ import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModel;
 
 import com.abbad.smartonapp.R;
-import com.abbad.smartonapp.activities.AuthSiteActivity;
 import com.abbad.smartonapp.activities.LoginActivity;
-import com.abbad.smartonapp.activities.MainActivity;
-import com.abbad.smartonapp.adapters.LanguagePickerDialog;
-import com.abbad.smartonapp.adapters.LoadingBottomDialog;
-import com.abbad.smartonapp.utils.Comun;
+import com.abbad.smartonapp.dialogs.AuthSiteDialog;
+import com.abbad.smartonapp.dialogs.LanguagePickerDialog;
+import com.abbad.smartonapp.dialogs.LoadingBottomDialog;
 import com.abbad.smartonapp.utils.SessionManager;
-import com.dx.dxloadingbutton.lib.LoadingButton;
-import com.google.android.material.snackbar.Snackbar;
-
-import net.steamcrafted.loadtoast.LoadToast;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import me.weyye.hipermission.HiPermission;
 import me.weyye.hipermission.PermissionCallback;
@@ -98,9 +84,9 @@ public class ProfileViewModel extends ViewModel {
 
         name.setText(sessionManager.getCurrentUser().getName());
         if(sessionManager.getCurrentUser().getGsm().isEmpty())
-            gsmLayout.setVisibility(View.GONE);
-
-        gsm.setText(sessionManager.getCurrentUser().getGsm());
+            gsm.setText(f.getResources().getString(R.string.noDisponible));
+        else
+            gsm.setText(sessionManager.getCurrentUser().getGsm());
         email.setText(sessionManager.getCurrentUser().getEmail());
         type_account.setText(sessionManager.getCurrentUser().getType());
 
@@ -137,8 +123,7 @@ public class ProfileViewModel extends ViewModel {
 
                         @Override
                         public void onFinish() {
-                            Intent intent = new Intent(f.getContext(), AuthSiteActivity.class);
-                            f.startActivity(intent);
+                            new AuthSiteDialog().show(f.getActivity().getSupportFragmentManager(),null);
                         }
 
                         @Override
@@ -149,8 +134,7 @@ public class ProfileViewModel extends ViewModel {
                         @Override
                         public void onGuarantee(String permission, int position) {
                             Log.i("permission_granted", "onGuarantee");
-                            Intent intent = new Intent(f.getContext(), AuthSiteActivity.class);
-                            f.startActivity(intent);
+                            new AuthSiteDialog().show(f.getActivity().getSupportFragmentManager(),null);
 
                         }
                     });

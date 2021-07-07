@@ -45,4 +45,15 @@
 
     <string name="authSiteSuccess" translatable="false">Authentification au site avec succès</string>
     <string name="authSiteFailed" translatable="false">Échec de l\'authentification au site</string>
+
+    <string name="confirmInterv" translatable="false">Glisser pour démarrer l\'intervention</string>
+    <string name="nfcScanReady" translatable="false">Prêt à scanner ...</string>
+    <string name="nfcNotSupported" translatable="false">NFC n\'est pas pris en charge dans cet appareil</string>
+    <string name="noDisponible" translatable="false">Non disponible</string>
+
+
+    <string name="intervTitle" translatable="false">Vos intervention</string>
+    <string name="notifTitle" translatable="false">Notifications</string>
+
+
 </resources>

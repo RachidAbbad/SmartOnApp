@@ -31,7 +31,8 @@
     <color name="colorPrimaryDark">#303F9F</color>
 
     <color name="colorAccent">#FF4081</color>
-
+    <color name="uiTextGray">#42555E</color>
+    <color name="lineProfile">#5742555E</color>
 
 
 </resources>

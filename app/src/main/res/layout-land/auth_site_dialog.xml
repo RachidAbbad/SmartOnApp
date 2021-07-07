@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="350dp"
+    android:padding="20dp"
+    android:orientation="horizontal"
+    android:background="@color/transparent"
+    android:gravity="center"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+        <LinearLayout
+            android:background="@drawable/nfc_qrcode_selector_bg"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+
+            android:padding="5dp"
+            android:layout_margin="20dp">
+            <com.rm.rmswitch.RMSwitch
+                android:id="@+id/switch_qr_nfc"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                app:checked="false"
+                app:forceAspectRatio="false"
+                app:enabled="true"
+                app:switchDesign="android"
+                app:switchBkgCheckedColor="@color/firstColor"
+                app:switchBkgNotCheckedColor="@color/firstColor"
+                app:switchToggleCheckedColor="@color/secondColor"
+                app:switchToggleCheckedImage="@drawable/ic_nfc_activated"
+                app:switchToggleNotCheckedColor="@color/secondColor"
+                app:switchToggleNotCheckedImage="@drawable/ic_qr_activated"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="0dp"
+        android:layout_weight="1.5"
+        android:id="@+id/qrScanner"
+        android:visibility="visible"
+        app:cardCornerRadius="20dp"
+        android:layout_height="350dp">
+        <com.budiyev.android.codescanner.CodeScannerView
+            android:id="@+id/scanner_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:autoFocusButtonColor="@android:color/white"
+            app:autoFocusButtonVisible="true"
+            app:flashButtonColor="@android:color/white"
+            app:flashButtonVisible="true"
+            app:frameColor="@android:color/white"
+            app:frameCornersSize="50dp"
+            app:frameCornersRadius="10dp"
+            app:frameAspectRatioWidth="1"
+            app:frameAspectRatioHeight="1"
+            app:frameSize="0.75"
+            app:frameThickness="2dp"
+            app:maskColor="#77000000"
+            />
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/nfcScanner"
+        app:cardCornerRadius="20dp"
+        android:visibility="gone"
+        android:layout_width="390dp"
+        android:layout_height="400dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textSize="30dp"
+                android:fontFamily="sans-serif-condensed"
+                android:layout_marginTop="20dp"
+                android:textColor="@color/uiTextColor"
+                android:text="@string/nfcScanReady"
+                />
+            <ImageView
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:src="@drawable/nfc_icon"/>
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>
+
+

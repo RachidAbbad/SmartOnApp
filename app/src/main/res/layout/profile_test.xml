@@ -31,7 +31,7 @@
         android:layout_height="0dp"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
-        android:layout_marginBottom="180dp"
+        android:layout_marginBottom="150dp"
         android:background="@color/secondColor"
         app:cardCornerRadius="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -51,16 +51,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10sp"
-                android:fontFamily="sans-serif-condensed-medium"
+                android:fontFamily="sans-serif-condensed"
                 android:text="Rachid Abbad"
                 android:textColor="@color/uiTextColor"
-                android:textSize="28sp" />
+                android:textSize="30sp" />
 
             <TextView
-                android:id="@+id/userType"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-light"
+                android:fontFamily="sans-serif-condensed"
                 android:text="Technicien en maintenance industrielle"
                 android:textColor="@color/uiTextGray"
                 android:textSize="15sp" />
@@ -88,7 +87,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="sans-serif-condensed-medium"
+                        android:fontFamily="sans-serif-condensed"
                         android:text="Email"
                         android:textColor="@color/uiTextColor"
                         android:textSize="14sp" />
@@ -97,10 +96,10 @@
                         android:id="@+id/userEmail"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="sans-serif-condensed-medium"
+                        android:fontFamily="sans-serif-condensed"
                         android:text="rachid.abbad@gmail.com"
                         android:textColor="#000000"
-                        android:textSize="17sp" />
+                        android:textSize="20sp" />
 
 
                 </LinearLayout>
@@ -115,7 +114,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="sans-serif-condensed-medium"
+                        android:fontFamily="sans-serif-condensed"
                         android:text="Phone"
                         android:textColor="@color/uiTextColor"
                         android:textSize="14sp" />
@@ -124,10 +123,10 @@
                         android:id="@+id/userGsm"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="sans-serif-condensed-medium"
+                        android:fontFamily="sans-serif-condensed"
                         android:text="+212682100890"
                         android:textColor="#000000"
-                        android:textSize="17sp" />
+                        android:textSize="20sp" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -151,13 +150,13 @@
                     android:background="@drawable/btn_ui_style"
                     android:drawableStart="@drawable/ic_account_24"
                     android:drawablePadding="12dp"
-                    android:fontFamily="@font/catamaran_medium"
+                    android:fontFamily="sans-serif-condensed"
                     android:outlineSpotShadowColor="@color/transparent"
                     android:paddingHorizontal="10dp"
                     android:text="@string/title_auth_site"
                     android:textAlignment="textStart"
                     android:textAllCaps="false"
-                    android:textSize="19sp" />
+                    android:textSize="20sp" />
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/logout_btn"
@@ -167,13 +166,13 @@
                     android:background="@drawable/btn_ui_style"
                     android:drawableStart="@drawable/ic_logout_24"
                     android:drawablePadding="12dp"
-                    android:fontFamily="@font/catamaran_medium"
+                    android:fontFamily="sans-serif-condensed"
                     android:outlineSpotShadowColor="@color/transparent"
                     android:paddingHorizontal="10dp"
                     android:text="@string/logout_btn_text"
                     android:textAlignment="textStart"
                     android:textAllCaps="false"
-                    android:textSize="19sp" />
+                    android:textSize="20sp" />
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/langue_btn"
@@ -183,13 +182,13 @@
                     android:background="@drawable/btn_ui_style"
                     android:drawableStart="@drawable/ic_language"
                     android:drawablePadding="12dp"
-                    android:fontFamily="@font/catamaran_medium"
+                    android:fontFamily="sans-serif-condensed"
                     android:outlineSpotShadowColor="@color/transparent"
                     android:paddingHorizontal="10dp"
                     android:text="@string/language_btn_text"
                     android:textAlignment="textStart"
                     android:textAllCaps="false"
-                    android:textSize="19sp" />
+                    android:textSize="20sp" />
 
             </LinearLayout>
         </LinearLayout>
