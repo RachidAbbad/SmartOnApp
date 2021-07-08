@@ -35,6 +35,7 @@ public class SessionManager {
             editor.putString("NomComlplet" , userJson.getString("name")+" "+ userJson.getString("prenom"));
             editor.putString("Gsm",userJson.getString("gsm"));
             editor.putString("Token",AuthToken);
+            editor.putString("CurrentInterv",null);
             switch (userJson.getInt("type_user")){
                 case 3 :
                     editor.putString("Type_account","Téchnicien");
@@ -42,6 +43,16 @@ public class SessionManager {
             editor.putString("Password", pass);
             editor.apply();
             Log.i("userInfos",sharedPreferences.getString("Token",null)+"   -   "+AuthToken);
+        }
+
+        public static String getCurrentInterv(Context context){
+            return context.getSharedPreferences("LoginDetails", Context.MODE_PRIVATE).getString("CurrentInterv",null);
+        }
+
+        public static void saveCurrentInterv(String id){
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("CurrentInterv", id);
+            editor.apply();
         }
 
         public static String getLocale(Context context){

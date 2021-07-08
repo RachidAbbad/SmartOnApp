@@ -1,25 +1,17 @@
 package com.abbad.smartonapp.activities;
 
-import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
 import com.abbad.smartonapp.R;
 import com.abbad.smartonapp.ui.dashboard.DashboardFragment;
-import com.abbad.smartonapp.ui.interventions.Intervention;
+import com.abbad.smartonapp.ui.interventions.InterventionFragment;
 import com.abbad.smartonapp.ui.notifications.NotificationsFragment;
 import com.abbad.smartonapp.ui.profile.ProfileFragment;
-import com.abbad.smartonapp.utils.SessionManager;
 import com.abbad.smartonapp.utils.TapTargetGuide;
 import com.abbad.smartonapp.utils.WebServiceConnection;
-import com.getkeepsafe.taptargetview.TapTarget;
-import com.getkeepsafe.taptargetview.TapTargetView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.annotation.NonNull;
@@ -35,12 +27,10 @@ import androidx.navigation.ui.NavigationUI;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static com.abbad.smartonapp.utils.SessionManager.isTheFirstTime;
-
 public class MainActivity extends AppCompatActivity {
 
     final Fragment fragment1 = new DashboardFragment();
-    final Fragment fragment2 = new Intervention();
+    final Fragment fragment2 = new InterventionFragment();
     final Fragment fragment3 = new NotificationsFragment();
     final Fragment fragment4 = new ProfileFragment();
     final FragmentManager fm = getSupportFragmentManager();

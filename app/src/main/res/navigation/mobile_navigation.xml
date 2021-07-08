@@ -14,7 +14,7 @@
 
     <fragment
         android:id="@+id/navigation_intervention"
-        android:name="com.abbad.smartonapp.ui.interventions.Intervention"
+        android:name="com.abbad.smartonapp.ui.interventions.InterventionFragment"
         android:label="@string/title_intervention"
         tools:layout="@layout/intervention_fragment" />
 

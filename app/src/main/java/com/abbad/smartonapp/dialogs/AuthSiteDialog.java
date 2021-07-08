@@ -64,6 +64,8 @@ public class AuthSiteDialog extends BottomSheetDialogFragment {
             }
         });
         dialog.setContentView(contentView);
+        ((View) contentView.getParent()).setBackgroundColor(getResources().getColor(android.R.color.transparent));
+        dialog.setContentView(contentView);
         qrScannerLayout = contentView.findViewById(R.id.qrScanner);
         nfcScannerLayout = contentView.findViewById(R.id.nfcScanner);
         //qrBtn = contentView.findViewById(R.id.qrBtn);
