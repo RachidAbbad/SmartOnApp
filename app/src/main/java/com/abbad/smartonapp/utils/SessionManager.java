@@ -55,6 +55,12 @@ public class SessionManager {
             editor.apply();
         }
 
+        public static void removeCurrentInterv(String id){
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("CurrentInterv", null);
+            editor.apply();
+        }
+
         public static String getLocale(Context context){
             return context.getSharedPreferences("LoginDetails", Context.MODE_PRIVATE).getString("selected_language","fr");
         }

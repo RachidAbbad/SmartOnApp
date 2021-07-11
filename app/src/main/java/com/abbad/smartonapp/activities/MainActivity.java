@@ -1,5 +1,6 @@
 package com.abbad.smartonapp.activities;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         BottomNavigationView navView = findViewById(R.id.nav_view);
         cnxStatus = findViewById(R.id.cnxStatus);
         cnxStatusColor = findViewById(R.id.cnxStatusColor);
@@ -59,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
 
                         }
                     });
-
                 }
                 else{
                     runOnUiThread(new Runnable() {
@@ -82,13 +83,11 @@ public class MainActivity extends AppCompatActivity {
   //      NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
-
-
-        new TapTargetGuide(navView,this).firstGuide();
+        //new TapTargetGuide(navView,this).firstGuide();
     }
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
+        @SuppressLint("NonConstantResourceId")
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
@@ -115,5 +114,4 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
     };
-
 }

@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/white"
+        android:gravity="center_horizontal">
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center_horizontal">
+                <TextView
+                    android:id="@+id/task_body"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:fontFamily="@font/catamaran_medium"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:singleLine="true"
+                    android:scrollHorizontally="true"
+                    android:ellipsize="marquee"
+                    android:marqueeRepeatLimit ="marquee_forever"
+                    android:text="czjdoackejnckjankcjenkcanjenckneckjanekc"
+                    android:textColor="@color/uiTextColor"
+                    android:textSize="27sp" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/taskStatus"
+                        android:layout_margin="15dp"
+                        android:textStyle="bold"
+                        android:textColor="@color/uiTextColor"
+                        android:textSize="24sp"
+                        android:fontFamily="@font/catamaran_medium"
+                        />
+                    <com.rm.rmswitch.RMSwitch
+                        android:id="@+id/switch_qr_nfc"
+                        android:layout_width="80dp"
+                        android:layout_height="30dp"
+                        app:checked="false"
+                        app:forceAspectRatio="false"
+                        app:enabled="true"
+                        app:switchDesign="android"
+                        app:switchBkgCheckedColor="@color/firstColor"
+                        app:switchBkgNotCheckedColor="@color/secondColor"
+                        app:switchToggleCheckedColor="@color/firstColor"
+                        app:switchToggleCheckedImage="@drawable/ic_done_repport"
+                        app:switchToggleNotCheckedColor="@color/secondColor"
+                        app:switchToggleNotCheckedImage="@drawable/ic_report"/>
+                    <TextView
+                        android:id="@+id/taskStatusText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/taskDone"
+                        android:layout_margin="2dp"
+                        android:textColor="@color/uiTextColor"
+                        android:textSize="15sp"
+                        android:fontFamily="@font/catamaran_medium"
+                        />
+                </LinearLayout>
+
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
+            <LinearLayout
+                android:id="@+id/image_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical">
+                <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <ImageButton
+                            android:id="@+id/imageToggle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/report_medias_bg"
+                            android:padding="10dp"
+                            android:layout_margin="5dp"
+                            android:src="@drawable/ic_image"/>
+                        <ImageButton
+                            android:id="@+id/videoToggle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/report_medias_bg"
+                            android:padding="10dp"
+                            android:layout_margin="5dp"
+                            android:src="@drawable/ic_video"/>
+
+                        <ImageButton
+                            android:id="@+id/audioToggle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/report_medias_bg"
+                            android:padding="10dp"
+                            android:layout_margin="5dp"
+                            android:src="@drawable/ic_audio"/>
+
+                        <ImageButton
+                            android:id="@+id/commentToggle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/report_medias_bg"
+                            android:padding="10dp"
+                            android:layout_margin="5dp"
+                            android:src="@drawable/ic_comment"/>
+                    </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/imageLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_margin="10dp"
+                    android:padding="5dp">
+                    <LinearLayout
+                        android:id="@+id/imageLayoutInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="90dp"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:background="@drawable/import_area_bg"
+                        android:layout_marginHorizontal="10dp"
+                        android:padding="15dp">
+                        <TextView
+                            android:textStyle="bold"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="20sp"
+                            android:drawablePadding="10dp"
+                            android:textColor="@color/black"
+                            android:fontFamily="@font/catamaran_medium"
+                            android:text="@string/chooseImage"
+                            app:drawableStartCompat="@drawable/ic_add_icon" />
+                    </LinearLayout>
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/numberAdded"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="1 image added"
+                        android:textAllCaps="false"
+                        android:visibility="gone"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/catamaran_medium"
+
+                        android:background="@color/transparent"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/videoLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+
+                    android:padding="5dp">
+
+                    <LinearLayout
+                        android:id="@+id/videoLayoutInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="90dp"
+                        android:layout_marginHorizontal="10dp"
+                        android:background="@drawable/import_area_bg"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:padding="15dp">
+
+                        <TextView
+                            android:textStyle="bold"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:drawablePadding="10dp"
+                            android:fontFamily="@font/catamaran_medium"
+                            android:text="@string/selectVideo"
+                            android:textColor="@color/black"
+                            android:textSize="20sp"
+                            app:drawableStartCompat="@drawable/ic_add_icon" />
+                    </LinearLayout>
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/videoAddStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/transparent"
+                        android:fontFamily="@font/catamaran_medium"
+                        android:textAllCaps="false"
+                        android:textSize="16sp"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/audioLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+
+                    android:padding="10dp">
+
+                    <TextView
+                        android:textStyle="bold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/recordAudio"
+                        android:textColor="@color/black"
+                        android:textSize="20sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:padding="10dp"
+                        android:layout_margin="10dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:background="@drawable/audio_recorder_bg"
+                        android:orientation="horizontal">
+                        <ImageButton
+                            android:id="@+id/audioButton"
+                            android:layout_width="50dp"
+                            android:adjustViewBounds="true"
+                            android:scaleType="fitCenter"
+                            android:layout_height="50dp"
+                            android:src="@drawable/ic_rounded_mic"
+                            android:background="@color/transparent"/>
+                        <TextView
+                            android:id="@+id/recordCounterMsg"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:visibility="visible"
+                            android:textSize="18sp"
+                            android:layout_marginEnd="20dp"
+                            android:textAlignment="center"
+                            android:text="Press the mic icon to start recording"
+                            android:textColor="@color/black"
+                            android:fontFamily="sans-serif-condensed" />
+                        <Chronometer
+                            android:id="@+id/recordCounterChrono"
+                            android:layout_width="match_parent"
+                            android:fontFamily="sans-serif-condensed"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"
+                            android:layout_marginEnd="20dp"
+                            android:textColor="@color/black"
+                            android:textAlignment="center"
+                            android:textSize="26sp"/>
+
+
+                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/recordResultLayout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/audio_recorder_bg"
+                        android:padding="5dp"
+                        android:visibility="gone"
+                        android:orientation="horizontal">
+                        <ImageButton
+                            android:background="@color/transparent"
+                            android:layout_width="0dp"
+                            android:padding="10dp"
+                            android:id="@+id/audioRemoveBtn"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.25"
+                            android:src="@drawable/ic_delete_audio"/>
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/black"/>
+                        <ImageButton
+                            android:background="@color/transparent"
+                            android:layout_width="0dp"
+                            android:padding="10dp"
+                            android:id="@+id/audioSaveBtn"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.25"
+                            android:src="@drawable/ic_done"/>
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/audioSaveStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawablePadding="10dp"
+                        android:visibility="gone"
+                        android:fontFamily="@font/catamaran_medium"
+                        android:textAlignment="center"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/commentLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:visibility="gone"
+                    android:layout_margin="10dp"
+                    android:padding="10dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:fontFamily="@font/catamaran_medium"
+                        android:textColor="@color/black"
+                        android:text="@string/writeComment"/>
+                    <EditText
+                        android:id="@+id/commentEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+
+                        android:fontFamily="@font/catamaran_medium"
+                        android:textSize="20dp"
+                        />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/submitReport"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/catamaran_medium"
+                        android:textAllCaps="false"
+                        android:textSize="19sp"
+                        android:text="@string/submitBtn"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+
+    </LinearLayout>
+</ScrollView>

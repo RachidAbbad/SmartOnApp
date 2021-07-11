@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModel;
 import com.abbad.smartonapp.activities.LoginActivity;
 import com.abbad.smartonapp.activities.MainActivity;
 import com.abbad.smartonapp.activities.NoConnectionActivity;
+import com.abbad.smartonapp.activities.SplashActivity;
 import com.abbad.smartonapp.classes.Chaudiere;
 import com.abbad.smartonapp.utils.SessionManager;
 import com.abbad.smartonapp.utils.WebServiceConnection;
@@ -61,7 +62,7 @@ import java.util.TimerTask;
 public class DashboardViewModel extends ViewModel {
 
     private Timer timer = new Timer();
-public boolean stat_timer;
+    public boolean stat_timer;
     public DashboardViewModel() {
 
     }
@@ -83,7 +84,7 @@ public boolean stat_timer;
                     }
                 });
             }
-        }, 0, 2000);
+        }, 0, 10000);
     }
 
     public void cancelTimer(){
@@ -96,7 +97,7 @@ public boolean stat_timer;
     }
 
 
-    public static class GetInfoTask extends AsyncTask<Void,Void,Void>{
+    public class GetInfoTask extends AsyncTask<Void,Void,Void>{
         JSONObject infosJson;
         DashboardFragment dash;
 
@@ -114,6 +115,11 @@ public boolean stat_timer;
             try {
                 URL url = new URL("http://smartonviatoile.com/api/Data/currentChaudiere/5fbccf26e06d8cb8a4ac500e/1");
                 HttpURLConnection http = (HttpURLConnection) url.openConnection();
+                if (http.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                    dash.serverStatus = false;
+                    DashboardViewModel.this.cancelTimer();
+                    this.cancel(true);
+                }
                 http.setRequestProperty("Accept", "application/json");
                 http.setRequestProperty("Authorization", "Bearer "+ SessionManager.getAuthToken());
                 BufferedReader reader = new BufferedReader(new InputStreamReader(http.getInputStream()));

@@ -51,6 +51,18 @@
 
 
     <string name="intervTitle" translatable="false">Your intervention</string>
-    <string name="notifTitle" translatable="false">Notifications</string>
+    <string name="notifTitle" translatable="false">Task status</string>
+
+    <string name="taskStatus" translatable="false">Tache status :</string>
+    <string name="taskDone" translatable="false">Done</string>
+    <string name="taskNotDone" translatable="false">Not completed</string>
+    <string name="chooseImage" translatable="false">Add images</string>
+    <string name="chooseImageGallery" translatable="false">Upload from gallery</string>
+    <string name="chooseImageCamera" translatable="false">Use camera</string>
+    <string name="selectVideo" translatable="false">Add Video</string>
+    <string name="recordAudio" translatable="false">Record Audio</string>
+    <string name="writeComment" translatable="false">Write a comment</string>
+    <string name="submitBtn" translatable="false">Submit report</string>
+    <string name="addComment" translatable="false">Add comment</string>
 
 </resources>

@@ -55,5 +55,17 @@
     <string name="intervTitle" translatable="false">Vos intervention</string>
     <string name="notifTitle" translatable="false">Notifications</string>
 
+    <string name="taskStatus" translatable="false">État de la tâche :</string>
+    <string name="taskDone" translatable="false">Terminée</string>
+    <string name="taskNotDone" translatable="false">Non terminée</string>
+    <string name="chooseImage" translatable="false">Ajouter images</string>
+    <string name="chooseImageGallery" translatable="false">Importer depuis la galerie</string>
+    <string name="chooseImageCamera" translatable="false">Utiliser la caméra</string>
+    <string name="selectVideo" translatable="false">Ajouter une vidéo</string>
+    <string name="recordAudio" translatable="false">Enregistrer un audio</string>
+    <string name="writeComment" translatable="false">Écrire un commentaire</string>
+    <string name="submitBtn" translatable="false">Valider le rapport</string>
+    <string name="addComment" translatable="false">Ajouter un commentaire</string>
+
 
 </resources>

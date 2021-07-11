@@ -2,6 +2,7 @@ package com.abbad.smartonapp.dialogs;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
 import android.view.View;
@@ -15,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
 import com.abbad.smartonapp.R;
+import com.abbad.smartonapp.activities.OnInterventionActivity;
 import com.abbad.smartonapp.classes.Intervention;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -107,14 +109,15 @@ public class InterventionDetailsDialog extends BottomSheetDialogFragment {
     }
 
     public class IntervConfirmedEvent implements SlideToActView.OnSlideCompleteListener {
-
-
-
         @SuppressLint("ShowToast")
         @Override
         public void onSlideComplete(@NotNull SlideToActView slideToActView) {
             Toast.makeText(getContext(),"Intervention confirmed",Toast.LENGTH_LONG);
             Log.i("slideCompleted","Intervention confirmed");
+
+            Intent intent= new Intent(getActivity(), OnInterventionActivity.class);
+            intent.putExtra("intervention",intervention);
+            startActivity(intent);
             InterventionDetailsDialog.this.dismiss();
         }
     }

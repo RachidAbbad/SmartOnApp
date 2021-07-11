@@ -87,6 +87,7 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
             title = itemView.findViewById(R.id.interv_title);
             date = itemView.findViewById(R.id.interv_date);
             garvity = itemView.findViewById(R.id.interv_gravity);
+            title.setSelected(true);
         }
 
         @Override
