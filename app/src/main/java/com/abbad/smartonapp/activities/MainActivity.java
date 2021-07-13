@@ -11,6 +11,7 @@ import com.abbad.smartonapp.ui.dashboard.DashboardFragment;
 import com.abbad.smartonapp.ui.interventions.InterventionFragment;
 import com.abbad.smartonapp.ui.notifications.NotificationsFragment;
 import com.abbad.smartonapp.ui.profile.ProfileFragment;
+import com.abbad.smartonapp.utils.InterventionManager;
 import com.abbad.smartonapp.utils.TapTargetGuide;
 import com.abbad.smartonapp.utils.WebServiceConnection;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -58,7 +59,6 @@ public class MainActivity extends AppCompatActivity {
                         public void run() {
                             cnxStatus.setText(getResources().getString(R.string.cnxStatusMsgOffline));
                             cnxStatusColor.setCardBackgroundColor(getResources().getColor(R.color.uiRed));
-
                         }
                     });
                 }
@@ -82,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
   //      NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
+        new InterventionManager(getApplicationContext());
 
         //new TapTargetGuide(navView,this).firstGuide();
     }

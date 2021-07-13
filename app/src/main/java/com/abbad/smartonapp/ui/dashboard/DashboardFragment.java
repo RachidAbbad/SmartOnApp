@@ -26,6 +26,7 @@ import java.net.URISyntaxException;
 public class DashboardFragment extends Fragment {
 
     public DashboardViewModel dashboardViewModel;
+    private View serverError;
     private SpeedView s1,s2,s3,s4,s5,s6,bal1_pres,bal2_pres,bal1_dep,bal2_dep;
     public boolean serverStatus = true;
 

@@ -49,7 +49,7 @@
                         android:fontFamily="@font/catamaran_medium"
                         />
                     <com.rm.rmswitch.RMSwitch
-                        android:id="@+id/switch_qr_nfc"
+                        android:id="@+id/taskStatus"
                         android:layout_width="80dp"
                         android:layout_height="30dp"
                         app:checked="false"
@@ -163,7 +163,7 @@
                         android:layout_height="wrap_content"
                         android:text="1 image added"
                         android:textAllCaps="false"
-                        android:visibility="gone"
+                        android:visibility="visible"
                         android:textSize="16sp"
                         android:fontFamily="@font/catamaran_medium"
 

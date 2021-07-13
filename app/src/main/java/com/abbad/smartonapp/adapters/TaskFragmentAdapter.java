@@ -9,7 +9,6 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import com.abbad.smartonapp.Fragments.TaskFragment;
 import com.abbad.smartonapp.classes.Intervention;
-import com.abbad.smartonapp.classes.Task;
 
 public class TaskFragmentAdapter extends FragmentStatePagerAdapter {
     private int totalTasks;
@@ -27,7 +26,8 @@ public class TaskFragmentAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         Bundle b = new Bundle();
         b.putInt("position", position);
-        b.putParcelable("task", new Task(intervention.getId(),intervention.getTodos()[position],position));
+        b.putParcelable("intervention", intervention);
+        b.putInt("numTask", position);
         Fragment frag = new TaskFragment();
         frag.setArguments(b);
         return frag;

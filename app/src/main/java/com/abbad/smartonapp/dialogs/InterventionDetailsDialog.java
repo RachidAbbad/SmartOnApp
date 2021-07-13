@@ -14,23 +14,30 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.widget.AppCompatButton;
 
 import com.abbad.smartonapp.R;
 import com.abbad.smartonapp.activities.OnInterventionActivity;
 import com.abbad.smartonapp.classes.Intervention;
+import com.abbad.smartonapp.datas.InterventionData;
+import com.abbad.smartonapp.utils.InterventionManager;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.ncorti.slidetoact.SlideToActView;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
 
 public class InterventionDetailsDialog extends BottomSheetDialogFragment {
 
     private Intervention intervention;
     private LinearLayout tasksLayout,toolsLayout;
-    private TextView inter_title,inter_desc;
+    private TextView inter_title,inter_desc,inter_id;
     private SlideToActView confirmInterv;
+
+    private LinearLayout resumeLayout;
+    private AppCompatButton resumeBtn;
 
     public InterventionDetailsDialog(Intervention intervention) {
         this.intervention = intervention;
@@ -66,12 +73,22 @@ public class InterventionDetailsDialog extends BottomSheetDialogFragment {
         inter_desc = contentView.findViewById(R.id.desc);
         inter_title = contentView.findViewById(R.id.interv_name);
         confirmInterv = contentView.findViewById(R.id.confirmInterv);
+        resumeLayout = contentView.findViewById(R.id.resumeLayout);
+        resumeBtn = contentView.findViewById(R.id.resumeBtn);
+        inter_id = contentView.findViewById(R.id.interv_id);
         inter_title.setText(intervention.getTitle());
         inter_desc.setText("Lorem fefh diz fuziuf fzorf bviru");
         confirmInterv.setOnSlideCompleteListener(new IntervConfirmedEvent());
         dialog.setContentView(contentView);
+        inter_id.setText(intervention.getId());
         displayTasks(intervention.getTodos(),tasksLayout);
         displayTools(intervention.getTools(),toolsLayout);
+
+        try {
+            checkInCompletedIntervention();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -121,4 +138,26 @@ public class InterventionDetailsDialog extends BottomSheetDialogFragment {
             InterventionDetailsDialog.this.dismiss();
         }
     }
+
+    public void checkInCompletedIntervention() throws JSONException {
+        String idInterv = InterventionManager.getCurrentIntervention();
+        if (idInterv !=null){
+            if (idInterv.equals(intervention.getId())){
+                confirmInterv.setText("Glisser pour continuer");
+            }
+            else{
+                confirmInterv.setVisibility(View.GONE);
+                resumeLayout.setVisibility(View.VISIBLE);
+                resumeBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        new InterventionDetailsDialog(InterventionData.getInterventionById(idInterv)).show(getActivity().getSupportFragmentManager(),null);
+                        InterventionDetailsDialog.this.dismiss();
+                    }
+                });
+            }
+
+        }
+    }
+
 }

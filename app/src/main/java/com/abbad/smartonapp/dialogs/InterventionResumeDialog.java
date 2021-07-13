@@ -1,8 +1,7 @@
 package com.abbad.smartonapp.dialogs;
 
-import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Build;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -10,35 +9,28 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatButton;
 
 import com.abbad.smartonapp.R;
+import com.abbad.smartonapp.activities.OnInterventionActivity;
+import com.abbad.smartonapp.classes.Intervention;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
-public class ResultBottomDialog extends BottomSheetDialogFragment {
-    private String content;
-    private int eventType;
+public class InterventionResumeDialog extends BottomSheetDialogFragment {
 
-    public ResultBottomDialog(String content,int eventType){
-        this.content = content;
-        this.eventType = eventType;
+    private Intervention intervention;
+    //View Components :
+    private AppCompatButton resumeBtn,cancelBtn;
+
+    public InterventionResumeDialog(Intervention intervention) {
+        this.intervention = intervention;
     }
 
-
-
-    @SuppressLint("RestrictedApi")
     @Override
     public void setupDialog(@NonNull Dialog dialog, int style) {
-        super.setupDialog(dialog, style);
-        View contentView ;
-        if (eventType==1)
-            contentView = View.inflate(getContext(), R.layout.custom_success_dialog, null);
-        else if (eventType == 2)
-            contentView = View.inflate(getContext(), R.layout.custom_failed_dialog, null);
-        else
-            contentView = View.inflate(getContext(), R.layout.custom_warning_dialog, null);
-
+        View contentView = View.inflate(getContext(), R.layout.intervention_resume_layout, null);
         contentView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -55,12 +47,24 @@ public class ResultBottomDialog extends BottomSheetDialogFragment {
                 behavior.setPeekHeight(0); // Remove this line to hide a dark background if you manually hide the dialog.
             }
         });
-
-        ((TextView) contentView.findViewById(R.id.text_content)).setText(content);
+        resumeBtn = contentView.findViewById(R.id.resumeBtn);
+        cancelBtn = contentView.findViewById(R.id.cancelBtn);
         dialog.setContentView(contentView);
         ((View) contentView.getParent()).setBackgroundColor(getResources().getColor(android.R.color.transparent));
         dialog.setContentView(contentView);
+
+        resumeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new InterventionDetailsDialog(intervention).show(getActivity().getSupportFragmentManager(),null);
+            }
+        });
+
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                InterventionResumeDialog.this.dismiss();
+            }
+        });
     }
-
-
 }

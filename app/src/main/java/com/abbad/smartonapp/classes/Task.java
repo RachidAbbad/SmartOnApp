@@ -3,50 +3,36 @@ package com.abbad.smartonapp.classes;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 public class Task implements Parcelable {
     private String idIntervention;
-    private String body;
-    private TaskData data;
-    private Boolean status;
-    private int numTask;
+    private boolean status;
+    private List<File> images;
+    private List<File> videos;
+    private List<File> audios;
+    private List<File> comments;
 
-    public Task(String body) {
-        this.body = body;
-    }
+    public Task(){}
 
-    public Task(String body, TaskData data, Boolean status, int numTask) {
-        this.body = body;
-        this.data = data;
-        this.status = status;
-        this.numTask = numTask;
-    }
-
-    public Task(String idIntervention, String body, int numTask) {
+    public Task(String idIntervention) {
         this.idIntervention = idIntervention;
-        this.body = body;
-        this.numTask = numTask;
+        images = new ArrayList<>();
+        videos = new ArrayList<>();
+        audios = new ArrayList<>();
+        comments = new ArrayList<>();
     }
 
-    public Task(String idIntervention, String body, TaskData data, Boolean status, int numTask) {
-        this.idIntervention = idIntervention;
-        this.body = body;
-        this.data = data;
-        this.status = status;
-        this.numTask = numTask;
-    }
-
-    public Task(String body, TaskData data, int numTask) {
-        this.body = body;
-        this.data = data;
-        this.numTask = numTask;
-    }
 
     protected Task(Parcel in) {
         idIntervention = in.readString();
-        body = in.readString();
-        byte tmpStatus = in.readByte();
-        status = tmpStatus == 0 ? null : tmpStatus == 1;
-        numTask = in.readInt();
+        status = in.readByte() != 0;
+        images = new ArrayList<>();
+        videos = new ArrayList<>();
+        audios = new ArrayList<>();
+        comments = new ArrayList<>();
     }
 
     public static final Creator<Task> CREATOR = new Creator<Task>() {
@@ -61,44 +47,52 @@ public class Task implements Parcelable {
         }
     };
 
-    public String getBody() {
-        return body;
-    }
-
-    public void setBody(String body) {
-        this.body = body;
-    }
-
-    public TaskData getData() {
-        return data;
-    }
-
-    public void setData(TaskData data) {
-        this.data = data;
-    }
-
-    public Boolean getStatus() {
-        return status;
-    }
-
-    public void setStatus(Boolean status) {
-        this.status = status;
-    }
-
-    public int getNumTask() {
-        return numTask;
-    }
-
-    public void setNumTask(int numTask) {
-        this.numTask = numTask;
-    }
-
     public String getIdIntervention() {
         return idIntervention;
     }
 
     public void setIdIntervention(String idIntervention) {
         this.idIntervention = idIntervention;
+    }
+
+    public List<File> getImages() {
+        return images;
+    }
+
+    public void setImages(List<File> images) {
+        this.images = images;
+    }
+
+    public List<File> getVideos() {
+        return videos;
+    }
+
+    public void setVideos(List<File> videos) {
+        this.videos = videos;
+    }
+
+    public List<File> getAudios() {
+        return audios;
+    }
+
+    public void setAudios(List<File> audios) {
+        this.audios = audios;
+    }
+
+    public List<File> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<File> comments) {
+        this.comments = comments;
+    }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
     }
 
     @Override
@@ -109,8 +103,6 @@ public class Task implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(idIntervention);
-        dest.writeString(body);
-        dest.writeByte((byte) (status == null ? 0 : status ? 1 : 2));
-        dest.writeInt(numTask);
+        dest.writeByte((byte) (status ? 1 : 0));
     }
 }

@@ -20,7 +20,11 @@ import androidx.viewpager.widget.ViewPager;
 import com.abbad.smartonapp.R;
 import com.abbad.smartonapp.adapters.TaskFragmentAdapter;
 import com.abbad.smartonapp.classes.Intervention;
+import com.abbad.smartonapp.dialogs.ResultBottomDialog;
+import com.abbad.smartonapp.utils.InterventionManager;
 import com.google.android.material.tabs.TabLayout;
+
+import org.json.JSONException;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -51,6 +55,13 @@ public class OnInterventionActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.intervention_rapport);
         initViews();
+        //Save intervention on shared preference :
+        try {
+            InterventionManager.saveCurrentIntervention(intervention.getId());
+        } catch (JSONException e) {
+            Log.e("Error",e.getMessage());
+            new ResultBottomDialog("Error has occured",2).show(getSupportFragmentManager(),null);
+        }
     }
 
 

@@ -128,11 +128,11 @@ public class AuthSiteDialog extends BottomSheetDialogFragment {
                             public void run() {
                                 loadingBottomDialog.dismiss();
                                 if(result.getText().equals("S7363Q87376")){
-                                    new ResultBottomDialog(getResources().getString(R.string.authSiteSuccess),true).show(getActivity().getSupportFragmentManager(),null);
+                                    new ResultBottomDialog(getResources().getString(R.string.authSiteSuccess),1).show(getActivity().getSupportFragmentManager(),null);
                                     AuthSiteDialog.this.dismiss();
                                 }
                                 else{
-                                    new ResultBottomDialog(getResources().getString(R.string.authSiteFailed),false).show(getActivity().getSupportFragmentManager(),null);
+                                    new ResultBottomDialog(getResources().getString(R.string.authSiteFailed),2).show(getActivity().getSupportFragmentManager(),null);
                                     codeScanner.startPreview();
                                 }
 
@@ -169,7 +169,7 @@ public class AuthSiteDialog extends BottomSheetDialogFragment {
         if (nfcAdapter == null) {
             Toast.makeText(getActivity(),"NFC not supported in this device",Toast.LENGTH_LONG);
             switch_qr_nfc.setChecked(false);
-            new ResultBottomDialog(getResources().getString(R.string.nfcNotSupported),false).show(getActivity().getSupportFragmentManager(),null);
+            new ResultBottomDialog(getResources().getString(R.string.nfcNotSupported),3).show(getActivity().getSupportFragmentManager(),null);
             return;
         }
         qrScannerLayout.setVisibility(View.GONE);
