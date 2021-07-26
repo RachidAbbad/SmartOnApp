@@ -8,6 +8,7 @@ import android.os.StrictMode;
 import android.text.PrecomputedText;
 import android.util.JsonReader;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,6 +21,7 @@ import com.abbad.smartonapp.activities.MainActivity;
 import com.abbad.smartonapp.activities.NoConnectionActivity;
 import com.abbad.smartonapp.activities.SplashActivity;
 import com.abbad.smartonapp.classes.Chaudiere;
+import com.abbad.smartonapp.dialogs.ResultBottomDialog;
 import com.abbad.smartonapp.utils.SessionManager;
 import com.abbad.smartonapp.utils.WebServiceConnection;
 import com.github.anastr.speedviewlib.SpeedView;
@@ -59,10 +61,13 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static android.view.View.GONE;
+
 public class DashboardViewModel extends ViewModel {
 
     private Timer timer = new Timer();
-    public boolean stat_timer;
+    public boolean stat_timer,server_error=false,first_time=true;
+
     public DashboardViewModel() {
 
     }
@@ -100,7 +105,7 @@ public class DashboardViewModel extends ViewModel {
     public class GetInfoTask extends AsyncTask<Void,Void,Void>{
         JSONObject infosJson;
         DashboardFragment dash;
-
+        HttpURLConnection http;
         public GetInfoTask(DashboardFragment f){
             dash = f;
         }
@@ -114,13 +119,14 @@ public class DashboardViewModel extends ViewModel {
         protected Void doInBackground(Void... arg0) {
             try {
                 URL url = new URL("http://smartonviatoile.com/api/Data/currentChaudiere/5fbccf26e06d8cb8a4ac500e/1");
-                HttpURLConnection http = (HttpURLConnection) url.openConnection();
-                if (http.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                    dash.serverStatus = false;
-                    DashboardViewModel.this.cancelTimer();
-                    this.cancel(true);
-                }
+                http = (HttpURLConnection) url.openConnection();
                 http.setRequestProperty("Accept", "application/json");
+                if (http.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                    server_error=true;
+                    return null;
+                }
+                if (!first_time)
+                    first_time = true;
                 http.setRequestProperty("Authorization", "Bearer "+ SessionManager.getAuthToken());
                 BufferedReader reader = new BufferedReader(new InputStreamReader(http.getInputStream()));
                 StringBuilder sb = new StringBuilder();
@@ -141,17 +147,40 @@ public class DashboardViewModel extends ViewModel {
 
         @Override
         protected void onPostExecute(Void param){
-            try {
-                dash.getS1().speedTo((float) infosJson.getDouble("temperatura_Ida"));
-                dash.getS2().speedTo((float) infosJson.getDouble("temperatura_Retorno"));
-                dash.getS3().speedTo((float) infosJson.getDouble("temperatura_Inercia"));
-                dash.getS4().speedTo((float) infosJson.getDouble("temperatura_Humos"));
-                dash.getS5().speedTo((float) infosJson.getDouble("dépression"));
-                dash.getS6().speedTo((float) infosJson.getDouble("luminosidad"));
-            } catch (JSONException e) {
-                e.printStackTrace();
+            if (!server_error){
+                try {
+                    dash.getServerError().setVisibility(View.GONE);
+                    dash.getMainLayout().setVisibility(View.VISIBLE);
+                    dash.getS1().speedTo((float) infosJson.getDouble("temperatura_Ida"));
+                    dash.getS2().speedTo((float) infosJson.getDouble("temperatura_Retorno"));
+                    dash.getS3().speedTo((float) infosJson.getDouble("temperatura_Inercia"));
+                    dash.getS4().speedTo((float) infosJson.getDouble("temperatura_Humos"));
+                    dash.getS5().speedTo((float) infosJson.getDouble("dépression"));
+                    dash.getS6().speedTo((float) infosJson.getDouble("luminosidad"));
+                } catch (Exception ex) {
+                    dash.getS1().speedTo(0.00f);
+                    dash.getS2().speedTo(0.00f);
+                    dash.getS3().speedTo(0.00f);
+                    dash.getS4().speedTo(0.00f);
+                    dash.getS5().speedTo(0.00f);
+                    dash.getS6().speedTo(0.00f);
+                    new ResultBottomDialog("Error has occurred while uploading data",2).show(dash.getActivity().getSupportFragmentManager(),null);
+                }
+            }else if (first_time){
+                first_time = false;
+                dash.getServerError().setVisibility(View.VISIBLE);
+                dash.getMainLayout().setVisibility(View.GONE);
+                try {
+                    dash.getExceptionText().setText(http.getResponseCode()+" Error");
+                } catch (IOException exception) {
+                    exception.printStackTrace();
+                }
             }
+
+
         }
     }
+
+
 
 }

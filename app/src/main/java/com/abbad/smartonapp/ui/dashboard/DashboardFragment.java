@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -26,9 +27,10 @@ import java.net.URISyntaxException;
 public class DashboardFragment extends Fragment {
 
     public DashboardViewModel dashboardViewModel;
-    private View serverError;
+    public ScrollView mainLayout;
+    private LinearLayout serverError;
+    private TextView exceptionText;
     private SpeedView s1,s2,s3,s4,s5,s6,bal1_pres,bal2_pres,bal1_dep,bal2_dep;
-    public boolean serverStatus = true;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -36,11 +38,7 @@ public class DashboardFragment extends Fragment {
         dashboardViewModel =
                 new ViewModelProvider(this).get(DashboardViewModel.class);
 
-        View root = null;
-
-
-        if (serverStatus){
-            root = inflater.inflate(R.layout.fragment_dashboard, container, false);
+        View root = inflater.inflate(R.layout.fragment_dashboard, container, false);
                 s1 = root.findViewById(R.id.t_depart_indicator);
                 s2 = root.findViewById(R.id.t_retoure_indicator);
                 s3 = root.findViewById(R.id.t_inertie_indicator);
@@ -51,6 +49,9 @@ public class DashboardFragment extends Fragment {
                 bal2_dep = root.findViewById(R.id.ballon_depressure1);
                 bal1_pres = root.findViewById(R.id.ballon_pressure);
                 bal2_pres = root.findViewById(R.id.ballon_pressure1);
+                serverError = root.findViewById(R.id.serverError);
+                mainLayout = root.findViewById(R.id.mainLayout);
+                exceptionText = root.findViewById(R.id.exceptionText);
 
                 bal1_dep.speedTo(9.2f);
                 bal2_dep.speedTo(8.3f);
@@ -61,10 +62,7 @@ public class DashboardFragment extends Fragment {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-        else{
-            root = inflater.inflate(R.layout.server_error_layout, container, false);
-        }
+
 
         return root;
     }
@@ -99,5 +97,21 @@ public class DashboardFragment extends Fragment {
 
     public SpeedView getS6() {
         return s6;
+    }
+
+    public ScrollView getMainLayout() {
+        return mainLayout;
+    }
+
+    public LinearLayout getServerError() {
+        return serverError;
+    }
+
+    public SpeedView getBal1_dep() {
+        return bal1_dep;
+    }
+
+    public TextView getExceptionText() {
+        return exceptionText;
     }
 }

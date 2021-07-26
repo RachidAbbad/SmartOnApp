@@ -2,11 +2,11 @@ package com.abbad.smartonapp.dialogs;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Build;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -31,13 +31,9 @@ public class ResultBottomDialog extends BottomSheetDialogFragment {
     @Override
     public void setupDialog(@NonNull Dialog dialog, int style) {
         super.setupDialog(dialog, style);
-        View contentView ;
-        if (eventType==1)
-            contentView = View.inflate(getContext(), R.layout.custom_success_dialog, null);
-        else if (eventType == 2)
-            contentView = View.inflate(getContext(), R.layout.custom_failed_dialog, null);
-        else
-            contentView = View.inflate(getContext(), R.layout.custom_warning_dialog, null);
+        View contentView = View.inflate(getContext(), R.layout.result_dialog_layout, null);
+        ImageView resultIcon = contentView.findViewById(R.id.resultIcon);
+
 
         contentView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -60,6 +56,13 @@ public class ResultBottomDialog extends BottomSheetDialogFragment {
         dialog.setContentView(contentView);
         ((View) contentView.getParent()).setBackgroundColor(getResources().getColor(android.R.color.transparent));
         dialog.setContentView(contentView);
+
+        if (eventType==1)
+            resultIcon.setImageResource(R.drawable.ic_done);
+        else if (eventType == 2)
+            resultIcon.setImageResource(R.drawable.ic_warning);
+        else
+            resultIcon.setImageResource(R.drawable.ic_error);
     }
 
 

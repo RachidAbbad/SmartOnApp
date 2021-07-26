@@ -16,7 +16,7 @@ public class InterventionManager {
         sharedPreferences = context.getSharedPreferences("InterventionDetails", Context.MODE_PRIVATE);
     }
 
-    public static void saveCurrentIntervention(String idIntervention) throws JSONException {
+    public static void saveCurrentIntervention(String idIntervention){
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("IdIntervention", idIntervention);
         editor.apply();
@@ -25,6 +25,18 @@ public class InterventionManager {
     public static void saveTaskStatus(String idIntervention,int numTask,boolean status){
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(idIntervention+"_"+numTask, status);
+        editor.apply();
+    }
+
+    public static void saveTaskReportStatus(String idIntervention,int numTask,boolean status){
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("Report_"+idIntervention+"_"+numTask, status);
+        editor.apply();
+    }
+
+    public static void saveInterventionReport(String idIntervention,boolean resumeKey){
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("IntervReport_"+idIntervention, resumeKey);
         editor.apply();
     }
 
@@ -37,6 +49,10 @@ public class InterventionManager {
 
     }
 
+    public static boolean getInterventionReport(String idIntervention){
+        return context.getSharedPreferences("InterventionDetails",Context.MODE_PRIVATE).getBoolean("IntervReport_"+idIntervention,false);
+    }
+
     public static void removeCurrentIntervention(String idInterv) throws JSONException {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.remove("IdIntervention");
@@ -46,6 +62,10 @@ public class InterventionManager {
             }
         }
         editor.apply();
+    }
+
+    public static boolean getTaskReportStatus(String idIntervention,int numTask){
+        return context.getSharedPreferences("InterventionDetails",Context.MODE_PRIVATE).getBoolean("Report_"+idIntervention+"_"+numTask,false);
     }
 
 

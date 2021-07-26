@@ -1,8 +1,9 @@
-package com.abbad.smartonapp.Fragments;
+package com.abbad.smartonapp.dialogs;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.ClipData;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -10,50 +11,41 @@ import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.StrictMode;
 import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Chronometer;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.AppCompatButton;
-import androidx.fragment.app.Fragment;
 
 import com.abbad.smartonapp.R;
 import com.abbad.smartonapp.activities.OnInterventionActivity;
 import com.abbad.smartonapp.classes.Intervention;
-import com.abbad.smartonapp.classes.Task;
-import com.abbad.smartonapp.datas.TaskData;
-import com.abbad.smartonapp.dialogs.ImageImportMethodeDialog;
-import com.abbad.smartonapp.dialogs.ResultBottomDialog;
-import com.abbad.smartonapp.dialogs.SubmitGeneralDialog;
 import com.abbad.smartonapp.utils.InterventionManager;
 import com.dx.dxloadingbutton.lib.LoadingButton;
-import com.rm.rmswitch.RMSwitch;
-
-import org.json.JSONException;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 import me.weyye.hipermission.HiPermission;
 import me.weyye.hipermission.PermissionCallback;
@@ -63,35 +55,31 @@ import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_AUDIO;
 import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE;
 import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
 
-public class TaskFragment extends Fragment {
-    //View Components:
-    private TextView taskTitle;
-        //Task body :
-        private TextView taskBody;
-        //Medias Layout :
-        private LinearLayout imageLayout,videoLayout,audioLayout,commentLayout,recordResultLayout;
-        //Toggles
-        private ImageButton imageToggle,videoToggle,audioToggle,commentToggle;
-        //Audio Components :
-        private ImageButton audioMainButton,audioRemoveBtn,audioSaveBtn;
-        private TextView recordCounterMsg,audioSaveStatus;
-        private Chronometer audioCounterTimer;
-        //Video Components :
-        private LinearLayout videoLayoutInput;
-        private AppCompatButton videoAddStatus;
-        //Image Components :
-        private LinearLayout imageLayoutInput;
-        private AppCompatButton imageNumber;
-        //Comment Components
-        private EditText commentEditText;
-        //Task status
-        private RMSwitch taskStatus;
-        private TextView taskStatusText;
+public class SubmitGeneralDialog  extends BottomSheetDialogFragment {
+
+    //Task body :
+    private TextView IntervTitle;
+    //Medias Layout :
+    private LinearLayout imageLayout,videoLayout,audioLayout,commentLayout,recordResultLayout;
+    //Toggles
+    private ImageButton imageToggle,videoToggle,audioToggle,commentToggle;
+    //Audio Components :
+    private ImageButton audioMainButton,audioRemoveBtn,audioSaveBtn;
+    private TextView recordCounterMsg,audioSaveStatus;
+    private Chronometer audioCounterTimer;
+    //Video Components :
+    private LinearLayout videoLayoutInput;
+    private AppCompatButton videoAddStatus;
+    //Image Components :
+    private LinearLayout imageLayoutInput;
+    private AppCompatButton imageNumber;
+    //Comment Components
+    private EditText commentEditText;
 
     //Submit the report
-    private AppCompatButton submitReport;
+    private AppCompatButton saveCommentBtn;
 
-    //Submit subReport
+    //Submit Report
     private LoadingButton submitBtn;
 
     //MediaRecorder & MediaPlayer
@@ -100,8 +88,6 @@ public class TaskFragment extends Fragment {
     private int AudioRecordingStatus=0;
     //Task info:
     private Intervention currentIntervention;
-    private Task currentTask;
-    private int currentTaskIndex;
 
     //Captured image index :
     private int imageIndex = 1;
@@ -109,29 +95,37 @@ public class TaskFragment extends Fragment {
     OnInterventionActivity activity = (OnInterventionActivity) getActivity();
     //Constructors:
 
-    public TaskFragment(){ }
-
-
-
-    //Methodes
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public SubmitGeneralDialog(Intervention intervention){
+        currentIntervention = intervention;
     }
 
+
+    @SuppressLint("RestrictedApi")
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.task_rapport, container, false);
-        initViews(view);
+    public void setupDialog(@NonNull Dialog dialog, int style) {
+        super.setupDialog(dialog, style);
+        View contentView = View.inflate(getContext(), R.layout.intervention_item_dialog, null);
+        contentView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if (Build.VERSION.SDK_INT < 16) {
+                    contentView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                } else {
+                    contentView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+                BottomSheetDialog dialog = (BottomSheetDialog) getDialog();
+                FrameLayout bottomSheet = (FrameLayout)
+                        dialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+                BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
+                behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                behavior.setPeekHeight(0); // Remove this line to hide a dark background if you manually hide the dialog.
+            }
+        });
+        dialog.setContentView(contentView);
+        ((View) contentView.getParent()).setBackgroundColor(getResources().getColor(android.R.color.transparent));
+        initViews(contentView);
         setupComponentsEvents();
-        try {
-            resumeTask();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        return view;
+        this.setCancelable(false);
     }
 
     @SuppressLint("SetTextI18n")
@@ -141,8 +135,8 @@ public class TaskFragment extends Fragment {
         videoLayout = view.findViewById(R.id.videoLayout);
         audioLayout = view.findViewById(R.id.audioLayout);
         commentLayout = view.findViewById(R.id.commentLayout);
-        taskBody = view.findViewById(R.id.task_body);
-        taskBody.setSelected(true);
+        IntervTitle = view.findViewById(R.id.task_body);
+        IntervTitle.setSelected(true);
         recordResultLayout = view.findViewById(R.id.recordResultLayout);
         //Init Audio Components :
         audioMainButton = view.findViewById(R.id.audioButton);
@@ -159,21 +153,15 @@ public class TaskFragment extends Fragment {
         imageNumber = view.findViewById(R.id.numberAdded);
         //Init comment Compos
         commentEditText =view.findViewById(R.id.commentEditText);
-        //Task Status compos :
-        taskStatus = view.findViewById(R.id.taskStatus);
-        taskStatusText = view.findViewById(R.id.taskStatusText);
 
         //Submit button :
-        submitReport = view.findViewById(R.id.submitReport);
+        saveCommentBtn = view.findViewById(R.id.saveCommentBtn);
 
         //Submit subReport
         submitBtn = view.findViewById(R.id.submitBtn);
 
         //Set Task Body :
-        currentIntervention = getArguments().getParcelable("intervention");
-        currentTaskIndex = getArguments().getInt("numTask");
-        currentTask = new Task(currentIntervention.getId());
-        taskBody.setText(currentIntervention.getTodos()[currentTaskIndex]);
+        IntervTitle.setText(currentIntervention.getTitle());
 
         //Init Toggles
         imageToggle = view.findViewById(R.id.imageToggle);
@@ -310,38 +298,21 @@ public class TaskFragment extends Fragment {
         videoLayoutInput.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                recordVideo();
+                permissionVideoInputHanler();
             }
         });
-
-        //Task Status Evnets :
-        taskStatus.addSwitchObserver(new RMSwitch.RMSwitchObserver() {
-            @Override
-            public void onCheckStateChange(RMSwitch switchView, boolean isChecked) {
-                if (isChecked){
-                    taskStatusText.setText(getResources().getString(R.string.taskDone));
-                    taskStatusText.setTextColor(getResources().getColor(R.color.uiGreen));
-                    InterventionManager.saveTaskStatus(currentIntervention.getId(),currentTaskIndex,true);
-                    return;
-                }
-                taskStatusText.setText(getResources().getString(R.string.taskNotDone));
-                InterventionManager.saveTaskStatus(currentIntervention.getId(),currentTaskIndex,false);
-                taskStatusText.setTextColor(getResources().getColor(R.color.uiRed));
-            }
-        });
-        taskStatus.setChecked(false);
 
         //Image Section :
-            //imageToggle not setting click listenr because we have 2 cases : from Gallery / from Camera => Deffirent permissions
+        //imageToggle not setting click listenr because we have 2 cases : from Gallery / from Camera => Deffirent permissions
         imageLayoutInput.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new ImageImportMethodeDialog(TaskFragment.this).
+                new ImageImportMethodeDialog(SubmitGeneralDialog.this).
                         show(getActivity().getSupportFragmentManager(),null);
             }
         });
 
-        submitReport.setOnClickListener(new View.OnClickListener() {
+        saveCommentBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
@@ -356,85 +327,10 @@ public class TaskFragment extends Fragment {
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (TaskData.getImages(currentIntervention.getId(),currentTaskIndex,getActivity()).size()!=0
-                && TaskData.getVideos(currentIntervention.getId(),currentTaskIndex,getActivity()).size()!=0
-                && TaskData.getComments(currentIntervention.getId(),currentTaskIndex,getActivity()).size()!=0
-                && TaskData.getAudios(currentIntervention.getId(),currentTaskIndex,getActivity()).size()!=0){
-                    InterventionManager.saveTaskReportStatus(currentIntervention.getId(),currentTaskIndex,true);
-                    submitBtn.startLoading();
-                    submitBtn.loadingSuccessful();
-                    submitBtn.setEnabled(false);
-                }
-                else
-                    new ResultBottomDialog(getResources().getString(R.string.fillAllMediaToSubmit),2).show(getActivity().getSupportFragmentManager(),null);
-
-                int nbTaskDone=0;
-                for (int i=0;i<currentTaskIndex;i++){
-                    if(InterventionManager.getTaskReportStatus(currentIntervention.getId(),currentTaskIndex))
-                        nbTaskDone++;
-                }
-                int nbTask = currentIntervention.getTodos().length-1;
-                if (nbTaskDone==nbTask){
-                    InterventionManager.saveInterventionReport(currentIntervention.getId(),true);
-                    new SubmitGeneralDialog(currentIntervention).show(getActivity().getSupportFragmentManager(),null);
-                }
-
-
+                //TODO Submit the final report
+                InterventionManager.saveCurrentIntervention(null);
             }
         });
-    }
-
-    public void resumeTask() throws JSONException, FileNotFoundException {
-        if(InterventionManager.getCurrentIntervention().equals(currentIntervention.getId())){
-            //Task Status
-            taskStatus.setChecked(InterventionManager.getTaskStatus(currentIntervention.getId(),currentTaskIndex));
-            //Image Section
-            imageNumber.setVisibility(View.VISIBLE);
-            if (TaskData.getImages(currentIntervention.getId(),currentTaskIndex,getActivity()).size()!=0){
-                imageIndex = TaskData.getImages(currentIntervention.getId(),currentTaskIndex,getActivity()).size()+1;
-                imageNumber.setText(TaskData.getImages(currentIntervention.getId(),currentTaskIndex,getActivity()).size()+" Images has added");
-            }
-            else
-                imageNumber.setText(getResources().getString(R.string.imagesNotCaptured));
-            //Video Section
-            videoAddStatus.setVisibility(View.VISIBLE);
-            if (TaskData.getVideos(currentIntervention.getId(),currentTaskIndex,getActivity()).size()!=0){
-                videoLayoutInput.setEnabled(false);
-                videoAddStatus.setText(getResources().getString(R.string.videoAlreadyRecorded));
-            }
-            else
-                videoAddStatus.setText(getResources().getString(R.string.videoNotRecorded));
-            //Audio Section
-            audioSaveStatus.setVisibility(View.VISIBLE);
-            if (TaskData.getAudios(currentIntervention.getId(),currentTaskIndex,getActivity()).size()!=0){
-                AudioRecordingStatus = 2;
-                audioSaveStatus.setText(getResources().getString(R.string.audioAlreadyRecorded));
-            }
-            else
-                audioSaveStatus.setText(getResources().getString(R.string.audioNotRecorded));
-            //Comments :
-            if (TaskData.getComments(currentIntervention.getId(),currentTaskIndex,getActivity()).size()!=0){
-                Scanner in = new Scanner(new FileReader(TaskData.getComments(currentIntervention.getId(),currentTaskIndex,getActivity()).get(0)));
-                StringBuilder sb = new StringBuilder();
-                while(in.hasNext()) {
-                    sb.append(in.next());
-                }
-                in.close();
-
-                commentEditText.setText(sb.toString());
-            }
-            //Resume Task Status :
-            if (InterventionManager.getTaskReportStatus(currentIntervention.getId(),currentTaskIndex)){
-                submitBtn.startLoading();
-                submitBtn.loadingSuccessful();
-
-            }
-            //Check if all tasks completed
-            if (InterventionManager.getInterventionReport(currentIntervention.getId())){
-                new SubmitGeneralDialog(currentIntervention).show(getActivity().getSupportFragmentManager(),null);
-
-            }
-        }
     }
 
     @Override
@@ -461,7 +357,7 @@ public class TaskFragment extends Fragment {
                         Uri uri = item.getUri();
                         try {
                             imageIndex++;
-                            File file = getOutputMediaFile(1,currentIntervention.getId()+"_taskNum("+currentTaskIndex+")"+imageIndex);
+                            File file = getOutputMediaFile(1,currentIntervention.getId()+"_"+imageIndex);
                             Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), item.getUri());
 
                             ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -591,7 +487,7 @@ public class TaskFragment extends Fragment {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         Uri fileUri;
         // create a file to save the video
-        fileUri = Uri.fromFile(getOutputMediaFile(1,currentIntervention.getId()+"_taskNum("+currentTaskIndex+")"+(imageIndex++)));
+        fileUri = Uri.fromFile(getOutputMediaFile(1,currentIntervention.getId()+"_"+(imageIndex++)));
         // set the image file name
         intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
         startActivityForResult(intent,100);
@@ -639,6 +535,36 @@ public class TaskFragment extends Fragment {
                 });
     }
 
+    public void permissionVideoInputHanler(){
+        List<PermissionItem> permissionItems = new ArrayList<PermissionItem>();
+        permissionItems.add(new PermissionItem(Manifest.permission.CAMERA, "Camera", R.drawable.permission_ic_camera));
+        HiPermission.create(getActivity())
+                .title("Ask for permission")
+                .permissions(permissionItems)
+                .style(R.style.PermissionBlueStyle)
+                .checkMutiPermission(new PermissionCallback() {
+                    @Override
+                    public void onClose() {
+                        Log.i("permission_granted", "onClose");
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        recordVideo();
+                    }
+
+                    @Override
+                    public void onDeny(String permission, int position) {
+                        videoLayoutInput.setEnabled(false);
+                    }
+
+                    @Override
+                    public void onGuarantee(String permission, int position) {
+                        recordVideo();
+                    }
+                });
+    }
+
     public void recordVideo(){
         videoAddStatus.setVisibility(View.GONE);
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
@@ -646,7 +572,7 @@ public class TaskFragment extends Fragment {
         Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
         Uri fileUri;
         // create a file to save the video
-        fileUri = Uri.fromFile(getOutputMediaFile(3,currentIntervention.getId()+"_taskNum("+currentTaskIndex+")"));
+        fileUri = Uri.fromFile(getOutputMediaFile(3,currentIntervention.getId()+"_vid"));
 
         // set the image file name
         intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
@@ -662,7 +588,7 @@ public class TaskFragment extends Fragment {
         File mediaFile = null;
 
         if(type == MEDIA_TYPE_VIDEO) {
-            mediaStorageDir = new File(getActivity().getExternalCacheDir(), "Videos");
+            mediaStorageDir = new File(getActivity().getExternalCacheDir(), "FinalVideo");
             // Create the storage directory(MyCameraVideo) if it does not exist
             if (! mediaStorageDir.exists()){
                 if (! mediaStorageDir.mkdirs()){
@@ -672,11 +598,9 @@ public class TaskFragment extends Fragment {
             // For unique video file name appending current timeStamp with file name
             mediaFile = new File(mediaStorageDir.getPath() + File.separator +
                     FileName + ".mp4");
-
-            currentTask.getVideos().add(mediaFile);
-
-        } else if (type == MEDIA_TYPE_IMAGE){
-            mediaStorageDir = new File(getActivity().getExternalCacheDir(), "Images");
+        }
+        else if (type == MEDIA_TYPE_IMAGE){
+            mediaStorageDir = new File(getActivity().getExternalCacheDir(), "FinalImages");
             // Create the storage directory(MyCameraVideo) if it does not exist
             if (! mediaStorageDir.exists()){
                 if (! mediaStorageDir.mkdirs()){
@@ -686,12 +610,9 @@ public class TaskFragment extends Fragment {
             // For unique video file name appending current timeStamp with file name
             mediaFile = new File(mediaStorageDir.getPath() + File.separator +
                     FileName + ".jpg");
-
-            currentTask.getImages().add(mediaFile);
-
         }
         else if (type == MEDIA_TYPE_AUDIO){
-            mediaStorageDir = new File(getActivity().getExternalCacheDir(), "Audios");
+            mediaStorageDir = new File(getActivity().getExternalCacheDir(), "FinalAudios");
             // Create the storage directory(MyCameraVideo) if it does not exist
             if (! mediaStorageDir.exists()){
                 if (! mediaStorageDir.mkdirs()){
@@ -702,12 +623,10 @@ public class TaskFragment extends Fragment {
             // For unique video file name appending current timeStamp with file name
             mediaFile = new File(mediaStorageDir.getPath() + File.separator +
                     FileName + ".mp3");
-            currentTask.getAudios().add(mediaFile);
-
         }
 
         else if (type == 10){
-            mediaStorageDir = new File(getActivity().getExternalCacheDir(), "Comments");
+            mediaStorageDir = new File(getActivity().getExternalCacheDir(), "FinalComments");
             // Create the storage directory(MyCameraVideo) if it does not exist
             if (! mediaStorageDir.exists()){
                 if (! mediaStorageDir.mkdirs()){
@@ -717,10 +636,7 @@ public class TaskFragment extends Fragment {
             // For unique video file name appending current timeStamp with file name
             mediaFile = new File(mediaStorageDir.getPath() + File.separator +
                     FileName + ".txt");
-            currentTask.getAudios().add(mediaFile);
         }
-
-
         return mediaFile;
     }
     //Audio Methodes :
@@ -830,7 +746,7 @@ public class TaskFragment extends Fragment {
         mediaRecorder = new MediaRecorder();
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-        mediaRecorder.setOutputFile(getOutputMediaFile(2,currentIntervention.getId()+"_taskNum("+currentTaskIndex+")"));
+        mediaRecorder.setOutputFile(getOutputMediaFile(2,currentIntervention.getId()+"_aud"));
         mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
         try {
             mediaRecorder.prepare();
@@ -879,7 +795,7 @@ public class TaskFragment extends Fragment {
     //Comments Methodes :
     public void saveComment() throws IOException {
         if (commentEditText.getText().toString().length() != 0 || !commentEditText.getText().toString().equals("")){
-            File commentFile = getOutputMediaFile(10,currentIntervention.getId()+"_taskNum("+currentTaskIndex+")");
+            File commentFile = getOutputMediaFile(10,currentIntervention.getId()+"_comment");
             FileOutputStream out = new FileOutputStream(commentFile);
             out.write(commentEditText.getText().toString().getBytes());
             out.close();
@@ -893,4 +809,6 @@ public class TaskFragment extends Fragment {
     public void showResultDialog(String content,int type){
         new ResultBottomDialog(content,type).show(getActivity().getSupportFragmentManager(),null);
     }
+
+    //TODO Handel read external storage exception in saving comments
 }

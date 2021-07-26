@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
@@ -20,46 +21,110 @@
             android:layout_gravity="center"
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="10dp"
-            android:fontFamily="@font/catamaran_medium"
+            android:ellipsize="marquee"
             android:focusable="true"
             android:focusableInTouchMode="true"
-            android:singleLine="true"
+            android:fontFamily="@font/catamaran_medium"
+            android:marqueeRepeatLimit="marquee_forever"
             android:scrollHorizontally="true"
-            android:ellipsize="marquee"
-            android:marqueeRepeatLimit ="marquee_forever"
+            android:singleLine="true"
             android:text="czjdoack ejnckjankc jenkcankzkueizkv zkjenckne ckjanekc"
             android:textColor="@color/uiTextColor"
-            android:textSize="24sp" />
+            android:textSize="22sp" />
+
+        <TextView
+            android:id="@+id/interv_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:ellipsize="marquee"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:fontFamily="@font/catamaran_medium"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:scrollHorizontally="true"
+            android:singleLine="true"
+            android:text="Id : "
+            android:textColor="@color/uiTextColor"
+            android:textSize="15dp" />
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabs"
-            android:layout_gravity="center_horizontal"
             android:layout_width="wrap_content"
-
-            app:tabIndicatorAnimationMode="elastic"
             android:layout_height="wrap_content"
+
+            android:layout_gravity="center_horizontal"
             app:tabGravity="fill"
-            app:tabRippleColor="@color/uiTextColor"
-            app:tabSelectedTextColor="@color/uiTextColor"
+            app:tabIndicatorAnimationMode="linear"
             app:tabIndicatorColor="@color/secondColor"
             app:tabIndicatorHeight="4dp"
             app:tabMode="scrollable"
-            app:tabTextColor="@android:color/white" />
+            app:tabSelectedTextColor="@color/uiTextColor"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/secondColor" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
     <RelativeLayout
+        android:id="@+id/relativeLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+
 
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/viewpager"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+        <RelativeLayout
+            android:layout_marginBottom="0dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="0dp">
+
+                <!--Google material normal Floating Action Button-->
+                <!--one needs to keep the margin of 16dp from the screen to button-->
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/previousBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_margin="15dp"
+                    android:paddingVertical="10dp"
+                    android:src="@drawable/ic_previous_arrow"
+                    app:backgroundTint="@color/firstColor"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/nextBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginEnd="15dp"
+                    android:paddingVertical="15dp"
+                    android:src="@drawable/ic_next_arrow"
+                    app:backgroundTint="@color/firstColor"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </RelativeLayout>
 
     </RelativeLayout>
-
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

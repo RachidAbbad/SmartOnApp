@@ -93,6 +93,7 @@ public class WebServiceConnection {
 
         @Override
         protected void onPostExecute(Void param){
+            isValid = true;
             if(isValid){
                 loginActivity.getBtnLogin().loadingSuccessful();
                 new Timer().schedule(new TimerTask() {

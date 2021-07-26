@@ -14,10 +14,13 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.abbad.smartonapp.R;
 import com.abbad.smartonapp.ui.dashboard.DashboardFragment;
@@ -68,6 +71,18 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin = findViewById(R.id.btn_login);
         errorLoginText = findViewById(R.id.error_login_text);
         btnLogin.setOnClickListener(new BtnClickEvent(this));
+
+        passInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                    if(emailInput.getText().toString().length() != 0 && !emailInput.getText().toString().equals("")
+                            && passInput.getText().toString().length() != 0 && !passInput.getText().toString().equals(""))
+                        new WebServiceConnection.loginSyncTask(LoginActivity.this).execute();
+                }
+                return false;
+            }
+        });
+
     }
 
     public class BtnClickEvent implements View.OnClickListener {
@@ -78,7 +93,9 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-            new WebServiceConnection.loginSyncTask((LoginActivity) activity).execute();
+            if(emailInput.getText().toString().length() != 0 && !emailInput.getText().toString().equals("")
+            && passInput.getText().toString().length() != 0 && !passInput.getText().toString().equals(""))
+                new WebServiceConnection.loginSyncTask((LoginActivity) activity).execute();
         }
 
     }

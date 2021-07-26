@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.MediaController;
 import android.widget.TextView;
 
@@ -21,7 +22,11 @@ import com.abbad.smartonapp.R;
 import com.abbad.smartonapp.adapters.TaskFragmentAdapter;
 import com.abbad.smartonapp.classes.Intervention;
 import com.abbad.smartonapp.dialogs.ResultBottomDialog;
+import com.abbad.smartonapp.dialogs.SubmitGeneralDialog;
 import com.abbad.smartonapp.utils.InterventionManager;
+import com.dx.dxloadingbutton.lib.LoadingButton;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
 import org.json.JSONException;
@@ -41,7 +46,12 @@ public class OnInterventionActivity extends AppCompatActivity{
     //View Components :
     private ViewPager viewPager;
     private TabLayout mTabLayout;
-    private TextView intervBody;
+    private TextView intervBody,intervId;
+
+
+    //Navigation
+
+    private FloatingActionButton nextBtn,previousBtn;
 
     //Constructors
     public OnInterventionActivity(Intervention intervention){
@@ -71,15 +81,27 @@ public class OnInterventionActivity extends AppCompatActivity{
         viewPager = findViewById(R.id.viewpager);
         mTabLayout = findViewById(R.id.tabs);
         intervBody = findViewById(R.id.interv_title);
+        intervId = findViewById(R.id.interv_id);
 
         //Get Current Intervention
         intervention = getIntent().getParcelableExtra("intervention");
 
         //Set intervention body to text view :
         intervBody.setText(intervention.getTitle());
+        intervId.append(intervention.getId());
 
         //Set Focus on text view to start wrapping animation:
         intervBody.setSelected(true);
+
+        //Navigation View :
+
+        nextBtn = findViewById(R.id.nextBtn);
+        previousBtn = findViewById(R.id.previousBtn);
+
+
+        int max = intervention.getTodos().length -1 ;
+
+
 
         // setOffscreenPageLimit means number
         // of tabs to be shown in one page
@@ -91,6 +113,18 @@ public class OnInterventionActivity extends AppCompatActivity{
             public void onTabSelected(TabLayout.Tab tab) {
                 // setCurrentItem as the tab position
                 viewPager.setCurrentItem(tab.getPosition());
+                if (viewPager.getCurrentItem()==0){
+                    previousBtn.setVisibility(View.INVISIBLE);
+                    nextBtn.setVisibility(View.VISIBLE);
+                }
+                else if (viewPager.getCurrentItem()== max){
+                    nextBtn.setVisibility(View.INVISIBLE);
+                    previousBtn.setVisibility(View.VISIBLE);
+                }
+                else{
+                    nextBtn.setVisibility(View.VISIBLE);
+                    previousBtn.setVisibility(View.VISIBLE);
+                }
             }
 
             @Override
@@ -103,7 +137,37 @@ public class OnInterventionActivity extends AppCompatActivity{
 
             }
         });
+
+
         setDynamicFragmentToTabLayout();
+
+
+        if (viewPager.getCurrentItem()==0) {
+            previousBtn.setVisibility(View.INVISIBLE);
+        }
+        //Set Navigation OnClickListener
+        nextBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (viewPager.getCurrentItem()>0)
+                    previousBtn.setVisibility(View.VISIBLE);
+                else if (viewPager.getCurrentItem() == max)
+                    nextBtn.setVisibility(View.INVISIBLE);
+                viewPager.setCurrentItem(getNextItem(1), true);
+            }
+        });
+
+        previousBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (viewPager.getCurrentItem()==0)
+                    previousBtn.setVisibility(View.INVISIBLE);
+                else if (viewPager.getCurrentItem() < max)
+                    nextBtn.setVisibility(View.VISIBLE);
+                viewPager.setCurrentItem(getPreviousItem(1), true);
+            }
+        });
+
     }
 
     @Override
@@ -111,6 +175,14 @@ public class OnInterventionActivity extends AppCompatActivity{
         super.onActivityResult(requestCode, resultCode, data);
 
 
+    }
+
+    private int getNextItem(int i) {
+        return viewPager.getCurrentItem() + i;
+    }
+
+    private int getPreviousItem(int i) {
+        return viewPager.getCurrentItem() - i;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -140,5 +212,11 @@ public class OnInterventionActivity extends AppCompatActivity{
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
+
+    public void resumeIntervention(){
+        if (InterventionManager.getInterventionReport(intervention.getId())){
+            new SubmitGeneralDialog().show(getSupportFragmentManager(),null);
+        }
     }
 }

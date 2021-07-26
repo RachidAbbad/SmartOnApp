@@ -9,6 +9,7 @@
     <string name="hintEmail">Email</string>
     <string name="hintPass">Mot de passe</string>
     <string name="login_btn_text">Se connecter</string>
+    <string name="reconnectMsg">Une erreur s\'est produite, essayez de vous reconnecter</string>
     <string name="logout_btn_text" translatable="false">Déconnexion</string>
     <string name="language_btn_text" translatable="false">Langue</string>
     <string name="login_btn_forgot_pass">Mot de passe oublié ?</string>
@@ -61,11 +62,43 @@
     <string name="chooseImage" translatable="false">Ajouter images</string>
     <string name="chooseImageGallery" translatable="false">Importer depuis la galerie</string>
     <string name="chooseImageCamera" translatable="false">Utiliser la caméra</string>
-    <string name="selectVideo" translatable="false">Ajouter une vidéo</string>
+    <string name="selectVideo" translatable="false">Capturer une vidéo</string>
     <string name="recordAudio" translatable="false">Enregistrer un audio</string>
     <string name="writeComment" translatable="false">Écrire un commentaire</string>
     <string name="submitBtn" translatable="false">Valider le rapport</string>
     <string name="addComment" translatable="false">Ajouter un commentaire</string>
+    <string name="resumeReportMsg">Vous avez déjà une intervention incomplète</string>
+    <string name="resumeReportBtn">Reprendre</string>
+    <string name="cancelReportBtn">Annuler</string>
+    <string name="pressToRecordAudio">Press the mic to start recording</string>
+    <!-- Number of imported medias -->
+    <string name="videoAlreadyRecorded">Vous avez déjà enregistré une vidéo</string>
+    <string name="imagesCaptured"> Images capturées</string>
+    <string name="audioAlreadyRecorded">Vous avez déjà enregistré un audio</string>
+    <string name="btnSaveComment">Enregistrer le commentaire</string>
+    <string name="videoNotRecorded">Vous n\'avez pas encore enregistré de vidéo</string>
+    <string name="imagesNotCaptured">Vous n\'avez pas encore importé d\'image</string>
+    <string name="audioNotRecorded">Vous n\'avez pas encore enregistré d\'audio</string>
+
+    <!-- Msg save media -->
+    <string name="saveSuccessVideoMsg">La vidéo a été ajoutée avec succès</string>
+    <string name="saveFailedVideoMsg">Échec de l\'enregistrement de la vidéo</string>
+    <string name="saveCancelVideoMsg">Vous avez annulé l\'enregistrement, veuillez enregistrer une nouvelle vidéo</string>
+
+    <string name="saveSuccessImagesMsg">Images ont été ajoutées avec succès</string>
+    <string name="saveSuccessImageMsg">L\'image a été ajoutée avec succès</string>
+    <string name="saveFailedImageMsg">Échec de l\'enregistrement de l\'image</string>
+    <string name="saveCancelImageMsg">Vous avez annulé la capture d\'image</string>
+
+    <string name="saveSuccessAudioMsg">L\'audio a été ajouté avec succès</string>
+    <string name="saveFailedAudioMsg">Échec de l\'enregistrement de l\'audio</string>
+    <string name="saveCancelAudioMsg">Vous avez annulé l\'enregistrement, veuillez enregistrer un nouvel audio</string>
+
+    <string name="saveFailedCommentMsg">Échec de l\'enregistrement du commentaire</string>
+    <string name="saveSuccessCommentMsg">Le commentaire a été ajouté avec succès</string>
+    <string name="fillCommentToSubmit">Veuillez remplir la section commentaire pour soumettre</string>
+    <string name="fillAllMediaToSubmit">Remplir tous les rapports des médias à soumettre</string>
+
 
 
 </resources>

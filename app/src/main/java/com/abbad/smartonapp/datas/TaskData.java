@@ -1,4 +1,4 @@
-package com.abbad.smartonapp.classes;
+package com.abbad.smartonapp.datas;
 
 import android.app.Activity;
 import android.util.Log;
@@ -49,7 +49,7 @@ public class TaskData {
             return results;
         }catch (Exception ex)
         {
-            return null;
+            return new ArrayList<>();
         }
     }
 
@@ -70,7 +70,7 @@ public class TaskData {
             return results;
 
         }catch (Exception ex){
-            return null;
+            return new ArrayList<>();
         }
     }
 
@@ -91,7 +91,7 @@ public class TaskData {
             return results;
 
         }catch (Exception ex){
-            return null;
+            return new ArrayList<>();
         }
     }
 
@@ -112,7 +112,7 @@ public class TaskData {
             return results;
 
         }catch (Exception ex){
-            return null;
+            return new ArrayList<>();
         }
     }
 }

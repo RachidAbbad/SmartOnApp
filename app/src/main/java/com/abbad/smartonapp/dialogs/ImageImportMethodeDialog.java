@@ -22,9 +22,14 @@ public class ImageImportMethodeDialog extends BottomSheetDialogFragment {
     private CardView chooseGallery,chooseCapture;
 
     private TaskFragment fragment;
+    private SubmitGeneralDialog submitGeneralDialog;
 
     public ImageImportMethodeDialog(TaskFragment fragment){
         this.fragment = fragment;
+    }
+
+    public ImageImportMethodeDialog(SubmitGeneralDialog submitGeneralDialog){
+        this.submitGeneralDialog = submitGeneralDialog;
     }
 
 
@@ -58,15 +63,21 @@ public class ImageImportMethodeDialog extends BottomSheetDialogFragment {
         chooseGallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               fragment.permissionPickHanler();
-               ImageImportMethodeDialog.this.dismiss();
+                if (submitGeneralDialog==null)
+                    fragment.permissionPickHanler();
+                else
+                    submitGeneralDialog.permissionPickHanler();
+                ImageImportMethodeDialog.this.dismiss();
             }
         });
 
         chooseCapture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fragment.permissionCameraHanler();
+                if (submitGeneralDialog==null)
+                    fragment.permissionPickHanler();
+                else
+                    submitGeneralDialog.permissionPickHanler();
                 ImageImportMethodeDialog.this.dismiss();
 
             }

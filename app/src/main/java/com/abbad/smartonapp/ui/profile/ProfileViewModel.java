@@ -20,6 +20,7 @@ import com.abbad.smartonapp.activities.LoginActivity;
 import com.abbad.smartonapp.dialogs.AuthSiteDialog;
 import com.abbad.smartonapp.dialogs.LanguagePickerDialog;
 import com.abbad.smartonapp.dialogs.LoadingBottomDialog;
+import com.abbad.smartonapp.dialogs.ResultBottomDialog;
 import com.abbad.smartonapp.utils.SessionManager;
 
 import java.util.ArrayList;
@@ -82,25 +83,61 @@ public class ProfileViewModel extends ViewModel {
     public void fillUserInfos(TextView name, TextView type_account, TextView gsm, TextView email, LinearLayout gsmLayout,Context context){
         SessionManager sessionManager = new SessionManager(context);
 
-        name.setText(sessionManager.getCurrentUser().getName());
-        if(sessionManager.getCurrentUser().getGsm().isEmpty())
+        if (sessionManager.getCurrentUser().getName() == null)
+            name.setText(f.getResources().getString(R.string.noDisponible));
+        else{
+            if (sessionManager.getCurrentUser().getName().isEmpty()){
+                name.setText(f.getResources().getString(R.string.noDisponible));
+            }
+            else
+                name.setText(sessionManager.getCurrentUser().getName());
+        }
+
+        if(sessionManager.getCurrentUser().getGsm() == null)
             gsm.setText(f.getResources().getString(R.string.noDisponible));
-        else
-            gsm.setText(sessionManager.getCurrentUser().getGsm());
-        email.setText(sessionManager.getCurrentUser().getEmail());
-        type_account.setText(sessionManager.getCurrentUser().getType());
+        else {
+            if(sessionManager.getCurrentUser().getGsm().isEmpty())
+                gsm.setText(f.getResources().getString(R.string.noDisponible));
+            else
+                gsm.setText(sessionManager.getCurrentUser().getGsm());
+        }
+
+        if(sessionManager.getCurrentUser().getEmail() == null)
+            email.setText(f.getResources().getString(R.string.noDisponible));
+        else {
+            if(sessionManager.getCurrentUser().getEmail().isEmpty())
+                email.setText(f.getResources().getString(R.string.noDisponible));
+            else
+                email.setText(sessionManager.getCurrentUser().getEmail());
+        }
+
+        if(sessionManager.getCurrentUser().getType() == null)
+            type_account.setText(f.getResources().getString(R.string.noDisponible));
+        else {
+            if(sessionManager.getCurrentUser().getType().isEmpty())
+                type_account.setText(f.getResources().getString(R.string.noDisponible));
+            else
+                type_account.setText(sessionManager.getCurrentUser().getType());
+        }
 
     }
 
     public void authClickHandeler(AppCompatButton btn){
-
-        btn.setOnClickListener(new AuthSiteEvent());
+            btn.setOnClickListener(new AuthSiteEvent());
     }
 
     public class AuthSiteEvent implements View.OnClickListener{
 
         @Override
         public void onClick(View v) {
+            if (sessionManager.getCurrentUser().getToken() == null){
+                new ResultBottomDialog(f.getResources().getString(R.string.reconnectMsg),3).show(f.getActivity().getSupportFragmentManager(),null);
+                return;
+            }
+            else if (sessionManager.getCurrentUser().getToken().isEmpty()){
+                new ResultBottomDialog(f.getResources().getString(R.string.reconnectMsg),3).show(f.getActivity().getSupportFragmentManager(),null);
+                return;
+            }
             List<PermissionItem> permissionItems = new ArrayList<PermissionItem>();
             if(checkNFC()==1){
                 permissionItems.add(new PermissionItem(Manifest.permission.NFC, "CAMERA", R.drawable.permission_ic_sensors));

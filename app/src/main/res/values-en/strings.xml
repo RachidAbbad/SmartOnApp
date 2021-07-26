@@ -9,11 +9,12 @@
     <string name="hintEmail">Email</string>
     <string name="hintPass">Password</string>
     <string name="login_btn_text">Login</string>
-    <string name="logout_btn_text" translatable="false">Logout</string>
-    <string name="language_btn_text" translatable="false">Language</string>
+    <string name="reconnectMsg">Error has occurred, Try to reconnect</string>
+    <string name="logout_btn_text">Logout</string>
+    <string name="language_btn_text">Language</string>
     <string name="login_btn_forgot_pass">Forgotten password ?</string>
     <string name="app_logo">Application Logo</string>
-    <string name="infos_incorrect_msg" translatable="false">Invalid email or password</string>
+    <string name="infos_incorrect_msg">Invalid email or password</string>
     <string name="temp1Text">T° of starting</string>
     <string name="temp2Text">T° of return</string>
     <string name="temp3Text">T° of inertia</string>
@@ -22,47 +23,81 @@
     <string name="temp6Text">Brightness</string>
     <string name="temp7Text">Temp N7</string>
     <string name="temp8Text">Temp N8</string>
-    <string name="error404" translatable="false">404 Error</string>
-    <string name="coming_soon" translatable="false">Coming soon</string>
-    <string name="chaudiereName" translatable="false">Boiler</string>
-    <string name="ballonName" translatable="false">Boiler tank</string>
+    <string name="error404">404 Error</string>
+    <string name="coming_soon">Coming soon</string>
+    <string name="chaudiereName">Boiler</string>
+    <string name="ballonName">Boiler tank</string>
 
-    <string name="generalErreur" translatable="false">An error occurred during connecting to server</string>
+    <string name="generalErreur">An error occurred during connecting to server</string>
 
-    <string name="cnxMainErreur" translatable="false">Unable to connect to the Internet</string>
-    <string name="cnxSecondErreur" translatable="false">The app cannot work offline, please check your connection and try.</string>
+    <string name="cnxMainErreur">Unable to connect to the Internet</string>
+    <string name="cnxSecondErreur">The app cannot work offline, please check your connection and try.</string>
 
-    <string name="modeOperatoire" translatable="false">Operating mode :</string>
-    <string name="usedToold" translatable="false">Used tools :</string>
-    <string name="Interv_desc" translatable="false">Description :</string>
-    <string name="task" translatable="false">Task  </string>
+    <string name="modeOperatoire">Operating mode :</string>
+    <string name="usedToold">Used tools :</string>
+    <string name="Interv_desc">Description :</string>
+    <string name="task">Task  </string>
 
-    <string name="cnxStatusTitle" translatable="false">Connection status : </string>
-    <string name="cnxStatusMsgOnline" translatable="false">Online</string>
-    <string name="cnxStatusMsgOffline" translatable="false">Offline</string>
+    <string name="cnxStatusTitle">Connection status : </string>
+    <string name="cnxStatusMsgOnline">Online</string>
+    <string name="cnxStatusMsgOffline">Offline</string>
 
-    <string name="authSiteSuccess" translatable="false">Authentification to site success</string>
-    <string name="authSiteFailed" translatable="false">Authentification to site failed</string>
+    <string name="authSiteSuccess">Authentification to site success</string>
+    <string name="authSiteFailed">Authentification to site failed</string>
 
-    <string name="confirmInterv" translatable="false">Swipe to start the intervention</string>
-    <string name="nfcScanReady" translatable="false">Ready to scan ...</string>
-    <string name="nfcNotSupported" translatable="false">NFC is not supported in this device</string>
-    <string name="noDisponible" translatable="false">Not available</string>
+    <string name="confirmInterv">Swipe to start the intervention</string>
+    <string name="nfcScanReady">Ready to scan ...</string>
+    <string name="nfcNotSupported">NFC is not supported in this device</string>
+    <string name="noDisponible">Not available</string>
 
 
-    <string name="intervTitle" translatable="false">Your intervention</string>
-    <string name="notifTitle" translatable="false">Task status</string>
+    <string name="intervTitle">Your intervention</string>
+    <string name="notifTitle">Task status</string>
 
-    <string name="taskStatus" translatable="false">Tache status :</string>
-    <string name="taskDone" translatable="false">Done</string>
-    <string name="taskNotDone" translatable="false">Not completed</string>
-    <string name="chooseImage" translatable="false">Add images</string>
-    <string name="chooseImageGallery" translatable="false">Upload from gallery</string>
-    <string name="chooseImageCamera" translatable="false">Use camera</string>
-    <string name="selectVideo" translatable="false">Add Video</string>
-    <string name="recordAudio" translatable="false">Record Audio</string>
-    <string name="writeComment" translatable="false">Write a comment</string>
-    <string name="submitBtn" translatable="false">Submit report</string>
-    <string name="addComment" translatable="false">Add comment</string>
+    <string name="taskStatus">Tache status :</string>
+    <string name="taskDone">Done</string>
+    <string name="taskNotDone">Not completed</string>
+    <string name="chooseImage">Add images</string>
+    <string name="chooseImageGallery">Upload from gallery</string>
+    <string name="chooseImageCamera">Use camera</string>
+    <string name="selectVideo">Record Video</string>
+    <string name="recordAudio">Record Audio</string>
+    <string name="writeComment">Write a comment</string>
+    <string name="submitBtn">Submit report</string>
+    <string name="addComment">Add comment</string>
+    <string name="resumeReportMsg">You have already an incomplete intervention</string>
+    <string name="resumeReportBtn">Resume</string>
+    <string name="cancelReportBtn">Cancel</string>
+    <string name="pressToRecordAudio">Appuyez sur le micro pour commencer l\'enregistrement</string>
+    <!-- Number of imported medias -->
+    <string name="videoAlreadyRecorded">You have already recorded a video</string>
+    <string name="imagesCaptured"> Images captured</string>
+    <string name="audioAlreadyRecorded">You have already recorded an audio</string>
+    <string name="btnSaveComment">Save Comment</string>
+    <string name="videoNotRecorded">You have not recorded a video yet</string>
+    <string name="imagesNotCaptured">You have not imported an image yet</string>
+    <string name="audioNotRecorded">You have not recorded an audio yet</string>
+
+    <!-- Msg save media -->
+    <string name="saveSuccessVideoMsg">The video has added successfully</string>
+    <string name="saveFailedVideoMsg">Failed to save the video</string>
+    <string name="saveCancelVideoMsg">You canceled the recording, Please record a new video</string>
+
+    <string name="saveSuccessImagesMsg">Images had added successfully</string>
+    <string name="saveSuccessImageMsg">The image has added successfully</string>
+    <string name="saveFailedImageMsg">Failed to save the image</string>
+    <string name="saveCancelImageMsg">You canceled capturing</string>
+
+    <string name="saveSuccessAudioMsg">The audio has added successfully</string>
+    <string name="saveFailedAudioMsg">Failed to save the audio</string>
+    <string name="saveCancelAudioMsg">You canceled the recording, Please record a new audio</string>
+
+    <string name="saveFailedCommentMsg">Failed to save the comment</string>
+    <string name="saveSuccessCommentMsg">The comment has added successfully</string>
+    <string name="fillCommentToSubmit">Please fill the comment section to submit</string>
+    <string name="fillAllMediaToSubmit">Fill all medias report to submit</string>
+
+
+
 
 </resources>

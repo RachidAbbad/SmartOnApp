@@ -39,7 +39,7 @@
                 android:id="@+id/email_layout"
                 android:layout_width="320dp"
                 android:layout_height="wrap_content"
-                app:mtf_animationDuration="700"
+                app:mtf_animationDuration="400"
                 app:mtf_cardCollapsedHeight="4dp"
                 app:mtf_image="@drawable/ic_email_24"
                 app:mtf_labelColor="@color/uiWhite"
@@ -52,6 +52,7 @@
                     android:hint="@string/hintEmail"
                     android:inputType="textEmailAddress"
                     android:textColor="@color/firstColor"
+                    android:fontFamily="@font/catamaran_medium"
                     android:textSize="20sp" />
 
             </com.github.florent37.materialtextfield.MaterialTextField>
@@ -61,7 +62,7 @@
                 android:layout_width="320dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                app:mtf_animationDuration="700"
+                app:mtf_animationDuration="400"
                 app:mtf_cardCollapsedHeight="4dp"
                 app:mtf_image="@drawable/ic_password_24"
                 app:mtf_labelColor="@color/uiWhite"
@@ -74,6 +75,7 @@
                     android:hint="@string/hintPass"
                     android:inputType="textPassword"
                     android:textColor="@color/firstColor"
+                    android:fontFamily="@font/catamaran_medium"
                     android:textSize="20sp"
                     app:passwordToggleEnabled="true" />
 
@@ -120,7 +122,8 @@
         android:layout_height="wrap_content"
         android:text="Copyright © 2021 ViaToile"
         android:textColor="@color/uiWhite"
-        android:textSize="17sp"
+        android:textSize="15sp"
+        android:fontFamily="@font/catamaran_medium"
         android:layout_margin="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
