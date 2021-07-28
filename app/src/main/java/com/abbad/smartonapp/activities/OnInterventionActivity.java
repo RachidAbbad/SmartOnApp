@@ -65,13 +65,10 @@ public class OnInterventionActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.intervention_rapport);
         initViews();
+        //Resume the general report when the user has completed all the tasks and exit the app :
+        resumeIntervention();
         //Save intervention on shared preference :
-        try {
-            InterventionManager.saveCurrentIntervention(intervention.getId());
-        } catch (JSONException e) {
-            Log.e("Error",e.getMessage());
-            new ResultBottomDialog("Error has occured",2).show(getSupportFragmentManager(),null);
-        }
+        InterventionManager.saveCurrentIntervention(intervention.getId());
     }
 
 
@@ -216,7 +213,7 @@ public class OnInterventionActivity extends AppCompatActivity{
 
     public void resumeIntervention(){
         if (InterventionManager.getInterventionReport(intervention.getId())){
-            new SubmitGeneralDialog().show(getSupportFragmentManager(),null);
+            new SubmitGeneralDialog(intervention).show(getSupportFragmentManager(),null);
         }
     }
 }

@@ -75,11 +75,10 @@ public class ImageImportMethodeDialog extends BottomSheetDialogFragment {
             @Override
             public void onClick(View v) {
                 if (submitGeneralDialog==null)
-                    fragment.permissionPickHanler();
+                    fragment.permissionCameraInputHanler();
                 else
-                    submitGeneralDialog.permissionPickHanler();
+                    submitGeneralDialog.permissionCameraInputHanler();
                 ImageImportMethodeDialog.this.dismiss();
-
             }
         });
 

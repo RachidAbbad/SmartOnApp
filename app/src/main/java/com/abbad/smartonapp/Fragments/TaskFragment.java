@@ -89,7 +89,7 @@ public class TaskFragment extends Fragment {
         private TextView taskStatusText;
 
     //Submit the report
-    private AppCompatButton submitReport;
+    private AppCompatButton saveComment;
 
     //Submit subReport
     private LoadingButton submitBtn;
@@ -164,7 +164,7 @@ public class TaskFragment extends Fragment {
         taskStatusText = view.findViewById(R.id.taskStatusText);
 
         //Submit button :
-        submitReport = view.findViewById(R.id.submitReport);
+        saveComment = view.findViewById(R.id.saveComment);
 
         //Submit subReport
         submitBtn = view.findViewById(R.id.submitBtn);
@@ -341,7 +341,7 @@ public class TaskFragment extends Fragment {
             }
         });
 
-        submitReport.setOnClickListener(new View.OnClickListener() {
+        saveComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
@@ -349,7 +349,6 @@ public class TaskFragment extends Fragment {
                 } catch (IOException exception) {
                     exception.printStackTrace();
                 }
-
             }
         });
 

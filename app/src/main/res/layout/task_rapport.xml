@@ -352,7 +352,7 @@
                             android:textSize="20dp"
                             />
                         <androidx.appcompat.widget.AppCompatButton
-                            android:id="@+id/saveCommentBtn"
+                            android:id="@+id/saveComment"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/catamaran_medium"

@@ -58,7 +58,7 @@ import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
 public class SubmitGeneralDialog  extends BottomSheetDialogFragment {
 
     //Task body :
-    private TextView IntervTitle;
+    private TextView intervTitle;
     //Medias Layout :
     private LinearLayout imageLayout,videoLayout,audioLayout,commentLayout,recordResultLayout;
     //Toggles
@@ -104,7 +104,7 @@ public class SubmitGeneralDialog  extends BottomSheetDialogFragment {
     @Override
     public void setupDialog(@NonNull Dialog dialog, int style) {
         super.setupDialog(dialog, style);
-        View contentView = View.inflate(getContext(), R.layout.intervention_item_dialog, null);
+        View contentView = View.inflate(getContext(), R.layout.task_rapport, null);
         contentView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -135,8 +135,8 @@ public class SubmitGeneralDialog  extends BottomSheetDialogFragment {
         videoLayout = view.findViewById(R.id.videoLayout);
         audioLayout = view.findViewById(R.id.audioLayout);
         commentLayout = view.findViewById(R.id.commentLayout);
-        IntervTitle = view.findViewById(R.id.task_body);
-        IntervTitle.setSelected(true);
+        intervTitle = view.findViewById(R.id.task_body);
+        intervTitle.setSelected(true);
         recordResultLayout = view.findViewById(R.id.recordResultLayout);
         //Init Audio Components :
         audioMainButton = view.findViewById(R.id.audioButton);
@@ -155,13 +155,13 @@ public class SubmitGeneralDialog  extends BottomSheetDialogFragment {
         commentEditText =view.findViewById(R.id.commentEditText);
 
         //Submit button :
-        saveCommentBtn = view.findViewById(R.id.saveCommentBtn);
+        saveCommentBtn = view.findViewById(R.id.saveComment);
 
         //Submit subReport
         submitBtn = view.findViewById(R.id.submitBtn);
 
-        //Set Task Body :
-        IntervTitle.setText(currentIntervention.getTitle());
+        //Set intervention Body :
+        intervTitle.setText(currentIntervention.getTitle());
 
         //Init Toggles
         imageToggle = view.findViewById(R.id.imageToggle);
