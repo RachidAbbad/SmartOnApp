@@ -1,8 +1,13 @@
 package com.abbad.smartonapp.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
+
+import com.abbad.smartonapp.classes.Intervention;
+import com.abbad.smartonapp.datas.InterventionData;
+import com.abbad.smartonapp.datas.TaskData;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,7 +45,7 @@ public class InterventionManager {
         editor.apply();
     }
 
-    public static String getCurrentIntervention() throws JSONException {
+    public static String getCurrentIntervention() {
         return context.getSharedPreferences("InterventionDetails", Context.MODE_PRIVATE).getString("IdIntervention",null);
     }
 
@@ -66,6 +71,25 @@ public class InterventionManager {
 
     public static boolean getTaskReportStatus(String idIntervention,int numTask){
         return context.getSharedPreferences("InterventionDetails",Context.MODE_PRIVATE).getBoolean("Report_"+idIntervention+"_"+numTask,false);
+    }
+
+    public static boolean resetAllData(Intervention intervention, Activity activity){
+        boolean deleteResult=true;
+        try{
+            //Delete Intervention Data in Shared Memory
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.clear();
+            editor.apply();
+            //Delete Intervention Data in Internal Storage
+            deleteResult = InterventionData.deleteAllData(intervention.getId(),activity);
+            //Delete Intervention Tasks in Shared Preference
+            for (int i = 0; i<intervention.getTodos().length;i++)
+                deleteResult = TaskData.deleteAllTasksData(intervention.getId(),i,activity);
+            return deleteResult;
+        }catch (Exception exception){
+            System.out.print(exception.getMessage());
+            return false;
+        }
     }
 
 

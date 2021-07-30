@@ -99,6 +99,8 @@
     <string name="fillCommentToSubmit">Veuillez remplir la section commentaire pour soumettre</string>
     <string name="fillAllMediaToSubmit">Remplir tous les rapports des médias à soumettre</string>
 
+    <string name="exitAppMsg">Êtes-vous sûr de vouloir quitter?</string>
+
 
 
 </resources>

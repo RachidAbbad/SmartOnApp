@@ -129,12 +129,15 @@ public class InterventionDetailsDialog extends BottomSheetDialogFragment {
         @SuppressLint("ShowToast")
         @Override
         public void onSlideComplete(@NotNull SlideToActView slideToActView) {
-            Toast.makeText(getContext(),"Intervention confirmed",Toast.LENGTH_LONG);
-            Log.i("slideCompleted","Intervention confirmed");
+            if (InterventionManager.getInterventionReport(intervention.getId())){
+                new SubmitGeneralDialog(intervention).show(getActivity().getSupportFragmentManager(),null);
+            }
+            else{
+                Intent intent= new Intent(getActivity(), OnInterventionActivity.class);
+                intent.putExtra("intervention",intervention);
+                startActivity(intent);
+            }
 
-            Intent intent= new Intent(getActivity(), OnInterventionActivity.class);
-            intent.putExtra("intervention",intervention);
-            startActivity(intent);
             InterventionDetailsDialog.this.dismiss();
         }
     }

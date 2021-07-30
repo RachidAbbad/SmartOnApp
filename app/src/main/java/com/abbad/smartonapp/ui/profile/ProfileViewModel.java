@@ -130,14 +130,14 @@ public class ProfileViewModel extends ViewModel {
 
         @Override
         public void onClick(View v) {
-            if (sessionManager.getCurrentUser().getToken() == null){
+            /*if (sessionManager.getCurrentUser().getToken() == null){
                 new ResultBottomDialog(f.getResources().getString(R.string.reconnectMsg),3).show(f.getActivity().getSupportFragmentManager(),null);
                 return;
             }
             else if (sessionManager.getCurrentUser().getToken().isEmpty()){
                 new ResultBottomDialog(f.getResources().getString(R.string.reconnectMsg),3).show(f.getActivity().getSupportFragmentManager(),null);
                 return;
-            }
+            }*/
             List<PermissionItem> permissionItems = new ArrayList<PermissionItem>();
             if(checkNFC()==1){
                 permissionItems.add(new PermissionItem(Manifest.permission.NFC, "CAMERA", R.drawable.permission_ic_sensors));

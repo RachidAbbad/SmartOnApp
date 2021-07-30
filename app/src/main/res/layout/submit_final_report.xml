@@ -1,98 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+<LinearLayout
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:gravity="center_horizontal"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:padding="15dp"
+    android:background="@color/transparent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="@color/uiBg"
+        app:cardCornerRadius="20dp">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@color/white"
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="10dp"
             android:gravity="center_horizontal">
-            <androidx.cardview.widget.CardView
-                app:cardCornerRadius="15dp"
-
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/task_body"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="20dp"
-                >
+                android:layout_margin="10dp"
+                android:fontFamily="@font/catamaran_medium"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:singleLine="true"
+                android:scrollHorizontally="true"
+                android:ellipsize="marquee"
+                android:marqueeRepeatLimit ="marquee_forever"
+                android:text="czjdoackejnckjankcjenkcanjenckneckjanekc"
+                android:textColor="@color/uiTextColor"
+                android:textSize="21sp" />
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:gravity="center_horizontal">
-                    <TextView
-                        android:id="@+id/task_body"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:fontFamily="@font/catamaran_medium"
-                        android:focusable="true"
-                        android:focusableInTouchMode="true"
-                        android:singleLine="true"
-                        android:scrollHorizontally="true"
-                        android:ellipsize="marquee"
-                        android:marqueeRepeatLimit ="marquee_forever"
-                        android:text="czjdoackejnckjankcjenkcanjenckneckjanekc"
-                        android:textColor="@color/uiTextColor"
-                        android:textSize="21sp" />
-
-                    <LinearLayout
-                        android:id="@+id/interv_status_layout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/taskStatus"
-                            android:layout_margin="15dp"
-                            android:textStyle="bold"
-                            android:textColor="@color/uiTextColor"
-                            android:textSize="21sp"
-                            android:fontFamily="@font/catamaran_medium"
-                            />
-                        <com.rm.rmswitch.RMSwitch
-                            android:id="@+id/taskStatus"
-                            android:layout_width="80dp"
-                            android:layout_height="30dp"
-                            app:checked="false"
-                            app:forceAspectRatio="false"
-                            app:enabled="true"
-                            app:switchDesign="android"
-                            app:switchBkgCheckedColor="@color/firstColor"
-                            app:switchBkgNotCheckedColor="@color/secondColor"
-                            app:switchToggleCheckedColor="@color/firstColor"
-                            app:switchToggleCheckedImage="@drawable/ic_done_repport"
-                            app:switchToggleNotCheckedColor="@color/secondColor"
-                            app:switchToggleNotCheckedImage="@drawable/ic_report"/>
-                        <TextView
-                            android:id="@+id/taskStatusText"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/taskDone"
-                            android:layout_margin="4dp"
-                            android:textColor="@color/uiTextColor"
-                            android:textSize="15sp"
-                            android:fontFamily="@font/catamaran_medium"
-                            />
-                    </LinearLayout>
-
-
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                app:cardCornerRadius="15dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="20dp">
-                <LinearLayout
+                    android:paddingTop="15dp"
                     android:id="@+id/image_layout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -360,63 +304,30 @@
                             android:textSize="19sp"
                             android:text="@string/addComment"/>
                     </LinearLayout>
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-
-                    </LinearLayout>
 
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
 
         </LinearLayout>
-        <RelativeLayout
-        android:layout_marginBottom="0dp"
+    </androidx.cardview.widget.CardView>
+
+    <com.ncorti.slidetoact.SlideToActView
+        android:id="@+id/submitBtn"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:text="@string/submitBtn"
+        app:border_radius="20dp"
+        android:layout_marginTop="10dp"
+        app:animation_duration="250"
+        app:text_appearance="@style/TitlesInterventionStyle"
+        app:outer_color="@color/white"
+        app:inner_color="@color/firstColor"
+        app:text_size="18sp"
+        app:text_style="normal"
+        app:slider_height="70dp"
+        app:slider_locked="false"
+        app:area_margin="4dp"
+        app:bump_vibration="250"
+        />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+</LinearLayout>
 
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="0dp">
-
-
-            <!--Google material Extended Floating Action Button-->
-            <!--one needs to keep the margin of 16dp from the screen to button-->
-            <androidx.cardview.widget.CardView
-                app:cardCornerRadius="20dp"
-                android:layout_margin="10dp"
-                android:outlineSpotShadowColor="@color/transparent"
-                android:background="@color/transparent"
-                android:layout_width="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_height="wrap_content">
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:gravity="center"
-                    android:layout_height="wrap_content">
-
-                    <com.dx.dxloadingbutton.lib.LoadingButton
-                        android:id="@+id/submitBtn"
-                        android:layout_width="160dp"
-
-                        android:layout_height="65dp"
-                        app:lb_btnColor="@color/secondColor"
-                        app:lb_btnText="@string/submitBtn"
-                        app:lb_cornerRadius="20dp"
-                        app:lb_textColor="@color/white" />
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </RelativeLayout>
-</RelativeLayout>

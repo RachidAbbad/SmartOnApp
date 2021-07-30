@@ -115,4 +115,24 @@ public class TaskData {
             return new ArrayList<>();
         }
     }
+
+    public static boolean deleteAllTasksData(String idIntervention,int numTask,Activity activity){
+        boolean deleteResult = true;
+        List<File> listFiles = new ArrayList<>();
+        listFiles.addAll(getVideos(idIntervention,numTask,activity));
+        listFiles.addAll(getAudios(idIntervention,numTask,activity));
+        listFiles.addAll(getImages(idIntervention,numTask,activity));
+        listFiles.addAll(getComments(idIntervention,numTask,activity));
+        try{
+            for (File file:listFiles) {
+                if(!file.delete())
+                    deleteResult = false;
+            }
+            return deleteResult;
+        }
+        catch (Exception ex){
+            System.out.printf(ex.getMessage());
+            return false;
+        }
+    }
 }

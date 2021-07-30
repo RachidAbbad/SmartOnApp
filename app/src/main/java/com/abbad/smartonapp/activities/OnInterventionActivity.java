@@ -69,6 +69,7 @@ public class OnInterventionActivity extends AppCompatActivity{
         resumeIntervention();
         //Save intervention on shared preference :
         InterventionManager.saveCurrentIntervention(intervention.getId());
+        this.onPause();
     }
 
 

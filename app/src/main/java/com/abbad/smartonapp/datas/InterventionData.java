@@ -1,8 +1,14 @@
 package com.abbad.smartonapp.datas;
 
+import android.app.Activity;
+import android.util.Log;
+
 import com.abbad.smartonapp.classes.Intervention;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class InterventionData {
@@ -45,7 +51,7 @@ public class InterventionData {
                 ,3
                 ,new String[]{"le nettoyage intérieur avec repose après travaux","le nettoyage des éléments et du local après intervention"}
                 ,new String[]{"Tournevis","lunettes de protection"}
-                ,"Interv735651"
+                ,"Interv735663"
         ));
         listInterventions.add(new Intervention("Vérification du cheminée (évacuation des fumées de combustion)"
                 ,"29-05-2021"
@@ -118,5 +124,101 @@ public class InterventionData {
                 return inter;
         }
         return null;
+    }
+
+    public static List<File> getImages(String idIntervention, Activity activity) {
+        try {
+
+            File directory = new File(activity.getExternalCacheDir()+"/FinalImages");
+            List<File> files = Arrays.asList(directory.listFiles());
+            List<File> results = new ArrayList<>();
+            for (int i = 0; i < files.size(); i++)
+            {
+                String name = files.get(i).getName();
+                if(name.contains(idIntervention))
+                    results.add(files.get(i));
+            }
+            return results;
+        }catch (Exception ex)
+        {
+            return new ArrayList<>();
+        }
+    }
+
+    public static List<File> getVideos(String idIntervention,Activity activity) {
+        File directory = null;
+        try {
+            directory = new File(activity.getExternalCacheDir()+"/FinalVideo");
+            List<File> files = Arrays.asList(directory.listFiles());
+            List<File> results = new ArrayList<>();
+            for (int i = 0; i < files.size(); i++)
+            {
+                String name = files.get(i).getName();
+                if(name.contains(idIntervention))
+                    results.add(files.get(i));
+            }
+            return results;
+
+        }catch (Exception ex){
+            return new ArrayList<>();
+        }
+    }
+
+    public static List<File> getAudios(String idIntervention,Activity activity) {
+        File directory = null;
+        try {
+            directory = new File(activity.getExternalCacheDir()+"/FinalAudios");
+            List<File> files = Arrays.asList(directory.listFiles());
+            List<File> results = new ArrayList<>();
+            for (int i = 0; i < files.size(); i++)
+            {
+                String name = files.get(i).getName();
+                if(name.contains(idIntervention))
+                    results.add(files.get(i));
+            }
+            return results;
+
+        }catch (Exception ex){
+            return new ArrayList<>();
+        }
+    }
+
+    public static List<File> getComments(String idIntervention,Activity activity) {
+        File directory = null;
+        try {
+            directory = new File(activity.getExternalCacheDir()+"/FinalComments");
+            List<File> files = Arrays.asList(directory.listFiles());
+            List<File> results = new ArrayList<>();
+            for (int i = 0; i < files.size(); i++)
+            {
+                String name = files.get(i).getName();
+                if(name.contains(idIntervention))
+                    results.add(files.get(i));
+            }
+            return results;
+
+        }catch (Exception ex){
+            return new ArrayList<>();
+        }
+    }
+
+    public static boolean deleteAllData(String idIntervention,Activity activity){
+        boolean deleteResult = true;
+        List<File> listFiles = new ArrayList<>();
+        listFiles.addAll(getVideos(idIntervention,activity));
+        listFiles.addAll(getAudios(idIntervention,activity));
+        listFiles.addAll(getImages(idIntervention,activity));
+        listFiles.addAll(getComments(idIntervention,activity));
+        try{
+            for (File file:listFiles) {
+                if(!file.delete())
+                    deleteResult = false;
+            }
+            return deleteResult;
+        }
+        catch (Exception ex){
+            System.out.printf(ex.getMessage());
+            return false;
+        }
     }
 }

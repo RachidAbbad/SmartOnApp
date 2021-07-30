@@ -34,18 +34,27 @@ import androidx.appcompat.widget.AppCompatButton;
 import com.abbad.smartonapp.R;
 import com.abbad.smartonapp.activities.OnInterventionActivity;
 import com.abbad.smartonapp.classes.Intervention;
+import com.abbad.smartonapp.datas.InterventionData;
+import com.abbad.smartonapp.datas.TaskData;
 import com.abbad.smartonapp.utils.InterventionManager;
 import com.dx.dxloadingbutton.lib.LoadingButton;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.ncorti.slidetoact.SlideToActView;
+
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 import me.weyye.hipermission.HiPermission;
 import me.weyye.hipermission.PermissionCallback;
@@ -54,6 +63,7 @@ import me.weyye.hipermission.PermissionItem;
 import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_AUDIO;
 import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE;
 import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
+import static android.view.View.GONE;
 
 public class SubmitGeneralDialog  extends BottomSheetDialogFragment {
 
@@ -80,7 +90,7 @@ public class SubmitGeneralDialog  extends BottomSheetDialogFragment {
     private AppCompatButton saveCommentBtn;
 
     //Submit Report
-    private LoadingButton submitBtn;
+    private SlideToActView submitBtn;
 
     //MediaRecorder & MediaPlayer
     private MediaRecorder mediaRecorder;
@@ -104,7 +114,7 @@ public class SubmitGeneralDialog  extends BottomSheetDialogFragment {
     @Override
     public void setupDialog(@NonNull Dialog dialog, int style) {
         super.setupDialog(dialog, style);
-        View contentView = View.inflate(getContext(), R.layout.task_rapport, null);
+        View contentView = View.inflate(getContext(), R.layout.submit_final_report, null);
         contentView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -186,9 +196,9 @@ public class SubmitGeneralDialog  extends BottomSheetDialogFragment {
                 imageLayout.startAnimation(animation);
                 //Set Visibility Gone to other layouts
                 imageLayout.setVisibility(View.VISIBLE);
-                videoLayout.setVisibility(View.GONE);
-                audioLayout.setVisibility(View.GONE);
-                commentLayout.setVisibility(View.GONE);
+                videoLayout.setVisibility(GONE);
+                audioLayout.setVisibility(GONE);
+                commentLayout.setVisibility(GONE);
                 //Set opacity to 0.7 to other toggles
 
                 imageToggle.getBackground().setAlpha(255);
@@ -208,9 +218,9 @@ public class SubmitGeneralDialog  extends BottomSheetDialogFragment {
                 videoLayout.startAnimation(animation);
                 //Set Visibility Gone to other layouts
                 videoLayout.setVisibility(View.VISIBLE);
-                imageLayout.setVisibility(View.GONE);
-                audioLayout.setVisibility(View.GONE);
-                commentLayout.setVisibility(View.GONE);
+                imageLayout.setVisibility(GONE);
+                audioLayout.setVisibility(GONE);
+                commentLayout.setVisibility(GONE);
                 //Set opacity to 0.7 to other toggles
 
                 videoToggle.getBackground().setAlpha(255);
@@ -232,9 +242,9 @@ public class SubmitGeneralDialog  extends BottomSheetDialogFragment {
                 audioLayout.startAnimation(animation);
                 //Set Visibility Gone to other layouts
                 audioLayout.setVisibility(View.VISIBLE);
-                imageLayout.setVisibility(View.GONE);
-                videoLayout.setVisibility(View.GONE);
-                commentLayout.setVisibility(View.GONE);
+                imageLayout.setVisibility(GONE);
+                videoLayout.setVisibility(GONE);
+                commentLayout.setVisibility(GONE);
                 //Set opacity to 0.7 to other toggles
 
                 audioToggle.getBackground().setAlpha(255);
@@ -255,9 +265,9 @@ public class SubmitGeneralDialog  extends BottomSheetDialogFragment {
                 commentLayout.startAnimation(animation);
                 //Set Visibility Gone to other layouts
                 commentLayout.setVisibility(View.VISIBLE);
-                imageLayout.setVisibility(View.GONE);
-                videoLayout.setVisibility(View.GONE);
-                audioLayout.setVisibility(View.GONE);
+                imageLayout.setVisibility(GONE);
+                videoLayout.setVisibility(GONE);
+                audioLayout.setVisibility(GONE);
                 //Set opacity to 0.7 to other toggles
 
                 commentToggle.getBackground().setAlpha(255);
@@ -324,13 +334,15 @@ public class SubmitGeneralDialog  extends BottomSheetDialogFragment {
             }
         });
 
-        submitBtn.setOnClickListener(new View.OnClickListener() {
+        submitBtn.setOnSlideCompleteListener(new SlideToActView.OnSlideCompleteListener() {
             @Override
-            public void onClick(View v) {
-                //TODO Submit the final report
-                InterventionManager.saveCurrentIntervention(null);
+            public void onSlideComplete(@NotNull SlideToActView slideToActView) {
+                //TODO Send Data to The Server (The BACKEND Team are laaate !!)
+                InterventionManager.resetAllData(currentIntervention,getActivity());
             }
         });
+
+
     }
 
     @Override
@@ -373,7 +385,7 @@ public class SubmitGeneralDialog  extends BottomSheetDialogFragment {
                         }
                     }
                 }
-                showResultDialog(imageNb+getResources().getString(R.string.saveSuccessImagesMsg),1);
+                showResultDialog(imageNb+" "+getResources().getString(R.string.saveSuccessImagesMsg),1);
             }
             else {
                 showResultDialog(getResources().getString(R.string.saveCancelImageMsg),2);
@@ -480,8 +492,48 @@ public class SubmitGeneralDialog  extends BottomSheetDialogFragment {
                 });
     }
 
+    public void resumeTask() throws JSONException, FileNotFoundException {
+        if(InterventionManager.getCurrentIntervention().equals(currentIntervention.getId())){
+            //Image Section
+            imageNumber.setVisibility(View.VISIBLE);
+            if (InterventionData.getImages(currentIntervention.getId(),getActivity()).size()!=0){
+                imageIndex = InterventionData.getImages(currentIntervention.getId(),getActivity()).size()+1;
+                imageNumber.setText(InterventionData.getImages(currentIntervention.getId(),getActivity()).size()+" Images has added");
+            }
+            else
+                imageNumber.setText(getResources().getString(R.string.imagesNotCaptured));
+            //Video Section
+            videoAddStatus.setVisibility(View.VISIBLE);
+            if (InterventionData.getVideos(currentIntervention.getId(),getActivity()).size()!=0){
+                videoLayoutInput.setEnabled(false);
+                videoAddStatus.setText(getResources().getString(R.string.videoAlreadyRecorded));
+            }
+            else
+                videoAddStatus.setText(getResources().getString(R.string.videoNotRecorded));
+            //Audio Section
+            audioSaveStatus.setVisibility(View.VISIBLE);
+            if (InterventionData.getAudios(currentIntervention.getId(),getActivity()).size()!=0){
+                AudioRecordingStatus = 2;
+                audioSaveStatus.setText(getResources().getString(R.string.audioAlreadyRecorded));
+            }
+            else
+                audioSaveStatus.setText(getResources().getString(R.string.audioNotRecorded));
+            //Comments :
+            if (InterventionData.getComments(currentIntervention.getId(),getActivity()).size()!=0){
+                Scanner in = new Scanner(new FileReader(InterventionData.getComments(currentIntervention.getId(),getActivity()).get(0)));
+                StringBuilder sb = new StringBuilder();
+                while(in.hasNext()) {
+                    sb.append(in.next());
+                }
+                in.close();
+
+                commentEditText.setText(sb.toString());
+            }
+        }
+    }
+
     public void captureImage(){
-        imageNumber.setVisibility(View.GONE);
+        imageNumber.setVisibility(GONE);
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -494,7 +546,7 @@ public class SubmitGeneralDialog  extends BottomSheetDialogFragment {
     }
 
     public void pickImage(){
-        imageNumber.setVisibility(View.GONE);
+        imageNumber.setVisibility(GONE);
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
         Intent intent = new Intent();
@@ -566,7 +618,7 @@ public class SubmitGeneralDialog  extends BottomSheetDialogFragment {
     }
 
     public void recordVideo(){
-        videoAddStatus.setVisibility(View.GONE);
+        videoAddStatus.setVisibility(GONE);
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
         Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
@@ -738,8 +790,8 @@ public class SubmitGeneralDialog  extends BottomSheetDialogFragment {
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void startRecording() throws IOException {
 
-        recordCounterMsg.setVisibility(View.GONE);
-        audioSaveStatus.setVisibility(View.GONE);
+        recordCounterMsg.setVisibility(GONE);
+        audioSaveStatus.setVisibility(GONE);
         audioCounterTimer.setVisibility(View.VISIBLE);
         audioCounterTimer.setBase(SystemClock.elapsedRealtime());
         audioCounterTimer.start();
@@ -772,11 +824,11 @@ public class SubmitGeneralDialog  extends BottomSheetDialogFragment {
         AudioRecordingStatus = 0;
         audioSaveStatus.setText(getResources().getString(R.string.saveCancelAudioMsg));
         recordResultLayout.animate().alpha(0).setDuration(700);
-        audioCounterTimer.setVisibility(View.GONE);
-        recordResultLayout.setVisibility(View.GONE);
+        audioCounterTimer.setVisibility(GONE);
+        recordResultLayout.setVisibility(GONE);
         recordCounterMsg.setVisibility(View.VISIBLE);
         recordCounterMsg.setText(getResources().getString(R.string.pressToRecordAudio));
-        recordResultLayout.setVisibility(View.GONE);
+        recordResultLayout.setVisibility(GONE);
 
 
     }
@@ -784,11 +836,11 @@ public class SubmitGeneralDialog  extends BottomSheetDialogFragment {
     public void saveAudio(){
         if (mediaRecorder != null) {
             recordResultLayout.animate().alpha(0).setDuration(700);
-            recordResultLayout.setVisibility(View.GONE);
+            recordResultLayout.setVisibility(GONE);
             mediaRecorder.release();
             mediaRecorder = null;
             showResultDialog(getResources().getString(R.string.saveSuccessAudioMsg),1);
-            audioSaveStatus.setVisibility(View.GONE);
+            audioSaveStatus.setVisibility(GONE);
         }
     }
 

@@ -62,7 +62,7 @@ public class ResultBottomDialog extends BottomSheetDialogFragment {
         else if (eventType == 2)
             resultIcon.setImageResource(R.drawable.ic_warning);
         else
-            resultIcon.setImageResource(R.drawable.ic_error);
+            resultIcon.setImageResource(R.drawable.ic_errorr);
     }
 
 

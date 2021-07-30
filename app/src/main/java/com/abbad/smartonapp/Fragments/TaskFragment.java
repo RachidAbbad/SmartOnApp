@@ -35,6 +35,7 @@ import com.abbad.smartonapp.R;
 import com.abbad.smartonapp.activities.OnInterventionActivity;
 import com.abbad.smartonapp.classes.Intervention;
 import com.abbad.smartonapp.classes.Task;
+import com.abbad.smartonapp.datas.InterventionData;
 import com.abbad.smartonapp.datas.TaskData;
 import com.abbad.smartonapp.dialogs.ImageImportMethodeDialog;
 import com.abbad.smartonapp.dialogs.ResultBottomDialog;
@@ -374,7 +375,8 @@ public class TaskFragment extends Fragment {
                 }
                 int nbTask = currentIntervention.getTodos().length-1;
                 if (nbTaskDone==nbTask){
-                    InterventionManager.saveInterventionReport(currentIntervention.getId(),true);
+                    if (!InterventionManager.getInterventionReport(currentIntervention.getId()))
+                        InterventionManager.saveInterventionReport(currentIntervention.getId(),true);
                     new SubmitGeneralDialog(currentIntervention).show(getActivity().getSupportFragmentManager(),null);
                 }
 
@@ -431,7 +433,6 @@ public class TaskFragment extends Fragment {
             //Check if all tasks completed
             if (InterventionManager.getInterventionReport(currentIntervention.getId())){
                 new SubmitGeneralDialog(currentIntervention).show(getActivity().getSupportFragmentManager(),null);
-
             }
         }
     }

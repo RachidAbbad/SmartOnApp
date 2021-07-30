@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.abbad.smartonapp.R;
+import com.abbad.smartonapp.dialogs.ResultBottomDialog;
 import com.abbad.smartonapp.ui.dashboard.DashboardFragment;
 import com.abbad.smartonapp.ui.interventions.InterventionFragment;
 import com.abbad.smartonapp.ui.notifications.NotificationsFragment;
@@ -15,6 +16,7 @@ import com.abbad.smartonapp.utils.InterventionManager;
 import com.abbad.smartonapp.utils.TapTargetGuide;
 import com.abbad.smartonapp.utils.WebServiceConnection;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -73,46 +75,50 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         },0, 1500);
-        navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        navView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.navigation_dashboard:
+                        fm.beginTransaction().hide(active).show(fragment1).commit();
+                        active = fragment1;
+                        return true;
+
+                    case R.id.navigation_intervention:
+                        fm.beginTransaction().hide(active).show(fragment2).commit();
+                        active = fragment2;
+                        return true;
+
+                    case R.id.navigation_notifications:
+                        fm.beginTransaction().hide(active).show(fragment3).commit();
+                        active = fragment3;
+                        return true;
+
+                    case R.id.navigation_profile:
+                        fm.beginTransaction().hide(active).show(fragment4).commit();
+                        active = fragment4;
+                        return true;
+                };
+                return false;
+            }
+        });
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_dashboard,R.id.navigation_intervention, R.id.navigation_notifications,R.id.navigation_profile)
-                .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-  //      NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        NavigationUI.setupWithNavController(navView, navController);
+
+        fm.beginTransaction().add(R.id.nav_host_fragment, fragment3, "3").hide(fragment3).commit();
+        fm.beginTransaction().add(R.id.nav_host_fragment, fragment2, "2").hide(fragment2).commit();
+        fm.beginTransaction().add(R.id.nav_host_fragment,fragment1, "1").commit();
+        fm.beginTransaction().add(R.id.nav_host_fragment,fragment4, "4").hide(fragment4).commit();
+
         new InterventionManager(getApplicationContext());
 
         //new TapTargetGuide(navView,this).firstGuide();
     }
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
-        @SuppressLint("NonConstantResourceId")
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.navigation_dashboard:
-                    fm.beginTransaction().hide(active).show(fragment1).commit();
-                    active = fragment1;
-                    return true;
 
-                case R.id.navigation_intervention:
-                    fm.beginTransaction().hide(active).show(fragment2).commit();
-                    active = fragment2;
-                    return true;
 
-                case R.id.navigation_notifications:
-                    fm.beginTransaction().hide(active).show(fragment3).commit();
-                    active = fragment3;
-                    return true;
-
-                case R.id.navigation_profile:
-                    fm.beginTransaction().hide(active).show(fragment4).commit();
-                    active = fragment4;
-                    return true;
-            };
-            return false;
-        }
-    };
+    @Override
+    public void onBackPressed() {
+        fm.beginTransaction().hide(active).show(fragment1).commit();
+        active = fragment1;
+    }
 }
