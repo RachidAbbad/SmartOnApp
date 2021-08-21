@@ -42,8 +42,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import br.com.simplepass.loadingbutton.customViews.CircularProgressButton;
-import es.dmoral.toasty.Toasty;
+
 
 public class LoginActivity extends AppCompatActivity {
     EditText emailInput;

@@ -98,6 +98,8 @@
     <string name="fillAllMediaToSubmit">Fill all medias report to submit</string>
 
     <string name="exitAppMsg">Are you sure you want to exit?</string>
+    <string name="noCnxMainMsg">Unable to connect to the Internet</string>
+    <string name="noCnxsecondMsg">The app cannot work offline, please check your connection and try.</string>
 
 
 

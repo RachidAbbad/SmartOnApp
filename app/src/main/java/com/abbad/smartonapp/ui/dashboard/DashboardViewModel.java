@@ -121,13 +121,14 @@ public class DashboardViewModel extends ViewModel {
                 URL url = new URL("http://smartonviatoile.com/api/Data/currentChaudiere/5fbccf26e06d8cb8a4ac500e/1");
                 http = (HttpURLConnection) url.openConnection();
                 http.setRequestProperty("Accept", "application/json");
+                http.setRequestProperty("Authorization", "Bearer "+ SessionManager.getAuthToken());
                 if (http.getResponseCode() != HttpURLConnection.HTTP_OK) {
                     server_error=true;
                     return null;
                 }
-                if (!first_time)
+                if (!first_time) {
                     first_time = true;
-                http.setRequestProperty("Authorization", "Bearer "+ SessionManager.getAuthToken());
+                }
                 BufferedReader reader = new BufferedReader(new InputStreamReader(http.getInputStream()));
                 StringBuilder sb = new StringBuilder();
                 String line;
@@ -168,8 +169,8 @@ public class DashboardViewModel extends ViewModel {
                 }
             }else if (first_time){
                 first_time = false;
-                dash.getServerError().setVisibility(View.VISIBLE);
-                dash.getMainLayout().setVisibility(View.GONE);
+                //dash.getServerError().setVisibility(View.VISIBLE);
+                dash.getMainLayout().setVisibility(View.VISIBLE);
                 try {
                     dash.getExceptionText().setText(http.getResponseCode()+" Error");
                 } catch (IOException exception) {

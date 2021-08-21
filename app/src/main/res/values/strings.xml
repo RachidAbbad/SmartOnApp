@@ -100,6 +100,8 @@
     <string name="fillAllMediaToSubmit">Remplir tous les rapports des médias à soumettre</string>
 
     <string name="exitAppMsg">Êtes-vous sûr de vouloir quitter?</string>
+    <string name="noCnxMainMsg">Impossible de se connecter à Internet</string>
+    <string name="noCnxsecondMsg">L\'application ne peut pas fonctionner hors connexion, vérifiez votre connexion et essayez.</string>
 
 
 
