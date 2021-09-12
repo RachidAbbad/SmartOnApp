@@ -26,8 +26,8 @@ public class TaskFragmentAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
         Bundle b = new Bundle();
-        b.putInt("position", position);
         b.putParcelable("intervention", intervention);
+        b.putParcelable("task", intervention.getListTaches().get(position));
         b.putInt("numTask", position);
         Fragment frag = new TaskFragment();
         frag.setArguments(b);

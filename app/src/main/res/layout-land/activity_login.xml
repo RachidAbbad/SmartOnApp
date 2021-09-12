@@ -1,104 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/login_bg_color"
-    android:gravity="center"
-    android:orientation="horizontal"
-    android:padding="20dp"
     tools:context=".activities.LoginActivity">
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="200sp"
-        android:layout_height="200dp"
-android:padding="20dp"
-        app:srcCompat="@drawable/app_logo" />
-
     <LinearLayout
-        android:id="@+id/container"
-        android:layout_width="wrap_content"
-        android:padding="40dp"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@id/forgot_pass"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="match_parent">
 
-        <com.github.florent37.materialtextfield.MaterialTextField
-            android:id="@+id/email_layout"
-            android:layout_width="320dp"
-            android:layout_height="wrap_content"
-            app:mtf_animationDuration="700"
-            app:mtf_cardCollapsedHeight="4dp"
-            app:mtf_image="@drawable/ic_email_24"
-            app:mtf_labelColor="@color/uiWhite"
-            app:mtf_openKeyboardOnFocus="true">
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="200sp"
+            android:layout_height="200dp"
+            android:layout_marginEnd="30dp"
+            app:srcCompat="@drawable/app_logo" />
 
-            <EditText
-                android:id="@+id/emailInput"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/hintEmail"
-                android:inputType="textEmailAddress"
-                android:textColor="@color/firstColor"
-                android:textSize="20sp" />
-
-        </com.github.florent37.materialtextfield.MaterialTextField>
-
-        <com.github.florent37.materialtextfield.MaterialTextField
-            android:id="@+id/pass_layout"
-            android:layout_width="320dp"
-            android:layout_height="wrap_content"
-            app:mtf_animationDuration="700"
-            app:mtf_cardCollapsedHeight="4dp"
-            app:mtf_image="@drawable/ic_password_24"
-            app:mtf_labelColor="@color/uiWhite"
-            app:mtf_openKeyboardOnFocus="true">
-
-            <EditText
-                android:id="@+id/passwordInput"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/hintPass"
-                android:inputType="textPassword"
-                android:textColor="@color/firstColor"
-                android:textSize="20sp"
-                app:passwordToggleEnabled="true" />
-
-        </com.github.florent37.materialtextfield.MaterialTextField>
-
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/error_login_text"
+        <LinearLayout
+            android:id="@+id/container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:fontFamily="sans-serif-condensed-medium"
-            android:textColor="@color/uiRed"
-            android:textSize="16sp" />
+            android:gravity="center"
+            android:orientation="vertical"
 
-        <com.dx.dxloadingbutton.lib.LoadingButton
-            android:id="@+id/btn_login"
-            android:layout_width="225dp"
-            android:layout_height="60dp"
-            android:layout_gravity="center"
-            android:padding="10dp"
-            app:lb_btnColor="@color/uiWhite"
-            app:lb_btnText="@string/login_btn_text"
-            app:lb_cornerRadius="15dp"
-            app:lb_textColor="@color/uiTextColor" />
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/forgot_pass"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="@string/login_btn_forgot_pass"
-            android:textColor="@color/uiWhite"
-            android:textSize="17sp" />
+            <com.github.florent37.materialtextfield.MaterialTextField
+                android:id="@+id/email_layout"
+                android:layout_width="320dp"
+                android:layout_height="wrap_content"
+                app:mtf_animationDuration="400"
+                app:mtf_cardCollapsedHeight="4dp"
+                app:mtf_backgroundColor="#365E72E4"
+                app:mtf_image="@drawable/ic_email_24"
+                app:mtf_labelColor="@color/uiTextColor"
+                app:mtf_openKeyboardOnFocus="true">
+
+                <EditText
+                    android:id="@+id/emailInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/uiTextColor"
+                    android:hint="@string/hintEmail"
+
+                    android:inputType="textEmailAddress"
+                    android:fontFamily="@font/catamaran_medium"
+                    android:textSize="20sp" />
+
+            </com.github.florent37.materialtextfield.MaterialTextField>
+
+            <com.github.florent37.materialtextfield.MaterialTextField
+                android:id="@+id/pass_layout"
+                android:layout_width="320dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:mtf_animationDuration="400"
+                app:mtf_cardCollapsedHeight="4dp"
+                app:mtf_backgroundColor="#365E72E4"
+                app:mtf_image="@drawable/ic_password_24"
+                app:mtf_labelColor="@color/uiTextColor">
+
+                <EditText
+                    android:id="@+id/passwordInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hintPass"
+                    android:inputType="textPassword"
+
+                    android:textColor="@color/firstColor"
+                    android:fontFamily="@font/catamaran_medium"
+                    android:textSize="20sp"/>
+
+            </com.github.florent37.materialtextfield.MaterialTextField>
+
+            <com.dx.dxloadingbutton.lib.LoadingButton
+                android:id="@+id/btn_login"
+                android:layout_width="225dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="25dp"
+                android:padding="10dp"
+                app:lb_btnColor="@color/firstColor"
+                app:lb_btnText="@string/login_btn_text"
+                app:lb_cornerRadius="15dp"
+                app:lb_textColor="@color/uiBg" />
+
+        </LinearLayout>
+
 
     </LinearLayout>
 
-
-</LinearLayout>
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/forgot_pass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Copyright © 2021 ViaToile"
+        android:textColor="@color/uiTextColor"
+        android:textSize="15sp"
+        android:fontFamily="@font/catamaran_medium"
+        android:layout_margin="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

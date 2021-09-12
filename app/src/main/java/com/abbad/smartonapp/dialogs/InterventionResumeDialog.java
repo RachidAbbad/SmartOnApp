@@ -12,8 +12,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatButton;
 
 import com.abbad.smartonapp.R;
+import com.abbad.smartonapp.activities.InterventionDetails;
 import com.abbad.smartonapp.activities.OnInterventionActivity;
 import com.abbad.smartonapp.classes.Intervention;
+import com.abbad.smartonapp.datas.InterventionData;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -56,7 +58,10 @@ public class InterventionResumeDialog extends BottomSheetDialogFragment {
         resumeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new InterventionDetailsDialog(intervention).show(getActivity().getSupportFragmentManager(),null);
+                Intent intent= new Intent(getActivity(), InterventionDetails.class);
+                InterventionData.currentIntervention = intervention;
+                getActivity().startActivity(intent);
+                InterventionResumeDialog.this.dismiss();
             }
         });
 

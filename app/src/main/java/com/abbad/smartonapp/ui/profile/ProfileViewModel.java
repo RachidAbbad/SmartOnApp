@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.abbad.smartonapp.R;
 import com.abbad.smartonapp.activities.LoginActivity;
+import com.abbad.smartonapp.activities.MainActivity;
 import com.abbad.smartonapp.dialogs.AuthSiteDialog;
 import com.abbad.smartonapp.dialogs.LanguagePickerDialog;
 import com.abbad.smartonapp.dialogs.LoadingBottomDialog;
@@ -33,8 +34,8 @@ import me.weyye.hipermission.PermissionItem;
 
 public class ProfileViewModel extends ViewModel {
     SessionManager sessionManager;
-    Fragment f;
-    public ProfileViewModel(Context context1,Fragment f){
+    ProfileFragment f;
+    public ProfileViewModel(Context context1,ProfileFragment f){
         sessionManager = new SessionManager(context1);
         this.f = f;
     }
@@ -138,46 +139,49 @@ public class ProfileViewModel extends ViewModel {
                 new ResultBottomDialog(f.getResources().getString(R.string.reconnectMsg),3).show(f.getActivity().getSupportFragmentManager(),null);
                 return;
             }*/
-            List<PermissionItem> permissionItems = new ArrayList<PermissionItem>();
-            if(checkNFC()==1){
-                permissionItems.add(new PermissionItem(Manifest.permission.NFC, "CAMERA", R.drawable.permission_ic_sensors));
+            try{
+                List<PermissionItem> permissionItems = new ArrayList<PermissionItem>();
+                if(checkNFC()==1){
+                    permissionItems.add(new PermissionItem(Manifest.permission.NFC, "CAMERA", R.drawable.permission_ic_sensors));
+                }
+                else if (checkNFC()==2){
+
+                }
+                else if (checkNFC()==3){
+                    permissionItems.add(new PermissionItem(Manifest.permission.CAMERA, "CAMERA", R.drawable.permission_ic_camera));
+                }
+                HiPermission.create(f.getActivity())
+                        .title("Ask for permission")
+                        .permissions(permissionItems)
+                        .style(R.style.PermissionBlueStyle)
+                        .checkMutiPermission(new PermissionCallback() {
+                            @Override
+                            public void onClose() {
+                                Log.i("permission_granted", "onClose");
+                            }
+
+                            @Override
+                            public void onFinish() {
+                                AuthSiteDialog authSiteDialog = new AuthSiteDialog();
+                                MainActivity.authSiteDialog = authSiteDialog;
+                                authSiteDialog.show(f.getActivity().getSupportFragmentManager(),null);
+                            }
+
+                            @Override
+                            public void onDeny(String permission, int position) {
+                                Log.i("permission_granted", "onDeny");
+                            }
+
+                            @Override
+                            public void onGuarantee(String permission, int position) {
+                                AuthSiteDialog authSiteDialog = new AuthSiteDialog();
+                                MainActivity.authSiteDialog = authSiteDialog;
+                                authSiteDialog.show(f.getActivity().getSupportFragmentManager(),null);
+                            }
+                        });
+            }catch (Exception ex){
+                new ResultBottomDialog(ex.getMessage(),3).show(f.getActivity().getSupportFragmentManager(),null);
             }
-            else if (checkNFC()==2){
-
-            }
-            else if (checkNFC()==3){
-                permissionItems.add(new PermissionItem(Manifest.permission.CAMERA, "CAMERA", R.drawable.permission_ic_camera));
-            }
-            HiPermission.create(f.getActivity())
-                    .title("Ask for permission")
-                    .permissions(permissionItems)
-                    .style(R.style.PermissionBlueStyle)
-                    .checkMutiPermission(new PermissionCallback() {
-                        @Override
-                        public void onClose() {
-                            Log.i("permission_granted", "onClose");
-                        }
-
-                        @Override
-                        public void onFinish() {
-                            new AuthSiteDialog().show(f.getActivity().getSupportFragmentManager(),null);
-                        }
-
-                        @Override
-                        public void onDeny(String permission, int position) {
-                            Log.i("permission_granted", "onDeny");
-                        }
-
-                        @Override
-                        public void onGuarantee(String permission, int position) {
-                            Log.i("permission_granted", "onGuarantee");
-                            new AuthSiteDialog().show(f.getActivity().getSupportFragmentManager(),null);
-
-                        }
-                    });
-
-
-
         }
     }
 

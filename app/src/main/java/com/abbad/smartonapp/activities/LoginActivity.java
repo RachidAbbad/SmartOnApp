@@ -49,7 +49,6 @@ public class LoginActivity extends AppCompatActivity {
     EditText passInput;
     MaterialTextField emailLayout;
     MaterialTextField passLayout;
-    AppCompatTextView errorLoginText;
     LoadingButton btnLogin;
     SessionManager sessionManager;
     @Override
@@ -68,7 +67,6 @@ public class LoginActivity extends AppCompatActivity {
         emailLayout = findViewById(R.id.email_layout);
         passLayout = findViewById(R.id.pass_layout);
         btnLogin = findViewById(R.id.btn_login);
-        errorLoginText = findViewById(R.id.error_login_text);
         btnLogin.setOnClickListener(new BtnClickEvent(this));
 
         passInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -77,6 +75,18 @@ public class LoginActivity extends AppCompatActivity {
                     if(emailInput.getText().toString().length() != 0 && !emailInput.getText().toString().equals("")
                             && passInput.getText().toString().length() != 0 && !passInput.getText().toString().equals(""))
                         new WebServiceConnection.loginSyncTask(LoginActivity.this).execute();
+                }
+                return false;
+            }
+        });
+
+        emailInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_NEXT ) {
+                    passLayout.setHasFocus(true);
+                    passInput.requestFocus();
+                    return true;
                 }
                 return false;
             }

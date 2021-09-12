@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="0dp"
+    android:layout_weight="0.5"
+    android:layout_height="match_parent">
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginHorizontal="6dp"
+        android:layout_marginTop="6dp"
+        app:cardCornerRadius="25dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/nomSilo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:fontFamily="sans-serif-condensed-medium"
+                android:text="Silo 1"
+                android:textColor="@color/uiTextColor"
+                android:textSize="@dimen/textTempSize" />
+
+            <com.ramijemli.percentagechartview.PercentageChartView
+                android:id="@+id/siloPercent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="30dp"
+                android:layout_marginBottom="10dp"
+                app:pcv_animDuration="2000"
+                app:pcv_animInterpolator="anticipate_overshoot"
+                app:pcv_backgroundColor="@color/uiBg"
+                app:pcv_gradientAngle="180"
+                app:pcv_gradientColors="@string/gradientColors"
+                app:pcv_gradientType="linear"
+                app:pcv_mode="fill"
+                app:pcv_orientation="counter_clockwise"
+                app:pcv_progress="30"
+                app:pcv_startAngle="90"
+                app:pcv_textColor="@color/uiTextColor"
+                app:pcv_textSize="22sp" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+</LinearLayout>

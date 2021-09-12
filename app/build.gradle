@@ -63,4 +63,8 @@ dependencies {
     implementation "com.ncorti:slidetoact:0.9.0"
     compile 'com.github.sundeepk:compact-calendar-view:3.0.0'
     compile 'com.rm:rmswitch:1.2.2'
+    implementation 'com.ramijemli.percentagechartview:percentagechartview:0.3.1'
+    compile 'commons-io:commons-io:2.11.0'
+
+    implementation 'com.squareup.okhttp3:okhttp:4.3.1'
 }

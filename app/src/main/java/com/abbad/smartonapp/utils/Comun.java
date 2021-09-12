@@ -9,13 +9,23 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.nfc.NdefMessage;
+import android.nfc.NdefRecord;
+import android.nfc.NfcAdapter;
+import android.nfc.Tag;
+import android.nfc.tech.MifareClassic;
+import android.nfc.tech.MifareUltralight;
+import android.nfc.tech.Ndef;
 import android.os.Build;
 
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -28,6 +38,11 @@ import java.util.Locale;
 import java.util.zip.Inflater;
 
 public class Comun {
+    public static MainActivity mainActivity;
+
+    public static int nbTasksOnline = 0;
+    public static int nbErrors = 0;
+    public static boolean isAllTasksFinished = false;
 
     public static void askCameraPermission(Activity activity){
         int grant = ContextCompat.checkSelfPermission(activity, Manifest.permission.CAMERA);
@@ -37,7 +52,6 @@ public class Comun {
                     200);
         }
     }
-
 
     public static void setLocale(Activity activity, String lang) {
         Locale myLocale = new Locale(lang);
@@ -51,10 +65,7 @@ public class Comun {
 
     }
 
-
-
-
-    private static Context updateResources(Context context, String language) {
+    public static Context updateResources(Context context, String language) {
         Locale locale = new Locale(language);
         Locale.setDefault(locale);
 
@@ -65,8 +76,7 @@ public class Comun {
         return context.createConfigurationContext(configuration);
     }
 
-
-    private static Context updateResourcesLegacy(Context context, String language) {
+    public static Context updateResourcesLegacy(Context context, String language) {
         Locale locale = new Locale(language);
         Locale.setDefault(locale);
 
@@ -82,6 +92,9 @@ public class Comun {
 
         return context;
     }
+
+
+
 
 
 

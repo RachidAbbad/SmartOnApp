@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -8,21 +9,86 @@
     android:orientation="vertical"
     tools:context=".ui.notifications.NotificationsFragment"
     android:paddingBottom="40dp">
-    <TextView
-        android:layout_width="match_parent"
-        android:textAlignment="center"
-        android:layout_height="wrap_content"
-        android:text="@string/notifTitle"
-        android:fontFamily="sans-serif-condensed"
-        android:textColor="@color/uiTextColor"
-        android:textSize="22sp"
-        android:layout_margin="10dp"/>
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:background="@color/uiBg"
-
+    <LinearLayout
+        android:id="@+id/workLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        />
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:textAlignment="center"
+            android:layout_height="wrap_content"
+            android:text="@string/notifTitle"
+            android:fontFamily="sans-serif-condensed"
+            android:textColor="@color/uiTextColor"
+            android:textSize="22sp"
+            android:layout_margin="10dp"/>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:background="@color/uiBg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                />
+        </ScrollView>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/serverError"
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:visibility="gone"
+        android:background="@color/uiBg"
+        android:orientation="vertical"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:src="@drawable/server_error" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/exceptionText"
+            android:layout_margin="10dp"
+            android:fontFamily="@font/catamaran_medium"
+            android:textColor="@color/uiTextColor"
+            android:textSize="21dp"
+            />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/noNotificationLayout"
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:visibility="gone"
+        android:background="@color/uiBg"
+        android:orientation="vertical"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:src="@drawable/goal" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="No Intervention"
+            android:fontFamily="@font/catamaran_medium"
+            android:textColor="@color/uiTextColor"
+            android:textSize="21sp"
+            />
+
+
+    </LinearLayout>
 </LinearLayout>

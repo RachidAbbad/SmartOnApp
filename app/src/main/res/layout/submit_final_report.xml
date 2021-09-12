@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardBackgroundColor="@color/uiBg"
+        android:layout_marginBottom="10dp"
         app:cardCornerRadius="20dp">
         <LinearLayout
             android:layout_width="match_parent"
@@ -35,6 +36,54 @@
                 android:text="czjdoackejnckjankcjenkcanjenckneckjanekc"
                 android:textColor="@color/uiTextColor"
                 android:textSize="21sp" />
+
+            <LinearLayout
+                android:id="@+id/interv_status_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/taskStatus"
+                    android:layout_margin="15dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/uiTextColor"
+                    android:textSize="21sp"
+                    android:fontFamily="@font/catamaran_medium"
+                    />
+                <com.rm.rmswitch.RMSwitch
+                    android:id="@+id/taskStatus"
+                    android:layout_width="80dp"
+                    android:layout_height="30dp"
+                    app:checked="false"
+                    app:forceAspectRatio="false"
+                    app:enabled="true"
+                    app:switchDesign="android"
+                    app:switchBkgCheckedColor="@color/firstColor"
+                    app:switchBkgNotCheckedColor="@color/secondColor"
+                    app:switchToggleCheckedColor="@color/firstColor"
+                    app:switchToggleCheckedImage="@drawable/ic_done_repport"
+                    app:switchToggleNotCheckedColor="@color/secondColor"
+                    app:switchToggleNotCheckedImage="@drawable/ic_report"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="@color/uiBg"
+        app:cardCornerRadius="20dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="10dp"
+            android:gravity="center_horizontal">
                 <LinearLayout
                     android:paddingTop="15dp"
                     android:id="@+id/image_layout"
@@ -114,7 +163,6 @@
                             android:id="@+id/numberAdded"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="1 image added"
                             android:textAllCaps="false"
                             android:visibility="visible"
                             android:textSize="16sp"

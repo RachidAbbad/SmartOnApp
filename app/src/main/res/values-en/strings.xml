@@ -4,8 +4,11 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="title_intervention">Interventions</string>
+    <string name="previousInterv">Previous interventions</string>
     <string name="title_auth_site">Login to the site</string>
     <string name="title_profile">Profile</string>
+
+    <string name="warningTitle">Alerts</string>
     <string name="hintEmail">Email</string>
     <string name="hintPass">Password</string>
     <string name="login_btn_text">Login</string>
@@ -27,6 +30,9 @@
     <string name="coming_soon">Coming soon</string>
     <string name="chaudiereName">Boiler</string>
     <string name="ballonName">Boiler tank</string>
+    <string name="noBalloons" translatable="false">There is no balloons in this site</string>
+    <string name="noSilos" translatable="false">There is no silos in this site</string>
+    <string name="temperature" translatable="false">Temperature</string>
 
     <string name="generalErreur">An error occurred during connecting to server</string>
 
@@ -37,6 +43,7 @@
     <string name="usedToold">Used tools :</string>
     <string name="Interv_desc">Description :</string>
     <string name="task">Task  </string>
+    <string name="zone">Area : </string>
 
     <string name="cnxStatusTitle">Connection status : </string>
     <string name="cnxStatusMsgOnline">Online</string>
@@ -71,8 +78,10 @@
     <string name="pressToRecordAudio">Appuyez sur le micro pour commencer l\'enregistrement</string>
     <!-- Number of imported medias -->
     <string name="videoAlreadyRecorded">You have already recorded a video</string>
+    <string name="commentAlreadyRecorded">You have already added a comment</string>
     <string name="imagesCaptured"> Images captured</string>
     <string name="audioAlreadyRecorded">You have already recorded an audio</string>
+    <string name="imageAlreadyRecorded">You have already captured an image</string>
     <string name="btnSaveComment">Save Comment</string>
     <string name="videoNotRecorded">You have not recorded a video yet</string>
     <string name="imagesNotCaptured">You have not imported an image yet</string>
@@ -96,11 +105,16 @@
     <string name="saveSuccessCommentMsg">The comment has added successfully</string>
     <string name="fillCommentToSubmit">Please fill the comment section to submit</string>
     <string name="fillAllMediaToSubmit">Fill all medias report to submit</string>
+    <string name="fillMinMediaToSubmit">You haven\'t passed the task, please fill at least one comment</string>
 
     <string name="exitAppMsg">Are you sure you want to exit?</string>
     <string name="noCnxMainMsg">Unable to connect to the Internet</string>
     <string name="noCnxsecondMsg">The app cannot work offline, please check your connection and try.</string>
 
+    <string name="gradientColors">#3dbe29 , #5cb600 , #72ae00 , #85a500 , #959b00 , #b18500 , #bd7900 , #c76c00 , #d05d00 , #d84b00 , #de3700 , #de3700 , #e21717</string>
 
+    <string name="errorOccured">An error has occurred !</string>
 
+    <string name="noInterventionMain">No scheduled intervention!</string>
+    <string name="noInterventionOk">No intervention carried out!</string>
 </resources>

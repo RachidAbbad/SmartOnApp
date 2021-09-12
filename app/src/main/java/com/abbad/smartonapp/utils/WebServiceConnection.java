@@ -13,6 +13,7 @@ import com.abbad.smartonapp.R;
 import com.abbad.smartonapp.activities.LoginActivity;
 import com.abbad.smartonapp.activities.MainActivity;
 import com.abbad.smartonapp.classes.User;
+import com.abbad.smartonapp.dialogs.ResultBottomDialog;
 import com.google.gson.JsonObject;
 
 import net.steamcrafted.loadtoast.LoadToast;
@@ -53,7 +54,7 @@ public class WebServiceConnection {
         protected Void doInBackground(Void... arg0) {
 
             try{
-                URL url = new URL("http://smartonviatoile.com/api/Auth/login");
+                URL url = new URL("http://admin.smartonviatoile.com/api/Auth/login");
                 HttpURLConnection http = (HttpURLConnection)url.openConnection();
                 http.setRequestMethod("POST");
                 http.setDoOutput(true);
@@ -85,7 +86,7 @@ public class WebServiceConnection {
 
 
             }catch(IOException | JSONException e){
-                e.printStackTrace();
+                new ResultBottomDialog(loginActivity.getResources().getString(R.string.errorOccured),3).show(loginActivity.getSupportFragmentManager(),null);
             }
 
             return null;
@@ -93,6 +94,7 @@ public class WebServiceConnection {
 
         @Override
         protected void onPostExecute(Void param){
+
             if(isValid){
                 loginActivity.getBtnLogin().loadingSuccessful();
                 new Timer().schedule(new TimerTask() {

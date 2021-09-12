@@ -34,6 +34,9 @@ public class SessionManager {
             editor.putString("Id", userJson.getString("id"));
             editor.putString("NomComlplet" , userJson.getString("name")+" "+ userJson.getString("prenom"));
             editor.putString("Gsm",userJson.getString("gsm"));
+            editor.putString("IdCapteur",userJson.getString("id_capteur"));
+            editor.putString("IdSite",userJson.getString("id_site"));
+            editor.putString("IdOrg",userJson.getString("id_org"));
             editor.putString("Token",AuthToken);
             editor.putString("CurrentInterv",null);
             switch (userJson.getInt("type_user")){
@@ -48,6 +51,14 @@ public class SessionManager {
         public static String getCurrentInterv(Context context){
             return context.getSharedPreferences("LoginDetails", Context.MODE_PRIVATE).getString("CurrentInterv",null);
         }
+
+        public static String getIdCapteur(Context context){
+            return context.getSharedPreferences("LoginDetails", Context.MODE_PRIVATE).getString("IdCapteur",null);
+        }
+
+    public static String getIdSite(Context context){
+        return context.getSharedPreferences("LoginDetails", Context.MODE_PRIVATE).getString("IdCapteur",null);
+    }
 
         public static void saveCurrentInterv(String id){
             SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -71,7 +82,15 @@ public class SessionManager {
             editor.apply();
         }
 
-        public boolean isUserLoggedOut() {
+    public static String getUserId(Context applicationContext) {
+        return sharedPreferences.getString("Id",null);
+    }
+
+    public static String getIdOrg(Context context) {
+        return context.getSharedPreferences("LoginDetails", Context.MODE_PRIVATE).getString("IdOrg",null);
+    }
+
+    public boolean isUserLoggedOut() {
             boolean isEmailEmpty = sharedPreferences.getString("Email", "").isEmpty();
             boolean isPasswordEmpty = sharedPreferences.getString("Password", "").isEmpty();
             return isEmailEmpty || isPasswordEmpty;

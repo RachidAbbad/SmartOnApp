@@ -23,17 +23,10 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     private CardView leftColor;
     //private LinearLayout detailLayout;
 
-    List<Notification> notificationList;
+    public List<Notification> notificationList;
 
-    public NotificationAdapter(){
-        notificationList = new ArrayList<>();
-        notificationList.add(new Notification("Notification example 1","Lorem Ipsum est simplement du faux texte employé dans la composition et la mise en page avant impression. Le Lorem Ipsum est le faux texte standard de l'imprimerie depuis les années 1500.","07-07-2021 17:12"));
-        notificationList.add(new Notification("Notification example 2","Lorem Ipsum est simplement du faux texte employé dans la composition et la mise en page avant impression. Le Lorem Ipsum est le faux texte standard de l'imprimerie depuis les années 1500.","05-07-2021 09:32"));
-        notificationList.add(new Notification("Notification example 3","Lorem Ipsum est simplement du faux texte employé dans la composition et la mise en page avant impression. Le Lorem Ipsum est le faux texte standard de l'imprimerie depuis les années 1500.","05-07-2021 10:19"));
-        notificationList.add(new Notification("Notification example 4","Lorem Ipsum est simplement du faux texte employé dans la composition et la mise en page avant impression. Le Lorem Ipsum est le faux texte standard de l'imprimerie depuis les années 1500.","04-07-2021 08:12"));
-        notificationList.add(new Notification("Notification example 5","Lorem Ipsum est simplement du faux texte employé dans la composition et la mise en page avant impression. Le Lorem Ipsum est le faux texte standard de l'imprimerie depuis les années 1500.","01-07-2021 11:52"));
-        notificationList.add(new Notification("Notification example 6","Lorem Ipsum est simplement du faux texte employé dans la composition et la mise en page avant impression. Le Lorem Ipsum est le faux texte standard de l'imprimerie depuis les années 1500.","29-06-2021 10:17"));
-        notificationList.add(new Notification("Notification example 7","Lorem Ipsum est simplement du faux texte employé dans la composition et la mise en page avant impression. Le Lorem Ipsum est le faux texte standard de l'imprimerie depuis les années 1500.","25-06-2021 17:12"));
+    public NotificationAdapter(List<Notification> notificationList){
+        this.notificationList = notificationList;
     }
 
     @NonNull
@@ -46,9 +39,10 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     @SuppressLint("ResourceAsColor")
     @Override
     public void onBindViewHolder(@NonNull Viewholder holder, int position) {
+        holder.setIsRecyclable(false);
         Notification notification = notificationList.get(position);
         mainTitle.setText(notification.getTitle());
-        detailText.setText(notification.getDetails());
+        detailText.setText(notification.getBody());
         notifTime.setText(notification.getTime());
         if (position % 2 == 0) {
             leftColor.setBackgroundResource(R.color.secondColor);
@@ -76,4 +70,11 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         }
 
     }
+
+    public void setNewData(List<Notification> notificationList){
+        this.notificationList.clear();
+        this.notificationList.addAll(notificationList);
+        this.notifyDataSetChanged();
+    }
+
 }

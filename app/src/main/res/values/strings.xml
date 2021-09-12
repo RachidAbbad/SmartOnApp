@@ -4,8 +4,12 @@
     <string name="title_dashboard">Accueil</string>
     <string name="title_notifications">Notifications</string>
     <string name="title_intervention">Interventions</string>
+    <string name="previousInterv">Interventions effectuées</string>
     <string name="title_auth_site" translatable="false">Authentification au site</string>
     <string name="title_profile">Profil</string>
+    <string name="warningTitle">Alertes</string>
+
+
     <string name="hintEmail">Email</string>
     <string name="hintPass">Mot de passe</string>
     <string name="login_btn_text">Se connecter</string>
@@ -17,10 +21,10 @@
     <string name="infos_incorrect_msg" translatable="false">Email ou Mot de passe incorrect</string>
     <string name="auth_site_loading_msg" translatable="false">Email ou Mot de passe incorrect</string>
     <string name="chaudiereName" translatable="false">Chaudère</string>
-    <string name="ballonName" translatable="false">Ballon de chaudère</string>
+    <string name="ballonName" translatable="false">Ballon de chaudière</string>
 
     <string name="temp1Text">T° de départ</string>
-    <string name="temp2Text">T° de retoure</string>
+    <string name="temp2Text">T° de retour</string>
     <string name="temp3Text">T° d\'inertie</string>
     <string name="temp4Text">T° des fumées</string>
     <string name="temp5Text">Dépression</string>
@@ -38,6 +42,7 @@
     <string name="usedToold" translatable="false">Outils utilisés :</string>
     <string name="Interv_desc" translatable="false">Description :</string>
     <string name="task" translatable="false">Tache </string>
+    <string name="zone" translatable="false">Zone : </string>
 
 
     <string name="cnxStatusTitle" translatable="false">Statut de connexion : </string>
@@ -51,9 +56,12 @@
     <string name="nfcScanReady" translatable="false">Prêt à scanner ...</string>
     <string name="nfcNotSupported" translatable="false">NFC n\'est pas pris en charge dans cet appareil</string>
     <string name="noDisponible" translatable="false">Non disponible</string>
+    <string name="noBalloons" translatable="false">Pas de ballons sur ce site</string>
+    <string name="noSilos" translatable="false">Pas de silos sur ce site</string>
+    <string name="temperature" translatable="false">Température</string>
 
 
-    <string name="intervTitle" translatable="false">Vos intervention</string>
+    <string name="intervTitle" translatable="false">Vos interventions</string>
     <string name="notifTitle" translatable="false">Notifications</string>
 
     <string name="taskStatus" translatable="false">État de la tâche :</string>
@@ -73,8 +81,10 @@
     <string name="pressToRecordAudio">Press the mic to start recording</string>
     <!-- Number of imported medias -->
     <string name="videoAlreadyRecorded">Vous avez déjà enregistré une vidéo</string>
+    <string name="commentAlreadyRecorded">Vous avez déjà ajouté un commentaire</string>
     <string name="imagesCaptured"> Images capturées</string>
     <string name="audioAlreadyRecorded">Vous avez déjà enregistré un audio</string>
+    <string name="imageAlreadyRecorded">Vous avez déjà enregistré une image</string>
     <string name="btnSaveComment">Enregistrer le commentaire</string>
     <string name="videoNotRecorded">Vous n\'avez pas encore enregistré de vidéo</string>
     <string name="imagesNotCaptured">Vous n\'avez pas encore importé d\'image</string>
@@ -98,11 +108,18 @@
     <string name="saveSuccessCommentMsg">Le commentaire a été ajouté avec succès</string>
     <string name="fillCommentToSubmit">Veuillez remplir la section commentaire pour soumettre</string>
     <string name="fillAllMediaToSubmit">Remplir tous les rapports des médias à soumettre</string>
+    <string name="fillMinMediaToSubmit">Vous n\'avez pas réussi la tâche, veuillez remplir au moins un commentaire</string>
 
     <string name="exitAppMsg">Êtes-vous sûr de vouloir quitter?</string>
     <string name="noCnxMainMsg">Impossible de se connecter à Internet</string>
     <string name="noCnxsecondMsg">L\'application ne peut pas fonctionner hors connexion, vérifiez votre connexion et essayez.</string>
 
+    <string name="gradientColors">#3dbe29 , #5cb600 , #72ae00 , #85a500 , #959b00 , #b18500 , #bd7900 , #c76c00 , #d05d00 , #d84b00 , #de3700 , #de3700 , #e21717</string>
+
+    <string name="errorOccured">Une erreur s\'est produite !</string>
+
+    <string name="noInterventionMain">Aucune intervention programmée !</string>
+    <string name="noInterventionOk">Aucune intervention effectuée !</string>
 
 
 </resources>

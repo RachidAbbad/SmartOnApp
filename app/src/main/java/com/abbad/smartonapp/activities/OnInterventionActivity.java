@@ -21,6 +21,8 @@ import androidx.viewpager.widget.ViewPager;
 import com.abbad.smartonapp.R;
 import com.abbad.smartonapp.adapters.TaskFragmentAdapter;
 import com.abbad.smartonapp.classes.Intervention;
+import com.abbad.smartonapp.classes.Task;
+import com.abbad.smartonapp.datas.InterventionData;
 import com.abbad.smartonapp.dialogs.ResultBottomDialog;
 import com.abbad.smartonapp.dialogs.SubmitGeneralDialog;
 import com.abbad.smartonapp.utils.InterventionManager;
@@ -65,24 +67,30 @@ public class OnInterventionActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.intervention_rapport);
         initViews();
+        setDynamicFragmentToTabLayout();
         //Resume the general report when the user has completed all the tasks and exit the app :
         resumeIntervention();
         //Save intervention on shared preference :
         InterventionManager.saveCurrentIntervention(intervention.getId());
+        Task currentTask = intervention.getListTaches().get(0);
+        for (int k=0;k<currentTask.getListEquipements().size();k++) {
+
+            for (int j=0;j<currentTask.getListActions().size();j++) {
+                Log.e("TacheInfos",currentTask.getListActions().get(j));
+            }}
+
         this.onPause();
     }
 
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void initViews() {
+        intervention = InterventionData.currentIntervention;
         //Initialise the layout
         viewPager = findViewById(R.id.viewpager);
         mTabLayout = findViewById(R.id.tabs);
         intervBody = findViewById(R.id.interv_title);
         intervId = findViewById(R.id.interv_id);
-
-        //Get Current Intervention
-        intervention = getIntent().getParcelableExtra("intervention");
 
         //Set intervention body to text view :
         intervBody.setText(intervention.getTitle());
@@ -97,7 +105,7 @@ public class OnInterventionActivity extends AppCompatActivity{
         previousBtn = findViewById(R.id.previousBtn);
 
 
-        int max = intervention.getTodos().length -1 ;
+        int max = intervention.getListTaches().size() -1 ;
 
 
 
@@ -137,7 +145,7 @@ public class OnInterventionActivity extends AppCompatActivity{
         });
 
 
-        setDynamicFragmentToTabLayout();
+
 
 
         if (viewPager.getCurrentItem()==0) {
@@ -188,12 +196,12 @@ public class OnInterventionActivity extends AppCompatActivity{
     private void setDynamicFragmentToTabLayout() {
         // here we have given 10 as the tab number
         // you can give any number here
-        for (int i = 0; i < intervention.getTodos().length; i++) {
+        for (int i = 0; i < intervention.getListTaches().size(); i++) {
             // set the tab name as "Page: " + i
             TextView tabItem =(TextView) LayoutInflater.from(getApplicationContext()).inflate(R.layout.tab_layout_item,null);
             int currentNumTask = i+1;
             tabItem.setText(getResources().getString(R.string.task)+" "+currentNumTask);
-            tabItem.setTypeface(ResourcesCompat.getFont(this, R.font.catamaran_medium));
+            //tabItem.setTypeface(ResourcesCompat.getFont(this, R.font.catamaran_medium));
             tabItem.setTextColor(getResources().getColor(R.color.uiTextColor));
             mTabLayout.addTab(mTabLayout.newTab().setCustomView(tabItem));
         }

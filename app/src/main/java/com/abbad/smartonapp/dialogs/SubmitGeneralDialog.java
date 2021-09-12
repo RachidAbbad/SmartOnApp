@@ -30,18 +30,25 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.core.content.ContextCompat;
 
 import com.abbad.smartonapp.R;
+import com.abbad.smartonapp.activities.InterventionDetails;
+import com.abbad.smartonapp.activities.MainActivity;
 import com.abbad.smartonapp.activities.OnInterventionActivity;
 import com.abbad.smartonapp.classes.Intervention;
 import com.abbad.smartonapp.datas.InterventionData;
+import com.abbad.smartonapp.datas.ReportData;
 import com.abbad.smartonapp.datas.TaskData;
+import com.abbad.smartonapp.services.UploadReportService;
+import com.abbad.smartonapp.utils.Comun;
 import com.abbad.smartonapp.utils.InterventionManager;
 import com.dx.dxloadingbutton.lib.LoadingButton;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.ncorti.slidetoact.SlideToActView;
+import com.rm.rmswitch.RMSwitch;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
@@ -89,15 +96,19 @@ public class SubmitGeneralDialog  extends BottomSheetDialogFragment {
     //Submit the report
     private AppCompatButton saveCommentBtn;
 
+    private RMSwitch taskStatus;
+
     //Submit Report
     private SlideToActView submitBtn;
 
     //MediaRecorder & MediaPlayer
     private MediaRecorder mediaRecorder;
-    private MediaPlayer mediaPlayer;
     private int AudioRecordingStatus=0;
     //Task info:
     private Intervention currentIntervention;
+
+    //Flags:
+    private boolean isFirstVideo=true,isFirstImage=true,isFirstComment=true;
 
     //Captured image index :
     private int imageIndex = 1;
@@ -136,6 +147,7 @@ public class SubmitGeneralDialog  extends BottomSheetDialogFragment {
         initViews(contentView);
         setupComponentsEvents();
         this.setCancelable(false);
+
     }
 
     @SuppressLint("SetTextI18n")
@@ -166,6 +178,8 @@ public class SubmitGeneralDialog  extends BottomSheetDialogFragment {
 
         //Submit button :
         saveCommentBtn = view.findViewById(R.id.saveComment);
+
+        taskStatus = view.findViewById(R.id.taskStatus);
 
         //Submit subReport
         submitBtn = view.findViewById(R.id.submitBtn);
@@ -317,8 +331,7 @@ public class SubmitGeneralDialog  extends BottomSheetDialogFragment {
         imageLayoutInput.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new ImageImportMethodeDialog(SubmitGeneralDialog.this).
-                        show(getActivity().getSupportFragmentManager(),null);
+                permissionCameraInputHanler();
             }
         });
 
@@ -337,70 +350,20 @@ public class SubmitGeneralDialog  extends BottomSheetDialogFragment {
         submitBtn.setOnSlideCompleteListener(new SlideToActView.OnSlideCompleteListener() {
             @Override
             public void onSlideComplete(@NotNull SlideToActView slideToActView) {
-                //TODO Send Data to The Server (The BACKEND Team are laaate !!)
-                InterventionManager.resetAllData(currentIntervention,getActivity());
+                Intent serviceIntent = new Intent(SubmitGeneralDialog.this.getActivity(), UploadReportService.class);
+                serviceIntent.putExtra("etatIntervention", taskStatus.isChecked());
+                serviceIntent.putExtra("interv_id",currentIntervention.getId());
+                serviceIntent.putExtra("nbTaches",currentIntervention.getListTaches().size());
+                getActivity().startService(serviceIntent);
+                getActivity().finish();
+
             }
         });
 
 
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1002){
-            if (resultCode == Activity.RESULT_OK){
-                showResultDialog(getResources().getString(R.string.saveSuccessVideoMsg),1);
-                videoLayoutInput.setEnabled(false);
-                videoLayoutInput.setAlpha(0.7f);
-            }
-            else {
-                showResultDialog(getResources().getString(R.string.saveCancelVideoMsg),2);
-            }
-        }
-        if (requestCode == 200){
-            if(resultCode == Activity.RESULT_OK){
-                int imageNb;
-                ClipData clipData = data.getClipData();
-                imageNb = clipData.getItemCount();
-                if (clipData != null) {
-                    for (int i = 0; i < imageNb; i++) {
-                        ClipData.Item item = clipData.getItemAt(i);
-                        Uri uri = item.getUri();
-                        try {
-                            imageIndex++;
-                            File file = getOutputMediaFile(1,currentIntervention.getId()+"_"+imageIndex);
-                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), item.getUri());
 
-                            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100 /*ignored for PNG*/, bos);
-                            byte[] bitmapdata = bos.toByteArray();
-                            FileOutputStream fos = new FileOutputStream(file);
-                            fos.write(bitmapdata);
-                            fos.flush();
-                            fos.close();
-                        }
-                        catch (IOException exception){
-                            exception.printStackTrace();
-                        }
-                    }
-                }
-                showResultDialog(imageNb+" "+getResources().getString(R.string.saveSuccessImagesMsg),1);
-            }
-            else {
-                showResultDialog(getResources().getString(R.string.saveCancelImageMsg),2);
-            }
-
-        }
-        if (requestCode == 100){
-            if (resultCode == Activity.RESULT_OK){
-                showResultDialog(getResources().getString(R.string.saveSuccessImageMsg),1);
-            }
-            else {
-                showResultDialog(getResources().getString(R.string.saveCancelImageMsg),2);
-            }
-        }
-    }
 
     //Camera Methodes :
     public void permissionCameraHanler(){
@@ -462,54 +425,29 @@ public class SubmitGeneralDialog  extends BottomSheetDialogFragment {
                 });
     }
 
-    public void permissionPickHanler(){
-        List<PermissionItem> permissionItems = new ArrayList<PermissionItem>();
-        permissionItems.add(new PermissionItem(Manifest.permission.CAMERA, "Camera", R.drawable.permission_ic_camera));
-        HiPermission.create(getActivity())
-                .title("Ask for permission")
-                .permissions(permissionItems)
-                .style(R.style.PermissionBlueStyle)
-                .checkMutiPermission(new PermissionCallback() {
-                    @Override
-                    public void onClose() {
-                        Log.i("permission_granted", "onClose");
-                    }
-
-                    @Override
-                    public void onFinish() {
-                        pickImage();
-                    }
-
-                    @Override
-                    public void onDeny(String permission, int position) {
-
-                    }
-
-                    @Override
-                    public void onGuarantee(String permission, int position) {
-                        pickImage();
-                    }
-                });
-    }
-
     public void resumeTask() throws JSONException, FileNotFoundException {
         if(InterventionManager.getCurrentIntervention().equals(currentIntervention.getId())){
+
             //Image Section
             imageNumber.setVisibility(View.VISIBLE);
             if (InterventionData.getImages(currentIntervention.getId(),getActivity()).size()!=0){
+                isFirstImage = false;
                 imageIndex = InterventionData.getImages(currentIntervention.getId(),getActivity()).size()+1;
                 imageNumber.setText(InterventionData.getImages(currentIntervention.getId(),getActivity()).size()+" Images has added");
             }
             else
                 imageNumber.setText(getResources().getString(R.string.imagesNotCaptured));
+
             //Video Section
             videoAddStatus.setVisibility(View.VISIBLE);
             if (InterventionData.getVideos(currentIntervention.getId(),getActivity()).size()!=0){
+                isFirstVideo = false;
                 videoLayoutInput.setEnabled(false);
                 videoAddStatus.setText(getResources().getString(R.string.videoAlreadyRecorded));
             }
             else
                 videoAddStatus.setText(getResources().getString(R.string.videoNotRecorded));
+
             //Audio Section
             audioSaveStatus.setVisibility(View.VISIBLE);
             if (InterventionData.getAudios(currentIntervention.getId(),getActivity()).size()!=0){
@@ -518,8 +456,10 @@ public class SubmitGeneralDialog  extends BottomSheetDialogFragment {
             }
             else
                 audioSaveStatus.setText(getResources().getString(R.string.audioNotRecorded));
+
             //Comments :
             if (InterventionData.getComments(currentIntervention.getId(),getActivity()).size()!=0){
+                isFirstComment = false;
                 Scanner in = new Scanner(new FileReader(InterventionData.getComments(currentIntervention.getId(),getActivity()).get(0)));
                 StringBuilder sb = new StringBuilder();
                 while(in.hasNext()) {
@@ -528,11 +468,17 @@ public class SubmitGeneralDialog  extends BottomSheetDialogFragment {
                 in.close();
 
                 commentEditText.setText(sb.toString());
+                commentEditText.setFocusable(false);
             }
         }
     }
 
     public void captureImage(){
+        if (!isFirstImage){
+            showResultDialog(getResources().getString(R.string.imageAlreadyRecorded),2);
+            return;
+        }
+        isFirstImage = false;
         imageNumber.setVisibility(GONE);
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
@@ -543,17 +489,6 @@ public class SubmitGeneralDialog  extends BottomSheetDialogFragment {
         // set the image file name
         intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
         startActivityForResult(intent,100);
-    }
-
-    public void pickImage(){
-        imageNumber.setVisibility(GONE);
-        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
-        StrictMode.setVmPolicy(builder.build());
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, 200);
     }
 
     //Video Methodes :
@@ -618,6 +553,11 @@ public class SubmitGeneralDialog  extends BottomSheetDialogFragment {
     }
 
     public void recordVideo(){
+        if (!isFirstVideo){
+            showResultDialog(getResources().getString(R.string.videoAlreadyRecorded),2);
+            return;
+        }
+        isFirstVideo = false;
         videoAddStatus.setVisibility(GONE);
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
@@ -634,63 +574,6 @@ public class SubmitGeneralDialog  extends BottomSheetDialogFragment {
         startActivityForResult(intent, 1002);
     }
 
-    private File getOutputMediaFile(int type,String FileName){
-
-        File mediaStorageDir = null;
-        File mediaFile = null;
-
-        if(type == MEDIA_TYPE_VIDEO) {
-            mediaStorageDir = new File(getActivity().getExternalCacheDir(), "FinalVideo");
-            // Create the storage directory(MyCameraVideo) if it does not exist
-            if (! mediaStorageDir.exists()){
-                if (! mediaStorageDir.mkdirs()){
-                    new ResultBottomDialog(getResources().getString(R.string.saveFailedVideoMsg),3).show(getActivity().getSupportFragmentManager(),null);
-                }
-            }
-            // For unique video file name appending current timeStamp with file name
-            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-                    FileName + ".mp4");
-        }
-        else if (type == MEDIA_TYPE_IMAGE){
-            mediaStorageDir = new File(getActivity().getExternalCacheDir(), "FinalImages");
-            // Create the storage directory(MyCameraVideo) if it does not exist
-            if (! mediaStorageDir.exists()){
-                if (! mediaStorageDir.mkdirs()){
-                    new ResultBottomDialog(getResources().getString(R.string.saveFailedImageMsg),3).show(getActivity().getSupportFragmentManager(),null);
-                }
-            }
-            // For unique video file name appending current timeStamp with file name
-            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-                    FileName + ".jpg");
-        }
-        else if (type == MEDIA_TYPE_AUDIO){
-            mediaStorageDir = new File(getActivity().getExternalCacheDir(), "FinalAudios");
-            // Create the storage directory(MyCameraVideo) if it does not exist
-            if (! mediaStorageDir.exists()){
-                if (! mediaStorageDir.mkdirs()){
-                    new ResultBottomDialog(getResources().getString(R.string.saveFailedAudioMsg),3).show(getActivity().getSupportFragmentManager(),null);
-
-                }
-            }
-            // For unique video file name appending current timeStamp with file name
-            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-                    FileName + ".mp3");
-        }
-
-        else if (type == 10){
-            mediaStorageDir = new File(getActivity().getExternalCacheDir(), "FinalComments");
-            // Create the storage directory(MyCameraVideo) if it does not exist
-            if (! mediaStorageDir.exists()){
-                if (! mediaStorageDir.mkdirs()){
-                    new ResultBottomDialog(getResources().getString(R.string.saveFailedCommentMsg),3).show(getActivity().getSupportFragmentManager(),null);
-                }
-            }
-            // For unique video file name appending current timeStamp with file name
-            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-                    FileName + ".txt");
-        }
-        return mediaFile;
-    }
     //Audio Methodes :
     public void permissionAudioHanler(){
         List<PermissionItem> permissionItems = new ArrayList<PermissionItem>();
@@ -724,7 +607,6 @@ public class SubmitGeneralDialog  extends BottomSheetDialogFragment {
                     }
                 });
     }
-
     public void permissionAudioInputHanler(){
         List<PermissionItem> permissionItems = new ArrayList<PermissionItem>();
         permissionItems.add(new PermissionItem(Manifest.permission.RECORD_AUDIO, "Record Audio", R.drawable.permission_ic_micro_phone));
@@ -797,9 +679,9 @@ public class SubmitGeneralDialog  extends BottomSheetDialogFragment {
         audioCounterTimer.start();
         mediaRecorder = new MediaRecorder();
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
         mediaRecorder.setOutputFile(getOutputMediaFile(2,currentIntervention.getId()+"_aud"));
-        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
         try {
             mediaRecorder.prepare();
         } catch (IOException e) {
@@ -845,7 +727,13 @@ public class SubmitGeneralDialog  extends BottomSheetDialogFragment {
     }
 
     //Comments Methodes :
+
     public void saveComment() throws IOException {
+        if (!isFirstComment){
+            showResultDialog(getResources().getString(R.string.commentAlreadyRecorded),2);
+            return;
+        }
+        isFirstComment = false;
         if (commentEditText.getText().toString().length() != 0 || !commentEditText.getText().toString().equals("")){
             File commentFile = getOutputMediaFile(10,currentIntervention.getId()+"_comment");
             FileOutputStream out = new FileOutputStream(commentFile);
@@ -856,11 +744,89 @@ public class SubmitGeneralDialog  extends BottomSheetDialogFragment {
             showResultDialog(getResources().getString(R.string.fillCommentToSubmit),2);
 
     }
+    //Utils
 
-    //
     public void showResultDialog(String content,int type){
         new ResultBottomDialog(content,type).show(getActivity().getSupportFragmentManager(),null);
     }
 
-    //TODO Handel read external storage exception in saving comments
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1002){
+            if (resultCode == Activity.RESULT_OK){
+                showResultDialog(getResources().getString(R.string.saveSuccessVideoMsg),1);
+            }
+            else {
+                showResultDialog(getResources().getString(R.string.saveCancelVideoMsg),2);
+            }
+        }
+        if (requestCode == 100){
+            if (resultCode == Activity.RESULT_OK){
+                showResultDialog(getResources().getString(R.string.saveSuccessImageMsg),1);
+            }
+            else {
+                showResultDialog(getResources().getString(R.string.saveCancelImageMsg),2);
+            }
+        }
+    }
+
+    private File getOutputMediaFile(int type,String FileName){
+
+        File mediaStorageDir = null;
+        File mediaFile = null;
+
+        if(type == MEDIA_TYPE_VIDEO) {
+            mediaStorageDir = new File(getActivity().getExternalCacheDir(), "FinalVideo");
+            // Create the storage directory(MyCameraVideo) if it does not exist
+            if (! mediaStorageDir.exists()){
+                if (! mediaStorageDir.mkdirs()){
+                    new ResultBottomDialog(getResources().getString(R.string.saveFailedVideoMsg),3).show(getActivity().getSupportFragmentManager(),null);
+                }
+            }
+            // For unique video file name appending current timeStamp with file name
+            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+                    FileName + ".mp4");
+        }
+        else if (type == MEDIA_TYPE_IMAGE){
+            mediaStorageDir = new File(getActivity().getExternalCacheDir(), "FinalImages");
+            // Create the storage directory(MyCameraVideo) if it does not exist
+            if (! mediaStorageDir.exists()){
+                if (! mediaStorageDir.mkdirs()){
+                    new ResultBottomDialog(getResources().getString(R.string.saveFailedImageMsg),3).show(getActivity().getSupportFragmentManager(),null);
+                }
+            }
+            // For unique video file name appending current timeStamp with file name
+            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+                    FileName + ".jpg");
+        }
+        else if (type == MEDIA_TYPE_AUDIO){
+            mediaStorageDir = new File(getActivity().getExternalCacheDir(), "FinalAudios");
+            // Create the storage directory(MyCameraVideo) if it does not exist
+            if (! mediaStorageDir.exists()){
+                if (! mediaStorageDir.mkdirs()){
+                    new ResultBottomDialog(getResources().getString(R.string.saveFailedAudioMsg),3).show(getActivity().getSupportFragmentManager(),null);
+
+                }
+            }
+            // For unique video file name appending current timeStamp with file name
+            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+                    FileName + ".mp3");
+        }
+
+        else if (type == 10){
+            mediaStorageDir = new File(getActivity().getExternalCacheDir(), "FinalComments");
+            // Create the storage directory(MyCameraVideo) if it does not exist
+            if (! mediaStorageDir.exists()){
+                if (! mediaStorageDir.mkdirs()){
+                    new ResultBottomDialog(getResources().getString(R.string.saveFailedCommentMsg),3).show(getActivity().getSupportFragmentManager(),null);
+                }
+            }
+            // For unique video file name appending current timeStamp with file name
+            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+                    FileName + ".txt");
+        }
+        return mediaFile;
+    }
+
 }

@@ -11,10 +11,10 @@
     android:orientation="vertical">
     <ScrollView
         android:id="@+id/mainLayout"
-        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <LinearLayout
+            android:id="@+id/containerLayout"
             android:layout_width="match_parent"
             android:orientation="vertical"
             android:layout_height="wrap_content"
@@ -29,9 +29,10 @@
                 android:textColor="@color/uiTextColor"
                 android:textSize="20dp"/>
             <TextView
+                android:id="@+id/chadiereId"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Id : N6725G7268"
+                android:text="Id : "
                 android:layout_margin="1dp"
                 android:fontFamily="sans-serif-condensed-medium"
                 android:textColor="@color/uiTextColor"
@@ -127,12 +128,6 @@
                     </LinearLayout>
 
                 </androidx.cardview.widget.CardView>
-            </LinearLayout>
-            <!--Row2-->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
                 <androidx.cardview.widget.CardView
                     android:layout_width="0dp"
                     android:layout_weight=".50"
@@ -176,6 +171,12 @@
                     </LinearLayout>
 
                 </androidx.cardview.widget.CardView>
+            </LinearLayout>
+            <!--Row2-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
                 <androidx.cardview.widget.CardView
                     android:layout_width="0dp"
                     android:layout_weight=".50"
@@ -221,11 +222,6 @@
                     </LinearLayout>
 
                 </androidx.cardview.widget.CardView>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
                 <androidx.cardview.widget.CardView
                     android:layout_width="0dp"
                     android:layout_weight=".50"
@@ -313,257 +309,6 @@
 
                 </androidx.cardview.widget.CardView>
             </LinearLayout>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/ballonName"
-                android:layout_marginTop="8dp"
-                android:fontFamily="sans-serif-condensed-medium"
-                android:textColor="@color/uiTextColor"
-                android:textSize="20dp"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Id : B9837A378"
-                android:layout_margin="1dp"
-                android:fontFamily="sans-serif-condensed-medium"
-                android:textColor="@color/uiTextColor"
-                android:textSize="15dp"/>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:layout_marginHorizontal="@dimen/cardTempMarginH"
-                    android:layout_marginVertical="@dimen/cardTempMarginV"
-                    app:cardCornerRadius="25dp">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center">
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="0dp"
-                            android:layout_height="200dp"
-                            android:layout_weight=".50"
-                            app:cardCornerRadius="25dp"
-                            android:outlineAmbientShadowColor="@color/transparent"
-                            android:outlineSpotShadowColor="@color/transparent">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:gravity="center"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_margin="5dp"
-                                    android:fontFamily="sans-serif-condensed-medium"
-                                    android:text="Pression"
-                                    android:textColor="@color/uiTextColor"
-                                    android:textSize="@dimen/textTempSize" />
-
-                                <com.github.anastr.speedviewlib.SpeedView
-                                    android:id="@+id/ballon_pressure"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    app:sv_centerCircleRadius="12dp"
-                                    app:sv_indicator="LineIndicator"
-                                    app:sv_indicatorLightColor="@color/black"
-                                    app:sv_indicatorWidth="3dp"
-                                    app:sv_markWidth="2dp"
-                                    app:sv_maxSpeed="15"
-                                    app:sv_minSpeed="0"
-                                    app:sv_speedTextFormat="FLOAT"
-                                    app:sv_speedTextSize="22dp"
-                                    app:sv_speedometerMode="NORMAL"
-                                    app:sv_speedometerWidth="15dp"
-                                    app:sv_unit="Pa"
-                                    app:sv_unitTextSize="10dp"
-                                    app:sv_unitUnderSpeedText="true"
-                                    app:sv_withTremble="false" />
-                            </LinearLayout>
-                        </androidx.cardview.widget.CardView>
-
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="0dp"
-                            android:layout_weight=".50"
-                            android:layout_height="200dp"
-                            android:layout_marginHorizontal="@dimen/cardTempMarginH"
-                            android:layout_marginVertical="@dimen/cardTempMarginV"
-                            app:cardCornerRadius="25dp"
-                            android:outlineAmbientShadowColor="@color/transparent"
-                            android:outlineSpotShadowColor="@color/transparent">
-                            <LinearLayout
-                                android:layout_height="match_parent"
-                                android:orientation="vertical"
-                                android:gravity="center"
-                                android:layout_width="match_parent">
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="@string/temp5Text"
-                                    android:textSize="@dimen/textTempSize"
-                                    android:layout_margin="5dp"
-                                    android:textColor="@color/uiTextColor"
-                                    android:fontFamily="sans-serif-condensed-medium"
-                                    />
-                                <com.github.anastr.speedviewlib.SpeedView
-                                    android:id="@+id/ballon_depressure"
-                                    android:layout_height="match_parent"
-                                    android:layout_width="match_parent"
-                                    app:sv_unitTextSize="10dp"
-                                    app:sv_minSpeed="0"
-                                    app:sv_maxSpeed="15"
-                                    app:sv_speedTextSize="22dp"
-                                    app:sv_unit="Pa"
-                                    app:sv_centerCircleRadius="12dp"
-                                    app:sv_unitUnderSpeedText="true"
-                                    app:sv_speedTextFormat="FLOAT"
-                                    app:sv_speedometerWidth="15dp"
-                                    app:sv_indicatorWidth="3dp"
-                                    app:sv_markWidth="2dp"
-                                    app:sv_indicatorLightColor="@color/black"
-                                    app:sv_speedometerMode="NORMAL"
-                                    app:sv_withTremble="false"
-                                    app:sv_indicator="LineIndicator"/>
-                            </LinearLayout>
-                        </androidx.cardview.widget.CardView>
-                    </LinearLayout>
-
-
-
-                </androidx.cardview.widget.CardView>
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/ballonName"
-                android:layout_marginTop="8dp"
-                android:fontFamily="sans-serif-condensed-medium"
-                android:textColor="@color/uiTextColor"
-                android:textSize="20dp"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Id : B1O393998"
-                android:layout_margin="1dp"
-                android:fontFamily="sans-serif-condensed-medium"
-                android:textColor="@color/uiTextColor"
-                android:textSize="15dp"/>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:layout_marginHorizontal="@dimen/cardTempMarginH"
-                    android:layout_marginVertical="@dimen/cardTempMarginV"
-                    app:cardCornerRadius="25dp">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center">
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="0dp"
-                            android:layout_height="200dp"
-                            android:layout_weight=".50"
-                            app:cardCornerRadius="25dp"
-                            android:outlineAmbientShadowColor="@color/transparent"
-                            android:outlineSpotShadowColor="@color/transparent">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:gravity="center"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_margin="5dp"
-                                    android:fontFamily="sans-serif-condensed-medium"
-                                    android:text="Pression"
-                                    android:textColor="@color/uiTextColor"
-                                    android:textSize="@dimen/textTempSize" />
-
-                                <com.github.anastr.speedviewlib.SpeedView
-                                    android:id="@+id/ballon_pressure1"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    app:sv_centerCircleRadius="12dp"
-                                    app:sv_indicator="LineIndicator"
-                                    app:sv_indicatorLightColor="@color/black"
-                                    app:sv_indicatorWidth="3dp"
-                                    app:sv_markWidth="2dp"
-                                    app:sv_maxSpeed="15"
-                                    app:sv_minSpeed="0"
-                                    app:sv_speedTextFormat="FLOAT"
-                                    app:sv_speedTextSize="22dp"
-                                    app:sv_speedometerMode="NORMAL"
-                                    app:sv_speedometerWidth="15dp"
-                                    app:sv_unit="Pa"
-                                    app:sv_unitTextSize="10dp"
-                                    app:sv_unitUnderSpeedText="true"
-                                    app:sv_withTremble="false" />
-                            </LinearLayout>
-                        </androidx.cardview.widget.CardView>
-
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="0dp"
-                            android:layout_weight=".50"
-                            android:layout_height="200dp"
-                            android:layout_marginHorizontal="@dimen/cardTempMarginH"
-                            android:layout_marginVertical="@dimen/cardTempMarginV"
-                            app:cardCornerRadius="25dp"
-                            android:outlineAmbientShadowColor="@color/transparent"
-                            android:outlineSpotShadowColor="@color/transparent">
-                            <LinearLayout
-                                android:layout_height="match_parent"
-                                android:orientation="vertical"
-                                android:gravity="center"
-                                android:layout_width="match_parent">
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="@string/temp5Text"
-                                    android:textSize="@dimen/textTempSize"
-                                    android:layout_margin="5dp"
-                                    android:textColor="@color/uiTextColor"
-                                    android:fontFamily="sans-serif-condensed-medium"
-                                    />
-                                <com.github.anastr.speedviewlib.SpeedView
-                                    android:id="@+id/ballon_depressure1"
-                                    android:layout_height="match_parent"
-                                    android:layout_width="match_parent"
-                                    app:sv_unitTextSize="10dp"
-                                    app:sv_minSpeed="0"
-                                    app:sv_maxSpeed="15"
-                                    app:sv_speedTextSize="22dp"
-                                    app:sv_unit="Pa"
-                                    app:sv_centerCircleRadius="12dp"
-                                    app:sv_unitUnderSpeedText="true"
-                                    app:sv_speedTextFormat="FLOAT"
-                                    app:sv_speedometerWidth="15dp"
-                                    app:sv_indicatorWidth="3dp"
-                                    app:sv_markWidth="2dp"
-                                    app:sv_indicatorLightColor="@color/black"
-                                    app:sv_speedometerMode="NORMAL"
-                                    app:sv_withTremble="false"
-                                    app:sv_indicator="LineIndicator"/>
-                            </LinearLayout>
-                        </androidx.cardview.widget.CardView>
-                    </LinearLayout>
-
-
-
-                </androidx.cardview.widget.CardView>
-            </LinearLayout>
 
         </LinearLayout>
 
@@ -573,13 +318,15 @@
         android:id="@+id/serverError"
         android:layout_width="match_parent"
         android:gravity="center"
+        android:visibility="gone"
         android:background="@color/uiBg"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:layout_height="match_parent">
 
         <ImageView
             android:layout_width="200dp"
             android:layout_height="200dp"
+            android:layout_marginEnd="25dp"
             android:src="@drawable/server_error" />
 
         <TextView
@@ -587,9 +334,10 @@
             android:layout_height="wrap_content"
             android:id="@+id/exceptionText"
             android:layout_margin="10dp"
+            android:text="76272"
             android:fontFamily="@font/catamaran_medium"
             android:textColor="@color/uiTextColor"
-            android:textSize="24sp"
+            android:textSize="24dp"
             />
 
 

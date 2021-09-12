@@ -137,61 +137,65 @@
                 android:layout_marginVertical="15dp"
                 android:background="@color/lineProfile" />
 
-            <LinearLayout
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/auth_site_btn"
+                android:layout_height="wrap_content">
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="6dp"
-                    android:background="@drawable/btn_ui_style"
-                    android:drawableStart="@drawable/ic_account_24"
-                    android:drawablePadding="12dp"
-                    android:fontFamily="@font/catamaran_medium"
-                    android:outlineSpotShadowColor="@color/transparent"
-                    android:paddingHorizontal="10dp"
-                    android:text="@string/title_auth_site"
-                    android:textAlignment="textStart"
-                    android:textAllCaps="false"
-                    android:textSize="19sp" />
+                    android:layout_height="match_parent"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
 
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/logout_btn"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="6dp"
-                    android:background="@drawable/btn_ui_style"
-                    android:drawableStart="@drawable/ic_logout_24"
-                    android:drawablePadding="12dp"
-                    android:fontFamily="@font/catamaran_medium"
-                    android:outlineSpotShadowColor="@color/transparent"
-                    android:paddingHorizontal="10dp"
-                    android:text="@string/logout_btn_text"
-                    android:textAlignment="textStart"
-                    android:textAllCaps="false"
-                    android:textSize="19sp" />
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/auth_site_btn"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="6dp"
+                        android:background="@drawable/btn_ui_style"
+                        android:drawableStart="@drawable/ic_account_24"
+                        android:drawablePadding="12dp"
+                        android:fontFamily="@font/catamaran_medium"
+                        android:outlineSpotShadowColor="@color/transparent"
+                        android:paddingHorizontal="10dp"
+                        android:text="@string/title_auth_site"
+                        android:textAlignment="textStart"
+                        android:textAllCaps="false"
+                        android:textSize="19sp" />
 
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/langue_btn"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="6dp"
-                    android:background="@drawable/btn_ui_style"
-                    android:drawableStart="@drawable/ic_language"
-                    android:drawablePadding="12dp"
-                    android:fontFamily="@font/catamaran_medium"
-                    android:outlineSpotShadowColor="@color/transparent"
-                    android:paddingHorizontal="10dp"
-                    android:text="@string/language_btn_text"
-                    android:textAlignment="textStart"
-                    android:textAllCaps="false"
-                    android:textSize="19sp" />
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/logout_btn"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="6dp"
+                        android:background="@drawable/btn_ui_style"
+                        android:drawableStart="@drawable/ic_logout_24"
+                        android:drawablePadding="12dp"
+                        android:fontFamily="@font/catamaran_medium"
+                        android:outlineSpotShadowColor="@color/transparent"
+                        android:paddingHorizontal="10dp"
+                        android:text="@string/logout_btn_text"
+                        android:textAlignment="textStart"
+                        android:textAllCaps="false"
+                        android:textSize="19sp" />
 
-            </LinearLayout>
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/langue_btn"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="6dp"
+                        android:background="@drawable/btn_ui_style"
+                        android:drawableStart="@drawable/ic_language"
+                        android:drawablePadding="12dp"
+                        android:fontFamily="@font/catamaran_medium"
+                        android:outlineSpotShadowColor="@color/transparent"
+                        android:paddingHorizontal="10dp"
+                        android:text="@string/language_btn_text"
+                        android:textAlignment="textStart"
+                        android:textAllCaps="false"
+                        android:textSize="19sp" />
+
+                </LinearLayout>
+            </ScrollView>
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>

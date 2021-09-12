@@ -1,6 +1,8 @@
 package com.abbad.smartonapp.adapters;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,23 +15,40 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.abbad.smartonapp.R;
+import com.abbad.smartonapp.activities.HistoriqueInteventions;
+import com.abbad.smartonapp.activities.InterventionDetails;
+import com.abbad.smartonapp.activities.MainActivity;
 import com.abbad.smartonapp.classes.Intervention;
-import com.abbad.smartonapp.dialogs.InterventionDetailsDialog;
+import com.abbad.smartonapp.datas.InterventionData;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.Viewholder> {
 
-    private List<Intervention> list_intervention;
+    public List<Intervention> list_intervention;
     private TextView title;
     private TextView date;
     private CardView garvity;
     private FragmentManager fragmentManager;
+    private MainActivity mainActivity;
+    private HistoriqueInteventions historiqueInteventions;
 
-    public RecycleViewAdapter(FragmentManager fragmentManager,List<Intervention> list_intervention){
+    public RecycleViewAdapter(MainActivity activity, List<Intervention> list_intervention){
         this.list_intervention = list_intervention;
-        this.fragmentManager = fragmentManager;
+        this.fragmentManager = activity.getSupportFragmentManager();
+        mainActivity = activity;
+    }
+
+    public RecycleViewAdapter(HistoriqueInteventions activity, List<Intervention> list_intervention){
+        this.list_intervention = list_intervention;
+        this.fragmentManager = activity.getSupportFragmentManager();
+        historiqueInteventions = activity;
+    }
+
+    public RecycleViewAdapter(MainActivity activity){
+        mainActivity = activity;
+        list_intervention = new ArrayList<>();
     }
 
 
@@ -51,25 +70,22 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
     @Override
     public void onBindViewHolder(@NonNull Viewholder holder, int position) {
         // to set data to textview and imageview of each card layout
+        holder.setIsRecyclable(false);
         Intervention intervention = list_intervention.get(position);
         title.setText(intervention.getTitle());
         date.setText(intervention.getDate());
 
-        switch (intervention.getGravity()){
-            case 1:
-                garvity.setBackgroundResource(R.color.danger1);
-                break;
-            case 2:
+
+        switch (intervention.getType()){
+            case "corrective":
+            case "preventive":
                 garvity.setBackgroundResource(R.color.danger2);
                 break;
-            case 3:
-                garvity.setBackgroundResource(R.color.danger3);
-                break;
-            case 4:
-                garvity.setBackgroundResource(R.color.danger4);
+            case "préventive":
+                garvity.setBackgroundResource(R.color.danger5);
                 break;
             default:
-                garvity.setBackgroundResource(R.color.danger5);
+                garvity.setBackgroundResource(R.color.danger1);
                 break;
         }
     }
@@ -92,10 +108,25 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
 
         @Override
         public void onClick(View v) {
-            InterventionDetailsDialog interventionDetailsDialog = new InterventionDetailsDialog(list_intervention.get(getLayoutPosition()));
-            interventionDetailsDialog.setCancelable(true);
-            interventionDetailsDialog.show(fragmentManager,"");
+            Intent intent = null;
+            InterventionData.currentIntervention = list_intervention.get(getLayoutPosition());
+            if (mainActivity != null) {
+                intent = new Intent(mainActivity, InterventionDetails.class);
+                mainActivity.startActivity(intent);
+            }else if (historiqueInteventions != null) {
+                intent = new Intent(historiqueInteventions, InterventionDetails.class);
+                intent.putExtra("isPreview",true);
+                historiqueInteventions.startActivity(intent);
+            }
+
         }
+    }
+
+    public void setList_intervention(List<Intervention> list_intervention){
+        Log.e("ListInterv",list_intervention.size()+"");
+        this.list_intervention.clear();
+        this.list_intervention.addAll(list_intervention);
+        this.notifyDataSetChanged();
     }
 
 }

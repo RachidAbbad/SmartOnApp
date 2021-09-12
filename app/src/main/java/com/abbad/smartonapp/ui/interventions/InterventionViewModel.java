@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModel;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.abbad.smartonapp.R;
+import com.abbad.smartonapp.activities.MainActivity;
 import com.abbad.smartonapp.adapters.RecycleViewAdapter;
 import com.abbad.smartonapp.classes.Intervention;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
@@ -81,19 +82,25 @@ public class InterventionViewModel extends ViewModel {
         private CompactCalendarView calendarView;
         private TextView currentDate,noIntervText;
         private RecyclerView recyclerView;
-        public CalendarClickHandler(LinearLayout interLayout, CompactCalendarView calendarView, TextView currentDate, RecyclerView recyclerView, TextView noIntervText){
+        private List<Intervention> interventionList;
+        public CalendarClickHandler(LinearLayout interLayout, CompactCalendarView calendarView, TextView currentDate, RecyclerView recyclerView, TextView noIntervText,List<Intervention> listIntervention){
             this.interLayout = interLayout;
             this.calendarView = calendarView;
             this.currentDate = currentDate;
             this.recyclerView = recyclerView;
             this.noIntervText = noIntervText;
+            this.interventionList = listIntervention;
+
         }
 
         @Override
         public void onDayClick(Date dateClicked) {
             List<Intervention> interventions = new ArrayList<>();
+            f.clickedDate = dateClicked;
             Log.i("dateClicked",dateClicked.toString());
-            for (Intervention intervention: f.getList_intervention()){
+            if (interventionList == null)
+                interventionList = new ArrayList<>();
+            for (Intervention intervention: interventionList){
                 try {
                     if (new SimpleDateFormat("dd-MM-yyyy").parse(intervention.getDate()).compareTo(dateClicked)==0)
                         interventions.add(intervention);
@@ -111,7 +118,7 @@ public class InterventionViewModel extends ViewModel {
             else {
                 recyclerView.setVisibility(View.VISIBLE);
                 noIntervText.setVisibility(GONE);
-                RecycleViewAdapter adapter = new RecycleViewAdapter(f.getActivity().getSupportFragmentManager(),interventions);
+                RecycleViewAdapter adapter = new RecycleViewAdapter((MainActivity) f.getActivity(),interventions);
                 recyclerView.setAdapter(adapter);
                 recyclerView.startAnimation(animation);
             }
@@ -127,37 +134,35 @@ public class InterventionViewModel extends ViewModel {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public void displayTodayInters(LinearLayout interLayout, CompactCalendarView calendarView, TextView currentDate, RecyclerView recyclerView, TextView noIntervText){
+
+    public void displayDayIntervention(List<Intervention> interventionList, RecyclerView recyclerView, TextView noIntervText,Date dateClicked){
         List<Intervention> interventions = new ArrayList<>();
-        for (Intervention intervention: f.getList_intervention()){
+        if (interventionList == null)
+            interventionList = new ArrayList<>();
+        for (Intervention intervention: interventionList){
             try {
-                if (new SimpleDateFormat("dd-MM-yyyy").parse(intervention.getDate())
-                        .compareTo(new SimpleDateFormat("dd-MM-yyyy").parse(LocalDate.now().getDayOfMonth()+"-"+LocalDate.now().getMonthValue()+"-"+LocalDate.now().getYear()))==0)
+                if (new SimpleDateFormat("dd-MM-yyyy").parse(intervention.getDate()).compareTo(dateClicked)==0)
                     interventions.add(intervention);
             } catch (ParseException parseException) {
                 parseException.printStackTrace();
             }
         }
-        Animation animation = AnimationUtils.loadAnimation(f.getActivity().getApplicationContext(), R.anim.slide_in);
-        animation.setDuration(500);
+
         if (interventions.size()==0){
             recyclerView.setVisibility(GONE);
             noIntervText.setVisibility(View.VISIBLE);
-            noIntervText.setAnimation(animation);
         }
         else {
             recyclerView.setVisibility(View.VISIBLE);
             noIntervText.setVisibility(GONE);
-            RecycleViewAdapter adapter = new RecycleViewAdapter(f.getActivity().getSupportFragmentManager(),interventions);
+            RecycleViewAdapter adapter = new RecycleViewAdapter((MainActivity) f.getActivity(),interventions);
             recyclerView.setAdapter(adapter);
-            recyclerView.startAnimation(animation);
         }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void calendarClickHandler(LinearLayout interLayout, CompactCalendarView calendarView, TextView currentDate, RecyclerView recyclerView, TextView noIntervText){
-        CalendarClickHandler calendarClickHandler = new CalendarClickHandler(interLayout, calendarView,  currentDate,recyclerView,noIntervText);
+    public void calendarClickHandler(LinearLayout interLayout, CompactCalendarView calendarView, TextView currentDate, RecyclerView recyclerView, TextView noIntervText,List<Intervention> listIntervention){
+        CalendarClickHandler calendarClickHandler = new CalendarClickHandler(interLayout, calendarView,  currentDate,recyclerView,noIntervText,listIntervention);
         calendarView.setListener(calendarClickHandler);
     }
 

@@ -3,16 +3,27 @@ package com.abbad.smartonapp.classes;
 import com.google.gson.JsonElement;
 
 public class User {
-    String id;
-    String name;
-    String lastName;
-    String token;
-    String email;
-    String gsm;
-    String type;
+    private String id;
+    private String name;
+    private String lastName;
+    private String token;
+    private String email;
+    private String gsm;
+    private String type;
 
     public User(){
 
+    }
+
+    public User(String id) {
+        this.id = id;
+    }
+
+    public User(String id, String name, String lastName, String email) {
+        this.id = id;
+        this.name = name;
+        this.lastName = lastName;
+        this.email = email;
     }
 
     public String getId() {

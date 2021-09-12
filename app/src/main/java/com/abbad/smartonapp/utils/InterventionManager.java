@@ -8,6 +8,7 @@ import android.util.Log;
 import com.abbad.smartonapp.classes.Intervention;
 import com.abbad.smartonapp.datas.InterventionData;
 import com.abbad.smartonapp.datas.TaskData;
+import com.abbad.smartonapp.services.UploadReportService;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -73,18 +74,19 @@ public class InterventionManager {
         return context.getSharedPreferences("InterventionDetails",Context.MODE_PRIVATE).getBoolean("Report_"+idIntervention+"_"+numTask,false);
     }
 
-    public static boolean resetAllData(Intervention intervention, Activity activity){
+    public static boolean resetAllData(String interventionId,int nbTache, Context activity){
         boolean deleteResult=true;
         try{
+            SharedPreferences sharedPreferences = activity.getSharedPreferences("InterventionDetails", Context.MODE_PRIVATE);
             //Delete Intervention Data in Shared Memory
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.clear();
             editor.apply();
             //Delete Intervention Data in Internal Storage
-            deleteResult = InterventionData.deleteAllData(intervention.getId(),activity);
+            deleteResult = InterventionData.deleteAllData(interventionId,activity);
             //Delete Intervention Tasks in Shared Preference
-            for (int i = 0; i<intervention.getTodos().length;i++)
-                deleteResult = TaskData.deleteAllTasksData(intervention.getId(),i,activity);
+            for (int i = 0; i<nbTache;i++)
+                deleteResult = TaskData.deleteAllTasksData(interventionId,i,activity);
             return deleteResult;
         }catch (Exception exception){
             System.out.print(exception.getMessage());

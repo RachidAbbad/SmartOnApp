@@ -1,9 +1,12 @@
 package com.abbad.smartonapp.datas;
 
 import android.app.Activity;
+import android.app.Service;
+import android.content.Context;
 import android.util.Log;
 
 import com.abbad.smartonapp.Fragments.TaskFragment;
+import com.abbad.smartonapp.activities.MainActivity;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,7 +35,7 @@ public class TaskData {
         return status;
     }
 
-    public static List<File> getImages(String idIntervention,int numTask,Activity activity) {
+    public static List<File> getImages(String idIntervention, int numTask, Context activity) {
         try {
 
             File directory = new File(activity.getExternalCacheDir()+"/Images");
@@ -53,7 +56,7 @@ public class TaskData {
         }
     }
 
-    public static List<File> getVideos(String idIntervention,int numTask,Activity activity) {
+    public static List<File> getVideos(String idIntervention,int numTask,Context activity) {
         File directory = null;
         try {
             directory = new File(activity.getExternalCacheDir()+"/Videos");
@@ -74,7 +77,7 @@ public class TaskData {
         }
     }
 
-    public static List<File> getAudios(String idIntervention,int numTask,Activity activity) {
+    public static List<File> getAudios(String idIntervention,int numTask,Context activity) {
         File directory = null;
         try {
             directory = new File(activity.getExternalCacheDir()+"/Audios");
@@ -95,7 +98,7 @@ public class TaskData {
         }
     }
 
-    public static List<File> getComments(String idIntervention,int numTask,Activity activity) {
+    public static List<File> getComments(String idIntervention,int numTask,Context activity) {
         File directory = null;
         try {
             directory = new File(activity.getExternalCacheDir()+"/Comments");
@@ -116,7 +119,7 @@ public class TaskData {
         }
     }
 
-    public static boolean deleteAllTasksData(String idIntervention,int numTask,Activity activity){
+    public static boolean deleteAllTasksData(String idIntervention,int numTask,Context activity){
         boolean deleteResult = true;
         List<File> listFiles = new ArrayList<>();
         listFiles.addAll(getVideos(idIntervention,numTask,activity));
@@ -135,4 +138,82 @@ public class TaskData {
             return false;
         }
     }
+
+    //
+
+    public static File getImage(String idIntervention,int numTask,Context activity) {
+        try {
+
+            File directory = new File(activity.getExternalCacheDir()+"/Images");
+            List<File> files = Arrays.asList(directory.listFiles());
+            for (int i = 0; i < files.size(); i++)
+            {
+                String name = files.get(i).getName();
+                String requiredString = name.substring(name.indexOf("(") + 1, name.indexOf(")"));
+                if(name.contains(idIntervention) && numTask == Integer.parseInt(requiredString))
+                    return files.get(i);
+            }
+            return null;
+        }catch (Exception ex)
+        {
+            return null;
+        }
+    }
+
+    public static File getVideo(String idIntervention,int numTask,Context activity) {
+        File directory = null;
+        try {
+            directory = new File(activity.getExternalCacheDir()+"/Videos");
+            List<File> files = Arrays.asList(directory.listFiles());
+            for (int i = 0; i < files.size(); i++)
+            {
+                String name = files.get(i).getName();
+                String requiredString = name.substring(name.indexOf("(") + 1, name.indexOf(")"));
+                if(name.contains(idIntervention) && numTask == Integer.parseInt(requiredString))
+                    return files.get(i);
+            }
+            return null;
+        }catch (Exception ex){
+            return null;
+        }
+    }
+
+    public static File getAudio(String idIntervention, int numTask, Context activity) {
+        File directory = null;
+        try {
+            directory = new File(activity.getExternalCacheDir()+"/Audios");
+            List<File> files = Arrays.asList(directory.listFiles());
+            for (int i = 0; i < files.size(); i++)
+            {
+                String name = files.get(i).getName();
+                String requiredString = name.substring(name.indexOf("(") + 1, name.indexOf(")"));
+                if(name.contains(idIntervention) && numTask == Integer.parseInt(requiredString))
+                    return files.get(i);
+            }
+            return null;
+
+        }catch (Exception ex){
+            return null;
+        }
+    }
+
+    public static File getComment(String idIntervention, int numTask, Context activity) {
+        File directory = null;
+        try {
+            directory = new File(activity.getExternalCacheDir()+"/Comments");
+            List<File> files = Arrays.asList(directory.listFiles());
+            for (int i = 0; i < files.size(); i++)
+            {
+                String name = files.get(i).getName();
+                String requiredString = name.substring(name.indexOf("(") + 1, name.indexOf(")"));
+                if(name.contains(idIntervention) && numTask == Integer.parseInt(requiredString))
+                   return files.get(i);
+            }
+            return null;
+
+        }catch (Exception ex){
+            return null;
+        }
+    }
+
 }

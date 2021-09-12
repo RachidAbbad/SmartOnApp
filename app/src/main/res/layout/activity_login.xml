@@ -5,7 +5,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/login_bg_color"
     tools:context=".activities.LoginActivity"
     >
 
@@ -31,6 +30,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="vertical"
+
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:paddingTop="@dimen/activity_vertical_margin"
             android:paddingRight="@dimen/activity_horizontal_margin">
@@ -41,17 +41,19 @@
                 android:layout_height="wrap_content"
                 app:mtf_animationDuration="400"
                 app:mtf_cardCollapsedHeight="4dp"
+                app:mtf_backgroundColor="#365E72E4"
                 app:mtf_image="@drawable/ic_email_24"
-                app:mtf_labelColor="@color/uiWhite"
+                app:mtf_labelColor="@color/uiTextColor"
                 app:mtf_openKeyboardOnFocus="true">
 
                 <EditText
                     android:id="@+id/emailInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@color/uiTextColor"
                     android:hint="@string/hintEmail"
+
                     android:inputType="textEmailAddress"
-                    android:textColor="@color/firstColor"
                     android:fontFamily="@font/catamaran_medium"
                     android:textSize="20sp" />
 
@@ -64,9 +66,9 @@
                 android:layout_marginTop="10dp"
                 app:mtf_animationDuration="400"
                 app:mtf_cardCollapsedHeight="4dp"
+                app:mtf_backgroundColor="#365E72E4"
                 app:mtf_image="@drawable/ic_password_24"
-                app:mtf_labelColor="@color/uiWhite"
-                app:mtf_openKeyboardOnFocus="true">
+                app:mtf_labelColor="@color/uiTextColor">
 
                 <EditText
                     android:id="@+id/passwordInput"
@@ -74,10 +76,10 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/hintPass"
                     android:inputType="textPassword"
+
                     android:textColor="@color/firstColor"
                     android:fontFamily="@font/catamaran_medium"
-                    android:textSize="20sp"
-                    app:passwordToggleEnabled="true" />
+                    android:textSize="20sp"/>
 
             </com.github.florent37.materialtextfield.MaterialTextField>
 
@@ -105,10 +107,10 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="18dp"
                 android:padding="10dp"
-                app:lb_btnColor="@color/uiWhite"
+                app:lb_btnColor="@color/firstColor"
                 app:lb_btnText="@string/login_btn_text"
                 app:lb_cornerRadius="15dp"
-                app:lb_textColor="@color/uiTextColor" />
+                app:lb_textColor="@color/uiBg" />
 
 
         </LinearLayout>
@@ -121,7 +123,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Copyright © 2021 ViaToile"
-        android:textColor="@color/uiWhite"
+        android:textColor="@color/uiTextColor"
         android:textSize="15sp"
         android:fontFamily="@font/catamaran_medium"
         android:layout_margin="20dp"

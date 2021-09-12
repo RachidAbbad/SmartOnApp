@@ -17,6 +17,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.abbad.smartonapp.R;
+import com.abbad.smartonapp.utils.SessionManager;
 import com.github.anastr.speedviewlib.SpeedView;
 
 import org.json.JSONException;
@@ -28,9 +29,11 @@ public class DashboardFragment extends Fragment {
 
     public DashboardViewModel dashboardViewModel;
     public ScrollView mainLayout;
+
+    private LinearLayout containerLayout;
     private LinearLayout serverError;
-    private TextView exceptionText;
-    private SpeedView s1,s2,s3,s4,s5,s6,bal1_pres,bal2_pres,bal1_dep,bal2_dep;
+    private TextView exceptionText, chadiereId;
+    private SpeedView s1, s2, s3, s4, s5, s6;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -39,29 +42,27 @@ public class DashboardFragment extends Fragment {
                 new ViewModelProvider(this).get(DashboardViewModel.class);
 
         View root = inflater.inflate(R.layout.fragment_dashboard, container, false);
-                s1 = root.findViewById(R.id.t_depart_indicator);
-                s2 = root.findViewById(R.id.t_retoure_indicator);
-                s3 = root.findViewById(R.id.t_inertie_indicator);
-                s4 = root.findViewById(R.id.t_fumees_indicator);
-                s5 = root.findViewById(R.id.depression_indicator);
-                s6 = root.findViewById(R.id.luminosité_indicator);
-                bal1_dep = root.findViewById(R.id.ballon_depressure);
-                bal2_dep = root.findViewById(R.id.ballon_depressure1);
-                bal1_pres = root.findViewById(R.id.ballon_pressure);
-                bal2_pres = root.findViewById(R.id.ballon_pressure1);
-                serverError = root.findViewById(R.id.serverError);
-                mainLayout = root.findViewById(R.id.mainLayout);
-                exceptionText = root.findViewById(R.id.exceptionText);
+        s1 = root.findViewById(R.id.t_depart_indicator);
+        s2 = root.findViewById(R.id.t_retoure_indicator);
+        s3 = root.findViewById(R.id.t_inertie_indicator);
+        s4 = root.findViewById(R.id.t_fumees_indicator);
+        s5 = root.findViewById(R.id.depression_indicator);
+        s6 = root.findViewById(R.id.luminosité_indicator);
+        serverError = root.findViewById(R.id.serverError);
+        mainLayout = root.findViewById(R.id.mainLayout);
+        containerLayout = root.findViewById(R.id.containerLayout);
 
-                bal1_dep.speedTo(9.2f);
-                bal2_dep.speedTo(8.3f);
-                bal1_pres.speedTo(8.7f);
-                bal2_pres.speedTo(9.4f);
-            try {
-                dashboardViewModel.refreshData(this);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        exceptionText = root.findViewById(R.id.exceptionText);
+        chadiereId = root.findViewById(R.id.chadiereId);
+
+
+
+        chadiereId.append(SessionManager.getIdCapteur(getContext()));
+        try {
+            dashboardViewModel.refreshData(this);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
 
         return root;
@@ -72,7 +73,6 @@ public class DashboardFragment extends Fragment {
         super.onPause();
         //dashboardViewModel.cancelTimer();
     }
-
 
 
     public SpeedView getS1() {
@@ -107,11 +107,24 @@ public class DashboardFragment extends Fragment {
         return serverError;
     }
 
-    public SpeedView getBal1_dep() {
-        return bal1_dep;
+    public LinearLayout getContainerLayout() {
+        return containerLayout;
     }
 
     public TextView getExceptionText() {
         return exceptionText;
+    }
+
+
+
+    public void reportError(String content){
+        getServerError().setVisibility(View.VISIBLE);
+        getMainLayout().setVisibility(View.GONE);
+        getExceptionText().setText(content);
+    }
+
+    public void errorSolved(){
+        getServerError().setVisibility(View.GONE);
+        getMainLayout().setVisibility(View.VISIBLE);
     }
 }

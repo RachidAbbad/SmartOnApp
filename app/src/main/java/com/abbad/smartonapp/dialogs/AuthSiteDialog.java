@@ -17,6 +17,9 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 
 import com.abbad.smartonapp.R;
+import com.abbad.smartonapp.activities.MainActivity;
+import com.abbad.smartonapp.utils.AuthAuSite;
+import com.abbad.smartonapp.utils.SessionManager;
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
 import com.budiyev.android.codescanner.DecodeCallback;
@@ -34,13 +37,14 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class AuthSiteDialog extends BottomSheetDialogFragment {
-    private CardView qrScannerLayout,nfcScannerLayout,qrBtn,nfcBtn;
-    private RMSwitch switch_qr_nfc;
+    public static int AUTH_QR = 1;
+    public static int AUTH_NFC = 2;
     //Qr code components :
     CodeScannerView codeScannerView;
     CodeScanner codeScanner;
-
-    private ImageView qrIcon,nfcIcon;
+    private CardView qrScannerLayout, nfcScannerLayout, qrBtn, nfcBtn;
+    private RMSwitch switch_qr_nfc;
+    private ImageView qrIcon, nfcIcon;
 
     @SuppressLint("RestrictedApi")
     @Override
@@ -68,32 +72,24 @@ public class AuthSiteDialog extends BottomSheetDialogFragment {
         dialog.setContentView(contentView);
         qrScannerLayout = contentView.findViewById(R.id.qrScanner);
         nfcScannerLayout = contentView.findViewById(R.id.nfcScanner);
-        //qrBtn = contentView.findViewById(R.id.qrBtn);
-        //nfcBtn = contentView.findViewById(R.id.nfcBtn);
         codeScannerView = contentView.findViewById(R.id.scanner_view);
-        //qrIcon = contentView.findViewById(R.id.qrIcon);
-        //nfcIcon = contentView.findViewById(R.id.nfcIcon);
         switch_qr_nfc = contentView.findViewById(R.id.switch_qr_nfc);
-        codeScanner = new CodeScanner(getActivity().getApplicationContext(),codeScannerView);
-
-        //qrBtn.setOnClickListener(new AuthUsingQr());
-        //nfcBtn.setOnClickListener(new AuthUsingNfc());
-        qrScan();
+        codeScanner = new CodeScanner(getActivity().getApplicationContext(), codeScannerView);
         codeScanner.startPreview();
 
-
+        qrScan();
         switch_qr_nfc.addSwitchObserver(new RMSwitch.RMSwitchObserver() {
             @Override
             public void onCheckStateChange(RMSwitch switchView, boolean isChecked) {
                 if (isChecked) {
+                    codeScanner.stopPreview();
                     showNfcAuth();
                 } else {
+                    codeScanner.startPreview();
                     showQrCodeAuth();
                 }
             }
         });
-
-
 
 
     }
@@ -104,8 +100,8 @@ public class AuthSiteDialog extends BottomSheetDialogFragment {
         super.onDismiss(dialog);
     }
 
-    private void qrScan(){
-// Parameters (default values)
+    private void qrScan() {
+        // Parameters (default values)
         codeScanner.setCamera(CodeScanner.CAMERA_BACK);
         codeScanner.setFormats(CodeScanner.ALL_FORMATS);
         codeScanner.setAutoFocusEnabled(true);
@@ -114,71 +110,55 @@ public class AuthSiteDialog extends BottomSheetDialogFragment {
 
         // Callbacks
         codeScanner.setDecodeCallback(new DecodeCallback() {
+            @SuppressLint("WrongThread")
             @Override
             public void onDecoded(@NonNull Result result) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        LoadingBottomDialog loadingBottomDialog = new LoadingBottomDialog("Loading ...");
-
-                        loadingBottomDialog.show(getActivity().getSupportFragmentManager(),null);
-                        Timer timer = new Timer();
-                        timer.schedule(new TimerTask() {
-                            @Override
-                            public void run() {
-                                loadingBottomDialog.dismiss();
-                                if(result.getText().equals("S7363Q87376")){
-                                    new ResultBottomDialog(getResources().getString(R.string.authSiteSuccess),1).show(getActivity().getSupportFragmentManager(),null);
-                                    AuthSiteDialog.this.dismiss();
-                                }
-                                else{
-                                    new ResultBottomDialog(getResources().getString(R.string.authSiteFailed),2).show(getActivity().getSupportFragmentManager(),null);
-                                    codeScanner.startPreview();
-                                }
-
-                            }
-                        },1600);
-                    }
-                });
+                new AuthAuSite((MainActivity) getActivity(), SessionManager.getUserId(getContext()), result.getText(), AuthSiteDialog.this, AUTH_QR).execute();
             }
         });
 
 
     }
 
+    @SuppressLint("ResourceAsColor")
+    private void showNfcAuth() {
+        try {
+            NfcManager nfcManager = (NfcManager) getContext().getSystemService(Context.NFC_SERVICE);
+            NfcAdapter nfcAdapter = nfcManager.getDefaultAdapter();
+            if (nfcAdapter == null) {
+                Toast.makeText(getActivity(), "NFC not supported in this device", Toast.LENGTH_LONG);
+                switch_qr_nfc.setChecked(false);
+                new ResultBottomDialog(getResources().getString(R.string.nfcNotSupported), 3).show(getActivity().getSupportFragmentManager(), null);
+                return;
+            }
+            qrScannerLayout.setVisibility(View.GONE);
+            nfcScannerLayout.setVisibility(View.VISIBLE);
 
-
-    public class AuthUsingNfc implements View.OnClickListener{
-        @Override
-        public void onClick(View v) {
-            showNfcAuth();
+            MainActivity mainActivity = (MainActivity) getActivity();
+            mainActivity.enableNfcScan();
+        } catch (Exception ex) {
+            new ResultBottomDialog(ex.getMessage(), 3).show(getActivity().getSupportFragmentManager(), null);
         }
-    }
 
-    public class AuthUsingQr implements View.OnClickListener{
-        @Override
-        public void onClick(View v) {
-            showQrCodeAuth();
-        }
+
     }
 
     @SuppressLint("ResourceAsColor")
-    private void showNfcAuth(){
-        NfcManager nfcManager = (NfcManager) getContext().getSystemService(Context.NFC_SERVICE);
-        NfcAdapter nfcAdapter = nfcManager.getDefaultAdapter();
-        if (nfcAdapter == null) {
-            Toast.makeText(getActivity(),"NFC not supported in this device",Toast.LENGTH_LONG);
-            switch_qr_nfc.setChecked(false);
-            new ResultBottomDialog(getResources().getString(R.string.nfcNotSupported),3).show(getActivity().getSupportFragmentManager(),null);
-            return;
-        }
-        qrScannerLayout.setVisibility(View.GONE);
-        nfcScannerLayout.setVisibility(View.VISIBLE);
-    }
-
-    @SuppressLint("ResourceAsColor")
-    private void showQrCodeAuth(){
+    private void showQrCodeAuth() {
         qrScannerLayout.setVisibility(View.VISIBLE);
         nfcScannerLayout.setVisibility(View.GONE);
+    }
+
+    public void retryNfcScaning() {
+        try {
+            MainActivity mainActivity = (MainActivity) getActivity();
+            mainActivity.enableNfcScan();
+        } catch (Exception ex) {
+            new ResultBottomDialog(ex.getMessage(), 3).show(getActivity().getSupportFragmentManager(), null);
+        }
+    }
+
+    public AuthSiteDialog getAuthDialog() {
+        return this;
     }
 }

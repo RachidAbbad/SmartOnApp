@@ -51,5 +51,6 @@ public class LoadingBottomDialog extends BottomSheetDialogFragment {
         dialog.setContentView(contentView);
         ((View) contentView.getParent()).setBackgroundColor(getResources().getColor(android.R.color.transparent));
         dialog.setContentView(contentView);
+        setCancelable(false);
     }
 }
