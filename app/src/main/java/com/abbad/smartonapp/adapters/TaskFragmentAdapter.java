@@ -9,15 +9,27 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.abbad.smartonapp.Fragments.TaskFragment;
+import com.abbad.smartonapp.Fragments.TaskPreviewMedias;
 import com.abbad.smartonapp.classes.Intervention;
+import com.abbad.smartonapp.classes.Report;
 
 public class TaskFragmentAdapter extends FragmentStatePagerAdapter {
     private int totalTasks;
     private Intervention intervention;
-    public TaskFragmentAdapter(@NonNull FragmentManager fm, int totalTasks, Intervention intervention) {
+    private Report report;
+    private boolean isPreview;
+    public TaskFragmentAdapter(@NonNull FragmentManager fm, int totalTasks, Intervention intervention,boolean isPreview) {
         super(fm);
         this.totalTasks = totalTasks;
         this.intervention = intervention;
+        this.isPreview = isPreview;
+    }
+
+    public TaskFragmentAdapter(@NonNull FragmentManager fm, int totalTasks, Report report, boolean isPreview) {
+        super(fm);
+        this.totalTasks = totalTasks;
+        this.isPreview = isPreview;
+        this.report = report;
     }
 
 
@@ -26,10 +38,16 @@ public class TaskFragmentAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
         Bundle b = new Bundle();
-        b.putParcelable("intervention", intervention);
-        b.putParcelable("task", intervention.getListTaches().get(position));
-        b.putInt("numTask", position);
-        Fragment frag = new TaskFragment();
+        Fragment frag;
+        if (isPreview){
+            frag = new TaskPreviewMedias(report,position);
+        }
+        else{
+            b.putParcelable("intervention", intervention);
+            b.putParcelable("task", intervention.getListTaches().get(position));
+            b.putInt("numTask", position);
+            frag = new TaskFragment();
+        }
         frag.setArguments(b);
         return frag;
     }

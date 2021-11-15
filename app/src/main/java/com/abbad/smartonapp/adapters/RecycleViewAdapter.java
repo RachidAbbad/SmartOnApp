@@ -77,15 +77,14 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
 
 
         switch (intervention.getType()){
-            case "corrective":
-            case "preventive":
-                garvity.setBackgroundResource(R.color.danger2);
+            case "correctif":
+                garvity.setBackgroundResource(R.color.danger1);
                 break;
-            case "préventive":
+            case "preventif":
                 garvity.setBackgroundResource(R.color.danger5);
                 break;
             default:
-                garvity.setBackgroundResource(R.color.danger1);
+                garvity.setBackgroundResource(R.color.danger2);
                 break;
         }
     }
@@ -126,7 +125,6 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
         Log.e("ListInterv",list_intervention.size()+"");
         this.list_intervention.clear();
         this.list_intervention.addAll(list_intervention);
-        this.notifyDataSetChanged();
     }
 
 }

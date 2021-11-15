@@ -120,7 +120,11 @@ public class SessionManager {
         }
 
         public static String getAuthToken(){
-            return sharedPreferences.getString("Token",null);
+            return sharedPreferences.getString("Token","");
+        }
+
+        public static String getAuthTokenWithContext(Context context){
+            return context.getSharedPreferences("LoginDetails", Context.MODE_PRIVATE).getString("Token",null);
         }
 
         public static String getLanguage(){

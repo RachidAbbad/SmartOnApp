@@ -52,7 +52,6 @@
                     android:layout_height="wrap_content"
                     android:backgroundTint="@color/uiTextColor"
                     android:hint="@string/hintEmail"
-
                     android:inputType="textEmailAddress"
                     android:fontFamily="@font/catamaran_medium"
                     android:textSize="20sp" />
@@ -74,12 +73,11 @@
                     android:id="@+id/passwordInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@color/uiTextColor"
+                    android:fontFamily="@font/catamaran_medium"
                     android:hint="@string/hintPass"
                     android:inputType="textPassword"
-
-                    android:textColor="@color/firstColor"
-                    android:fontFamily="@font/catamaran_medium"
-                    android:textSize="20sp"/>
+                    android:textSize="20sp" />
 
             </com.github.florent37.materialtextfield.MaterialTextField>
 
@@ -110,7 +108,7 @@
                 app:lb_btnColor="@color/firstColor"
                 app:lb_btnText="@string/login_btn_text"
                 app:lb_cornerRadius="15dp"
-                app:lb_textColor="@color/uiBg" />
+                app:lb_textColor="@color/uiBg"/>
 
 
         </LinearLayout>

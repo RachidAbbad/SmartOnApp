@@ -2,19 +2,37 @@ package com.abbad.smartonapp.datas;
 
 import android.app.Notification;
 import android.app.Service;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.os.Environment;
 import android.util.Log;
+import android.view.View;
 
+import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
+import com.abbad.smartonapp.Fragments.TaskPreviewMedias;
 import com.abbad.smartonapp.R;
+import com.abbad.smartonapp.activities.ListReports;
 import com.abbad.smartonapp.activities.MainActivity;
+import com.abbad.smartonapp.activities.PreviewReport;
 import com.abbad.smartonapp.classes.Intervention;
+import com.abbad.smartonapp.classes.Report;
+import com.abbad.smartonapp.classes.Task;
+import com.abbad.smartonapp.classes.User;
+import com.abbad.smartonapp.dialogs.LoadingBottomDialog;
+import com.abbad.smartonapp.dialogs.ResultBottomDialog;
 import com.abbad.smartonapp.services.UploadReportService;
+import com.abbad.smartonapp.ui.interventions.InterventionFragment;
+import com.abbad.smartonapp.utils.Comun;
 import com.abbad.smartonapp.utils.InterventionManager;
 import com.abbad.smartonapp.utils.SessionManager;
+import com.dx.dxloadingbutton.lib.LoadingButton;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
@@ -25,8 +43,11 @@ import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -34,8 +55,13 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.ConcurrentModificationException;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -48,12 +74,17 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static android.content.Context.TELECOM_SERVICE;
+import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_AUDIO;
+import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE;
+import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
 import static com.abbad.smartonapp.services.UploadReportService.CHANNEL_ID;
 
 public class ReportData {
 
+    public static Report currentReport;
 
-    public static JSONObject setupReport(Intervention intervention,UploadReportService service, boolean etatIntervention) throws JSONException, IOException {
+    public static JSONObject setupReport(Intervention intervention, UploadReportService service) throws JSONException, IOException {
         JSONObject globalObject = new JSONObject();
 
         if (intervention == null) {
@@ -64,7 +95,7 @@ public class ReportData {
         globalObject.put("id_intervention", intervention.getId());
         globalObject.put("id_site", intervention.getIdSite());
         globalObject.put("date_rapport", todayDate());
-        globalObject.put("date_intervetion", intervention.getFullDateFormat());
+        globalObject.put("date_intervention", intervention.getFullDateFormat());
         globalObject.put("id_responsable", intervention.getIdResponsable());
         globalObject.put("id_responsable_executif", intervention.getIdResponsableExecutif());
         globalObject.put("id_contremaitre_exploitation", intervention.getIdContremaitreExploitation());
@@ -77,18 +108,38 @@ public class ReportData {
 
         //
         JSONObject generalComment = new JSONObject();
-        if (InterventionData.getComment(intervention.getId(), service) != null)
-            generalComment.put("text", ReportData.readTextFile(Uri.fromFile(InterventionData.getComment(intervention.getId(), service)), service));
+        JSONArray comments = new JSONArray();
+        if (InterventionData.getComments(intervention.getId(), service.getApplicationContext()) != null || InterventionData.getComments(intervention.getId(), service.getApplicationContext()).size() != 0) {
+            for (int i = 0; i < InterventionData.getComments(intervention.getId(), service.getApplicationContext()).size(); i++) {
+                comments.put(ReportData.readTextFile(Uri.fromFile(InterventionData.getComments(intervention.getId(), service.getApplicationContext()).get(i)), service.getApplicationContext()));
+            }
+        }
+        generalComment.put("text", comments);
 
-        if (InterventionData.getAudio(intervention.getId(), service) != null)
-            generalComment.put("audio", InterventionData.getAudio(intervention.getId(), service).getName());
+        JSONArray audios = new JSONArray();
+        if (InterventionData.getAudios(intervention.getId(), service.getApplicationContext()) != null || InterventionData.getAudios(intervention.getId(), service.getApplicationContext()).size() != 0) {
+            for (int i = 0; i < InterventionData.getAudios(intervention.getId(), service.getApplicationContext()).size(); i++) {
+                audios.put(InterventionData.getAudios(intervention.getId(), service.getApplicationContext()).get(i).getName());
+            }
+        }
+        generalComment.put("audio", audios);
 
-        if (InterventionData.getImage(intervention.getId(), service) != null)
-            generalComment.put("image", InterventionData.getImage(intervention.getId(), service).getName());
+        JSONArray images = new JSONArray();
+        if (InterventionData.getImages(intervention.getId(), service.getApplicationContext()) != null || InterventionData.getImages(intervention.getId(), service.getApplicationContext()).size() != 0) {
+            for (int i = 0; i < InterventionData.getImages(intervention.getId(), service.getApplicationContext()).size(); i++) {
+                images.put(InterventionData.getImages(intervention.getId(), service.getApplicationContext()).get(i).getName());
+            }
+        }
+        generalComment.put("image", images);
 
-        if (InterventionData.getVideo(intervention.getId(), service) != null)
-            generalComment.put("video", InterventionData.getVideo(intervention.getId(), service).getName());
-        generalComment.put("etat", etatIntervention);
+        JSONArray videos = new JSONArray();
+        if (InterventionData.getVideos(intervention.getId(), service.getApplicationContext()) != null || InterventionData.getVideos(intervention.getId(), service.getApplicationContext()).size() != 0) {
+            for (int i = 0; i < InterventionData.getVideos(intervention.getId(), service.getApplicationContext()).size(); i++) {
+                videos.put(InterventionData.getVideos(intervention.getId(), service.getApplicationContext()).get(i).getName());
+            }
+        }
+        generalComment.put("video", videos);
+
         generalComment.put("id_commentaire", 0);
         generalComment.put("id_tache", 0);
 
@@ -98,77 +149,44 @@ public class ReportData {
         JSONArray tasks = new JSONArray();
         for (int i = 0; i < intervention.getListTaches().size(); i++) {
             JSONObject taskComment = new JSONObject();
-            if (TaskData.getComment(intervention.getId(), i, service) != null)
-                taskComment.put("text", ReportData.readTextFile(Uri.fromFile(TaskData.getComment(intervention.getId(), i, service)), service));
 
-            if (TaskData.getAudio(intervention.getId(), i, service) != null)
-                taskComment.put("audio", TaskData.getAudio(intervention.getId(), i, service).getName());
+            JSONArray commentsTask = new JSONArray();
+            if (TaskData.getComments(intervention.getId(), i, service.getApplicationContext()) != null || TaskData.getComments(intervention.getId(), i, service.getApplicationContext()).size() != 0) {
+                for (int j = 0; j < TaskData.getComments(intervention.getId(), i, service.getApplicationContext()).size(); j++) {
+                    commentsTask.put(ReportData.readTextFile(Uri.fromFile(TaskData.getComments(intervention.getId(), i, service.getApplicationContext()).get(j)), service.getApplicationContext()));
+                }
+            }
+            taskComment.put("text", commentsTask);
 
-            if (TaskData.getImage(intervention.getId(), i, service) != null)
-                taskComment.put("image", TaskData.getImage(intervention.getId(), i, service).getName());
+            JSONArray audiosTask = new JSONArray();
+            if (TaskData.getAudios(intervention.getId(), i, service.getApplicationContext()) != null || TaskData.getAudios(intervention.getId(), i, service.getApplicationContext()).size() != 0) {
+                for (int j = 0; j < TaskData.getAudios(intervention.getId(), i, service.getApplicationContext()).size(); j++) {
+                    audiosTask.put(TaskData.getAudios(intervention.getId(), i, service.getApplicationContext()).get(j).getName());
+                }
+            }
+            taskComment.put("audio", audiosTask);
 
-            if (TaskData.getVideo(intervention.getId(), i, service) != null)
-                taskComment.put("video", TaskData.getVideo(intervention.getId(), i, service).getName());
+            JSONArray imagesTask = new JSONArray();
+            if (TaskData.getImages(intervention.getId(), i, service.getApplicationContext()) != null || TaskData.getImages(intervention.getId(), i, service.getApplicationContext()).size() != 0) {
+                for (int j = 0; j < TaskData.getImages(intervention.getId(), i, service.getApplicationContext()).size(); j++) {
+                    imagesTask.put(TaskData.getImages(intervention.getId(), i, service.getApplicationContext()).get(j).getName());
+                }
+            }
+            taskComment.put("image", imagesTask);
+
+            JSONArray videoTasks = new JSONArray();
+            if (TaskData.getVideos(intervention.getId(), i, service.getApplicationContext()) != null || TaskData.getVideos(intervention.getId(), i, service.getApplicationContext()).size() != 0) {
+                for (int j = 0; j < TaskData.getVideos(intervention.getId(), i, service.getApplicationContext()).size(); j++) {
+                    videoTasks.put(TaskData.getVideos(intervention.getId(), i, service.getApplicationContext()).get(j).getName());
+                }
+            }
+            taskComment.put("video", videoTasks);
+
             taskComment.put("id_tache", String.valueOf(i + 1));
             taskComment.put("id_commentaire", String.valueOf(i + 1));
             taskComment.put("etat", InterventionManager.getTaskStatus(intervention.getId(), i));
             tasks.put(taskComment);
         }
-
-        globalObject.put("commentaire_tache", tasks);
-
-        return globalObject;
-    }
-
-    public static JSONObject setupReport1(Service service, boolean etatIntervention) throws JSONException {
-        JSONObject globalObject = new JSONObject();
-        /*Intervention intervention = InterventionData.getInterventionById(InterventionManager.getCurrentIntervention());
-
-        if (intervention == null){
-            return null;
-        }*/
-
-        //
-        globalObject.put("id_intervention", "6126849f233211df4ed9d5f5");
-        globalObject.put("id_site", "5fbccf26e06d8cb8a4ac500e");
-        globalObject.put("date_rapport", "2021-08-26T20:45:21Z");
-        globalObject.put("date_intervetion", "2021-08-30T09:20:33.515-07:00");
-        globalObject.put("id_responsable", "60ad60e1ea6f5a4456d58183");
-        globalObject.put("id_responsable_executif", "60ad60e1ea6f5a4456d58183");
-        globalObject.put("id_contremaitre_exploitation", "60ad60e1ea6f5a4456d58183");
-
-        //
-        JSONObject generalComment = new JSONObject();
-        generalComment.put("text", "commentTestGeneral");
-        generalComment.put("audio", "This_is_the_binary_audio");
-        generalComment.put("image", "This_is_the_binary_audio");
-        generalComment.put("video", "This_is_the_binary_audio");
-
-        globalObject.put("commantaire_generale", generalComment);
-
-        //
-        JSONArray tasks = new JSONArray();
-
-        JSONObject taskComment = new JSONObject();
-
-
-        taskComment.put("text", "commentTestTask1");
-        taskComment.put("text", "commentTestTask1");
-        taskComment.put("audio", "This_is_the_binary_audio_of_task_" + 1);
-        taskComment.put("image", "This_is_the_binary_audio_of_task_" + 1);
-        taskComment.put("video", "This_is_the_binary_audio_of_task_" + 1);
-        taskComment.put("id_tache", "1");
-        taskComment.put("etat", true);
-        tasks.put(taskComment);
-
-        taskComment = new JSONObject();
-        taskComment.put("text", "commentTestTask1");
-        taskComment.put("audio", "This_is_the_binary_audio_of_task_" + 2);
-        taskComment.put("image", "This_is_the_binary_audio_of_task_" + 2);
-        taskComment.put("video", "This_is_the_binary_audio_of_task_" + 2);
-        taskComment.put("id_tache", "2");
-        taskComment.put("etat", true);
-        tasks.put(taskComment);
 
         globalObject.put("commentaire_tache", tasks);
 
@@ -181,7 +199,7 @@ public class ReportData {
         return sdf.format(cal.getTime());
     }
 
-    public static String readTextFile(Uri uri, Service activity) {
+    public static String readTextFile(Uri uri, Context activity) {
         BufferedReader reader = null;
         StringBuilder builder = new StringBuilder();
         try {
@@ -206,20 +224,108 @@ public class ReportData {
         return builder.toString();
     }
 
+    private static File getFilefromInputStream(int type, File outputFile) throws Exception {
+        String urlExtention = "";
+        switch (type) {
+            case MEDIA_TYPE_AUDIO:
+                urlExtention = urlExtention.concat("audios");
+                break;
+            case MEDIA_TYPE_IMAGE:
+                urlExtention = urlExtention.concat("images");
+                break;
+            case MEDIA_TYPE_VIDEO:
+                urlExtention = urlExtention.concat("videos");
+                break;
+        }
+        urlExtention = urlExtention.concat("/" + outputFile.getName());
+        URL url = new URL("http://admin.smartonviatoile.com/" + urlExtention);
+        HttpURLConnection c = (HttpURLConnection) url.openConnection();
+        c.setReadTimeout(3000000);
+
+        FileOutputStream fos = new FileOutputStream(outputFile);
+        InputStream is = c.getInputStream();
+
+        byte[] buffer = new byte[4096];
+        int len1 = 0;
+
+        while ((len1 = is.read(buffer)) != -1) {
+            fos.write(buffer, 0, len1);
+        }
+
+        fos.close();
+        is.close();
+
+        return outputFile;
+    }
+
+    private static File getOutputTempFile(int type, String FileName, Context context) {
+        File mediaStorageDir = null;
+        File mediaFile = null;
+
+        if (type == MEDIA_TYPE_VIDEO) {
+            mediaStorageDir = new File(context.getExternalCacheDir(), "Temp");
+            // Create the storage directory(MyCameraVideo) if it does not exist
+            if (!mediaStorageDir.exists()) {
+                if (!mediaStorageDir.mkdirs()) {
+                    //new ResultBottomDialog(context.getResources().getString(R.string.saveFailedVideoMsg), 3).show(getActivity().getSupportFragmentManager(), null);
+                }
+            }
+            // For unique video file name appending current timeStamp with file name
+            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+                    FileName);
+
+        } else if (type == MEDIA_TYPE_IMAGE) {
+            mediaStorageDir = new File(context.getExternalCacheDir(), "Temp");
+            // Create the storage directory(MyCameraVideo) if it does not exist
+            if (!mediaStorageDir.exists()) {
+                if (!mediaStorageDir.mkdirs()) {
+                    //new ResultBottomDialog(context.getResources().getString(R.string.saveFailedImageMsg), 3).show(getActivity().getSupportFragmentManager(), null);
+                }
+            }
+            // For unique video file name appending current timeStamp with file name
+            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+                    FileName);
+
+
+        } else if (type == MEDIA_TYPE_AUDIO) {
+            mediaStorageDir = new File(context.getExternalCacheDir(), "Temp");
+            if (!mediaStorageDir.exists()) {
+                if (!mediaStorageDir.mkdirs()) {
+                    //new ResultBottomDialog(getResources().getString(R.string.saveFailedAudioMsg), 3).show(getActivity().getSupportFragmentManager(), null);
+                }
+            }
+            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+                    FileName);
+
+        } else if (type == 10) {
+            mediaStorageDir = new File(context.getExternalCacheDir(), "CommentsTemp");
+            // Create the storage directory(MyCameraVideo) if it does not exist
+            if (!mediaStorageDir.exists()) {
+                if (!mediaStorageDir.mkdirs()) {
+                    //new ResultBottomDialog(getResources().getString(R.string.saveFailedCommentMsg), 3).show(getActivity().getSupportFragmentManager(), null);
+                }
+            }
+            // For unique video file name appending current timeStamp with file name
+            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+                    FileName);
+
+        }
+
+
+        return mediaFile;
+    }
+
     public static class SendReportFiles extends AsyncTask<Void, Void, Void> {
 
         UploadReportService service;
         Intervention intervention;
-        boolean etatIntervention;
-        int total;
+        int total = 0;
 
 
-        public SendReportFiles(UploadReportService service, Intervention intervention, boolean etatIntervention) {
+        public SendReportFiles(UploadReportService service, Intervention intervention) {
             this.service = service;
             this.intervention = intervention;
-            this.etatIntervention = etatIntervention;
             Log.e("ServiceLog", "Task Created" + this.intervention.getId());
-            total = totalMedia();
         }
 
         @Override
@@ -231,7 +337,7 @@ public class ReportData {
                 sendImages();
                 sendAudios();
 
-                Log.e("ServiceLog", setupReport(intervention,service, etatIntervention).toString());
+                Log.e("ServiceLog", setupReport(intervention, service).toString());
 
                 //Upload ReportInfos
 
@@ -245,7 +351,7 @@ public class ReportData {
                 http.setRequestProperty("Content-Type", "application/json");
 
 
-                String data = setupReport(intervention,service, etatIntervention).toString();
+                String data = setupReport(intervention, service).toString();
                 Log.e("ServiceLog", data);
                 byte[] out = data.getBytes(StandardCharsets.UTF_8);
 
@@ -256,7 +362,7 @@ public class ReportData {
 
 
             } catch (Exception ex) {
-                //ex.printStackTrace();
+                ex.printStackTrace();
             }
 
             return null;
@@ -264,25 +370,36 @@ public class ReportData {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            Log.e("ServiceLog", "Task Completed "+totalMedia());
+            Log.e("ServiceLog", "Task Completed " + total);
 
-            if (totalMedia() == 0)
+            if (total == 0)
                 service.doneUpload();
         }
 
         private void sendVideos() {
-            if (InterventionData.getVideo(intervention.getId(), service.getApplicationContext()) != null) {
-                OkHttpClient.Builder builder = new OkHttpClient.Builder();
-                builder.connectTimeout(4, TimeUnit.MINUTES);
-                builder.readTimeout(4, TimeUnit.MINUTES);
-                builder.writeTimeout(4, TimeUnit.MINUTES);
-                OkHttpClient client = builder.build();
-                RequestBody formBody = new MultipartBody.Builder()
-                        .setType(MultipartBody.FORM)
-                        .addFormDataPart("file", InterventionData.getVideo(intervention.getId(), service.getApplicationContext()).getName(),
-                                RequestBody.create(MediaType.parse("text/plain"), InterventionData.getVideo(intervention.getId(), service)))
-                        .build();
+            List<File> listVideos = new ArrayList<>();
 
+            if (InterventionData.getVideos(intervention.getId(), service.getApplicationContext()) != null || InterventionData.getVideos(intervention.getId(), service.getApplicationContext()).size() != 0) {
+                listVideos.addAll(InterventionData.getVideos(intervention.getId(), service.getApplicationContext()));
+            }
+            for (int i = 0; i < intervention.getListTaches().size(); i++) {
+                if (TaskData.getVideos(intervention.getId(), i, service.getApplicationContext()) != null || TaskData.getVideos(intervention.getId(), i, service.getApplicationContext()).size() != 0) {
+                    listVideos.addAll(TaskData.getVideos(intervention.getId(), i, service.getApplicationContext()));
+                }
+            }
+
+            total += listVideos.size();
+
+            for (File file : listVideos) {
+                OkHttpClient.Builder builderClient = new OkHttpClient.Builder();
+                builderClient.connectTimeout(20, TimeUnit.MINUTES);
+                builderClient.readTimeout(20, TimeUnit.MINUTES);
+                builderClient.writeTimeout(20, TimeUnit.MINUTES);
+                OkHttpClient client = builderClient.build();
+                MultipartBody.Builder builder = new MultipartBody.Builder();
+                builder.setType(MultipartBody.FORM);
+                builder.addFormDataPart("file", file.getName(), RequestBody.create(MediaType.parse("text/plain"), file));
+                MultipartBody formBody = builder.build();
                 Request request = new Request.Builder()
                         .url("http://admin.smartonviatoile.com/api/Rapport/uploadvideo")
                         .addHeader("Authorization", "Bearer " + SessionManager.getAuthToken())
@@ -295,60 +412,37 @@ public class ReportData {
 
                     @Override
                     public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                        Log.e("ServiceLog", response.code() + " - " + response.message() + " - " + response.body());
                         service.counter++;
                         checkFinish();
                     }
                 });
             }
-            for (int i = 0; i < intervention.getListTaches().size(); i++) {
-                if (TaskData.getVideo(intervention.getId(), i, service.getApplicationContext()) != null) {
-                    OkHttpClient.Builder builderTask = new OkHttpClient.Builder();
-                    builderTask.connectTimeout(4, TimeUnit.MINUTES);
-                    builderTask.readTimeout(4, TimeUnit.MINUTES);
-                    builderTask.writeTimeout(4, TimeUnit.MINUTES);
-                    OkHttpClient clientTask = builderTask.build();
-                    RequestBody formBodyTask = new MultipartBody.Builder()
-                            .setType(MultipartBody.FORM)
-                            .addFormDataPart("file", TaskData.getVideo(intervention.getId(), i, service.getApplicationContext()).getName(),
-                                    RequestBody.create(MediaType.parse("text/plain"), TaskData.getVideo(intervention.getId(), i, service)))
-                            .build();
-
-                    Request requestTask = new Request.Builder()
-                            .url("http://admin.smartonviatoile.com/api/Rapport/uploadvideo")
-                            .addHeader("Authorization", "Bearer " + SessionManager.getAuthToken())
-                            .post(formBodyTask).build();
-                    int finalI = i;
-                    clientTask.newCall(requestTask).enqueue(new Callback() {
-                        @Override
-                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                            e.printStackTrace();
-                        }
-
-                        @Override
-                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                            Log.e("ServiceLog", "Task Video" + finalI + " : " + response.code() + " - " + response.message() + " - " + response.body());
-                            service.counter++;
-                            checkFinish();
-                        }
-                    });
-                }
-            }
         }
 
         private void sendImages() {
-            if (InterventionData.getImage(intervention.getId(), service.getApplicationContext()) != null) {
-                OkHttpClient.Builder builder = new OkHttpClient.Builder();
-                builder.connectTimeout(4, TimeUnit.MINUTES);
-                builder.readTimeout(4, TimeUnit.MINUTES);
-                builder.writeTimeout(4, TimeUnit.MINUTES);
-                OkHttpClient client = builder.build();
-                RequestBody formBody = new MultipartBody.Builder()
-                        .setType(MultipartBody.FORM)
-                        .addFormDataPart("file", InterventionData.getImage(intervention.getId(), service.getApplicationContext()).getName(),
-                                RequestBody.create(MediaType.parse("text/plain"), InterventionData.getImage(intervention.getId(), service)))
-                        .build();
+            List<File> listImages = new ArrayList<>();
 
+            if (InterventionData.getImages(intervention.getId(), service.getApplicationContext()) != null || InterventionData.getImages(intervention.getId(), service.getApplicationContext()).size() != 0) {
+                listImages.addAll(InterventionData.getImages(intervention.getId(), service.getApplicationContext()));
+            }
+            for (int i = 0; i < intervention.getListTaches().size(); i++) {
+                if (TaskData.getImages(intervention.getId(), i, service.getApplicationContext()) != null || TaskData.getImages(intervention.getId(), i, service.getApplicationContext()).size() != 0) {
+                    listImages.addAll(TaskData.getImages(intervention.getId(), i, service.getApplicationContext()));
+                }
+            }
+
+            total += listImages.size();
+
+            for (File file : listImages) {
+                OkHttpClient.Builder builderClient = new OkHttpClient.Builder();
+                builderClient.connectTimeout(20, TimeUnit.MINUTES);
+                builderClient.readTimeout(20, TimeUnit.MINUTES);
+                builderClient.writeTimeout(20, TimeUnit.MINUTES);
+                OkHttpClient client = builderClient.build();
+                MultipartBody.Builder builder = new MultipartBody.Builder();
+                builder.setType(MultipartBody.FORM);
+                builder.addFormDataPart("file", file.getName(), RequestBody.create(MediaType.parse("text/plain"), file));
+                MultipartBody formBody = builder.build();
                 Request request = new Request.Builder()
                         .url("http://admin.smartonviatoile.com/api/Rapport/uploadimage")
                         .addHeader("Authorization", "Bearer " + SessionManager.getAuthToken())
@@ -361,61 +455,38 @@ public class ReportData {
 
                     @Override
                     public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                        Log.e("ServiceLog", response.code() + " - " + response.message() + " - " + response.body());
                         service.counter++;
                         checkFinish();
                     }
                 });
             }
 
-            for (int i = 0; i < intervention.getListTaches().size(); i++) {
-                if (TaskData.getImage(intervention.getId(), i, service.getApplicationContext()) != null) {
-                    OkHttpClient.Builder builderTask = new OkHttpClient.Builder();
-                    builderTask.connectTimeout(4, TimeUnit.MINUTES);
-                    builderTask.readTimeout(4, TimeUnit.MINUTES);
-                    builderTask.writeTimeout(4, TimeUnit.MINUTES);
-                    OkHttpClient clientTask = builderTask.build();
-                    RequestBody formBodyTask = new MultipartBody.Builder()
-                            .setType(MultipartBody.FORM)
-                            .addFormDataPart("file", TaskData.getImage(intervention.getId(), i, service.getApplicationContext()).getName(),
-                                    RequestBody.create(MediaType.parse("text/plain"), TaskData.getImage(intervention.getId(), i, service)))
-                            .build();
-
-                    Request requestTask = new Request.Builder()
-                            .url("http://admin.smartonviatoile.com/api/Rapport/uploadimage")
-                            .addHeader("Authorization", "Bearer " + SessionManager.getAuthToken())
-                            .post(formBodyTask).build();
-                    int finalI = i;
-                    clientTask.newCall(requestTask).enqueue(new Callback() {
-                        @Override
-                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                            e.printStackTrace();
-                        }
-
-                        @Override
-                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                            Log.e("ServiceLog", "Task Image" + finalI + " : " + response.code() + " - " + response.message() + " - " + response.body());
-                            service.counter++;
-                            checkFinish();
-                        }
-                    });
-                }
-            }
         }
 
         private void sendAudios() {
-            if (InterventionData.getAudio(intervention.getId(), service.getApplicationContext()) != null) {
-                OkHttpClient.Builder builder = new OkHttpClient.Builder();
-                builder.connectTimeout(100, TimeUnit.SECONDS);
-                builder.readTimeout(100, TimeUnit.SECONDS);
-                builder.writeTimeout(100, TimeUnit.SECONDS);
-                OkHttpClient client = builder.build();
-                RequestBody formBody = new MultipartBody.Builder()
-                        .setType(MultipartBody.FORM)
-                        .addFormDataPart("file", InterventionData.getAudio(intervention.getId(), service.getApplicationContext()).getName(),
-                                RequestBody.create(MediaType.parse("text/plain"), InterventionData.getAudio(intervention.getId(), service)))
-                        .build();
+            List<File> listAudios = new ArrayList<>();
 
+            if (InterventionData.getAudios(intervention.getId(), service.getApplicationContext()) != null || InterventionData.getAudios(intervention.getId(), service.getApplicationContext()).size() != 0) {
+                listAudios.addAll(InterventionData.getAudios(intervention.getId(), service.getApplicationContext()));
+            }
+            for (int i = 0; i < intervention.getListTaches().size(); i++) {
+                if (TaskData.getAudios(intervention.getId(), i, service.getApplicationContext()) != null || TaskData.getAudios(intervention.getId(), i, service.getApplicationContext()).size() != 0) {
+                    listAudios.addAll(TaskData.getAudios(intervention.getId(), i, service.getApplicationContext()));
+                }
+            }
+
+            total += listAudios.size();
+
+            for (File file : listAudios) {
+                OkHttpClient.Builder builderClient = new OkHttpClient.Builder();
+                builderClient.connectTimeout(20, TimeUnit.MINUTES);
+                builderClient.readTimeout(20, TimeUnit.MINUTES);
+                builderClient.writeTimeout(20, TimeUnit.MINUTES);
+                OkHttpClient client = builderClient.build();
+                MultipartBody.Builder builder = new MultipartBody.Builder();
+                builder.setType(MultipartBody.FORM);
+                builder.addFormDataPart("file", file.getName(), RequestBody.create(MediaType.parse("text/plain"), file));
+                MultipartBody formBody = builder.build();
                 Request request = new Request.Builder()
                         .url("http://admin.smartonviatoile.com/api/Rapport/uploadaudio")
                         .addHeader("Authorization", "Bearer " + SessionManager.getAuthToken())
@@ -428,77 +499,427 @@ public class ReportData {
 
                     @Override
                     public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                        Log.e("ServiceLog", response.code() + " - " + response.message() + " - " + response.body());
                         service.counter++;
                         checkFinish();
                     }
                 });
             }
-            for (int i = 0; i < intervention.getListTaches().size(); i++) {
-                if (TaskData.getAudio(intervention.getId(), i, service.getApplicationContext()) != null) {
 
-                    OkHttpClient.Builder builderTask = new OkHttpClient.Builder();
-                    builderTask.connectTimeout(100, TimeUnit.SECONDS);
-                    builderTask.readTimeout(100, TimeUnit.SECONDS);
-                    builderTask.writeTimeout(100, TimeUnit.SECONDS);
-                    OkHttpClient clientTask = builderTask.build();
-                    RequestBody formBodyTask = new MultipartBody.Builder()
-                            .setType(MultipartBody.FORM)
-                            .addFormDataPart("file", TaskData.getAudio(intervention.getId(), i, service.getApplicationContext()).getName(),
-                                    RequestBody.create(MediaType.parse("text/plain"), TaskData.getAudio(intervention.getId(), i, service)))
-                            .build();
-
-                    Request requestTask = new Request.Builder()
-                            .url("http://admin.smartonviatoile.com/api/Rapport/uploadaudio")
-                            .addHeader("Authorization", "Bearer " + SessionManager.getAuthToken())
-                            .post(formBodyTask).build();
-                    int finalI = i;
-                    clientTask.newCall(requestTask).enqueue(new Callback() {
-                        @Override
-                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                            e.printStackTrace();
-                        }
-
-                        @Override
-                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                            Log.e("ServiceLog", "Task Audio" + finalI + " : " + response.code() + " - " + response.message() + " - " + response.body());
-                            service.counter++;
-                            checkFinish();
-                        }
-                    });
-                }
-            }
         }
 
-        public int totalMedia() {
-            int total = 0;
-            if (InterventionData.getAudio(intervention.getId(), service.getApplicationContext()) != null)
-                total++;
-
-            if (InterventionData.getVideo(intervention.getId(), service.getApplicationContext()) != null)
-                total++;
-
-            if (InterventionData.getImage(intervention.getId(), service.getApplicationContext()) != null)
-                total++;
-
-            for (int i = 0; i < intervention.getListTaches().size(); i++) {
-                if (TaskData.getAudio(intervention.getId(), i, service.getApplicationContext()) != null)
-                    total++;
-                if (TaskData.getImage(intervention.getId(), i, service.getApplicationContext()) != null)
-                    total++;
-                if (TaskData.getVideo(intervention.getId(), i, service.getApplicationContext()) != null)
-                    total++;
-            }
-
-            return total;
-        }
-
-        public void checkFinish(){
-            if (service.counter == total){
+        public void checkFinish() {
+            if (service.counter == total) {
                 service.doneUpload();
             }
         }
 
     }
 
+    public static class GetAllReport extends AsyncTask<Void, Void, Void> {
+        LoadingBottomDialog loadingReports;
+        List<Report> listReports;
+        ListReports activity;
+        boolean server_error = false;
+        JSONArray infosJson;
+        SimpleDateFormat sdf;
+        SimpleDateFormat output, hourOutput;
+
+        public GetAllReport(ListReports activity) {
+            this.activity = activity;
+            listReports = new ArrayList<>();
+            sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            output = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+            loadingReports = new LoadingBottomDialog("Loading Reports ...");
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+            loadingReports.show(activity.getSupportFragmentManager(), null);
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            try {
+                URL url = new URL("http://admin.smartonviatoile.com/api/Rapport/ResponsableExecutif/"+SessionManager.getUserId(activity.getApplicationContext()));
+                HttpURLConnection http = (HttpURLConnection) url.openConnection();
+                http = (HttpURLConnection) url.openConnection();
+                http.setRequestProperty("Accept", "application/json");
+                http.setRequestProperty("Authorization", "Bearer " + SessionManager.getAuthTokenWithContext(activity.getApplicationContext()));
+                if (http.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                    server_error = true;
+                    String error = http.getResponseCode() + " " + http.getResponseMessage();
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            activity.errorServer(error);
+                        }
+                    });
+                    return null;
+                }
+                BufferedReader reader = new BufferedReader(new InputStreamReader(http.getInputStream()));
+                StringBuilder sb = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line);
+                }
+                JSONObject obj = new JSONObject(sb.toString());
+                Log.e("IntervResponce", obj.toString());
+                infosJson = obj.getJSONArray("data");
+                http.disconnect();
+
+
+            } catch (Exception ex) {
+                new ResultBottomDialog(activity.getResources().getString(R.string.errorOccured),3).show(activity.getSupportFragmentManager(),null);
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if (!server_error) {
+                try {
+                    for (int i = 0; i < infosJson.length(); i++) {
+                        JSONObject object = infosJson.getJSONObject(i);
+
+                        Report report = new Report();
+                        report.setNomIntervention(object.getString("nom_intervention"));
+                        report.setNomSite(object.getString("nom_site"));
+                        report.setDateIntervention(output.format(sdf.parse(object.getString("date_intervention"))));
+                        report.setDateValidation(output.format(sdf.parse(object.getString("date_rapport"))));
+                        report.setNomResponsable(object.getString("nom_responsable"));
+                        report.setEtat(object.getBoolean("etat_rapport"));
+                        report.setIdReport(object.getString("id"));
+
+
+                        JSONObject commentGeneral = object.getJSONObject("commantaire_generale");
+
+                        for (int j = 0; j < commentGeneral.getJSONArray("audio").length(); j++) {
+                            report.getAudiosList().add(commentGeneral.getJSONArray("audio").getString(j));
+                        }
+
+                        for (int j = 0; j < commentGeneral.getJSONArray("image").length(); j++) {
+                            report.getImagesList().add(commentGeneral.getJSONArray("image").getString(j));
+                        }
+
+                        for (int j = 0; j < commentGeneral.getJSONArray("video").length(); j++) {
+                            report.getVideosList().add(commentGeneral.getJSONArray("video").getString(j));
+                        }
+
+                        for (int j = 0; j < commentGeneral.getJSONArray("text").length(); j++) {
+                            report.getCommentsList().add(commentGeneral.getJSONArray("text").getString(j));
+                        }
+
+                        JSONArray commentTask = object.getJSONArray("commentaire_tache");
+
+                        for (int j = 0; j < commentTask.length(); j++) {
+                            JSONObject objectTask = commentTask.getJSONObject(j);
+                            Task task = new Task();
+
+                            for (int k = 0; j < objectTask.getJSONArray("audio").length(); j++) {
+                                task.getAudiosString().add(objectTask.getJSONArray("audio").getString(k));
+                            }
+
+                            for (int k = 0; j < objectTask.getJSONArray("image").length(); j++) {
+                                task.getImagesString().add(objectTask.getJSONArray("image").getString(k));
+                            }
+
+                            for (int k = 0; j < objectTask.getJSONArray("video").length(); j++) {
+                                task.getVideosString().add(objectTask.getJSONArray("video").getString(k));
+                            }
+
+                            for (int k = 0; j < objectTask.getJSONArray("text").length(); j++) {
+                                task.getCommentsString().add(objectTask.getJSONArray("text").getString(k));
+                            }
+
+                            report.getListTasks().add(task);
+
+                            listReports.add(report);
+                        }
+
+                    }
+                    try {
+                        if (listReports.size() == 0)
+                            activity.noIntervention();
+                        else {
+                            activity.backToService();
+                            Collections.reverse(listReports);
+                            activity.displayData(listReports);
+                        }
+                    } catch (Exception ex) {
+                        if (activity != null)
+                            ex.printStackTrace();
+                        //new ResultBottomDialog(activity.getResources().getString(R.string.errorOccured),3).show(activity.getSupportFragmentManager(),null);
+                    }
+
+                } catch (Exception ex) {
+                    if (activity != null)
+                        ex.printStackTrace();
+                    //new ResultBottomDialog(ex.getMessage(), 3).show(activity.getSupportFragmentManager(), null);
+                }
+
+            }
+            loadingReports.dismiss();
+        }
+    }
+
+    public static class GetReportById extends AsyncTask<Void, Void, Void> {
+        LoadingBottomDialog loadingReports;
+        PreviewReport activity;
+        String idReport;
+        boolean server_error = false;
+        JSONObject infosJson;
+        SimpleDateFormat sdf;
+        SimpleDateFormat output, hourOutput;
+
+        public GetReportById(String idReport, PreviewReport activity) {
+            this.activity = activity;
+            this.idReport = idReport;
+            sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            output = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+            loadingReports = new LoadingBottomDialog("Loading Reports ...");
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+            loadingReports.show(activity.getSupportFragmentManager(), null);
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            try {
+                URL url = new URL("http://admin.smartonviatoile.com/api/Rapport/" + idReport);
+                HttpURLConnection http = (HttpURLConnection) url.openConnection();
+                http = (HttpURLConnection) url.openConnection();
+                http.setRequestProperty("Accept", "application/json");
+                http.setRequestProperty("Authorization", "Bearer " + SessionManager.getAuthToken());
+                if (http.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                    server_error = true;
+                    String error = http.getResponseCode() + " " + http.getResponseMessage();
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            activity.errorServer(error);
+                        }
+                    });
+                    return null;
+                }
+                BufferedReader reader = new BufferedReader(new InputStreamReader(http.getInputStream()));
+                StringBuilder sb = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line);
+                }
+                JSONObject obj = new JSONObject(sb.toString());
+                Log.e("ReportResponce", obj.toString());
+                infosJson = obj.getJSONObject("data");
+                http.disconnect();
+
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+            return null;
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.O)
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if (!server_error) {
+                try {
+
+                    Report report = new Report();
+                    report.setNomIntervention(infosJson.getString("nom_intervention"));
+                    report.setNomSite(infosJson.getString("nom_site"));
+                    report.setDateIntervention(output.format(sdf.parse(infosJson.getString("date_intervention"))));
+                    report.setDateValidation(output.format(sdf.parse(infosJson.getString("date_rapport"))));
+                    report.setNomResponsable(infosJson.getString("nom_responsable"));
+                    report.setEtat(infosJson.getBoolean("etat_rapport"));
+                    report.setIdReport(infosJson.getString("id"));
+
+                    JSONObject commentGeneral = infosJson.getJSONObject("commantaire_generale");
+
+                    for (int j = 0; j < commentGeneral.getJSONArray("audio").length(); j++) {
+                        report.getAudiosList().add(commentGeneral.getJSONArray("audio").getString(j));
+                    }
+
+                    for (int j = 0; j < commentGeneral.getJSONArray("image").length(); j++) {
+                        report.getImagesList().add(commentGeneral.getJSONArray("image").getString(j));
+                    }
+
+                    for (int j = 0; j < commentGeneral.getJSONArray("video").length(); j++) {
+                        report.getVideosList().add(commentGeneral.getJSONArray("video").getString(j));
+                    }
+
+                    for (int j = 0; j < commentGeneral.getJSONArray("text").length(); j++) {
+                        report.getCommentsList().add(commentGeneral.getJSONArray("text").getString(j));
+                    }
+
+                    JSONArray commentTask = infosJson.getJSONArray("commentaire_tache");
+
+                    for (int j = 0; j < commentTask.length(); j++) {
+                        JSONObject objectTask = commentTask.getJSONObject(j);
+                        Task task = new Task();
+
+                        for (int k = 0; k < objectTask.getJSONArray("audio").length(); k++) {
+                            task.getAudiosString().add(objectTask.getJSONArray("audio").getString(k));
+                        }
+
+                        for (int k = 0; k < objectTask.getJSONArray("image").length(); k++) {
+                            task.getImagesString().add(objectTask.getJSONArray("image").getString(k));
+                        }
+
+                        for (int k = 0; k < objectTask.getJSONArray("video").length(); k++) {
+                            task.getVideosString().add(objectTask.getJSONArray("video").getString(k));
+                        }
+
+                        for (int k = 0; k < objectTask.getJSONArray("text").length(); k++) {
+                            task.getCommentsString().add(objectTask.getJSONArray("text").getString(k));
+                        }
+
+                        report.getListTasks().add(task);
+
+                    }
+
+                    Log.e("ReportInfo", report.getIdReport() + " - " + report.getNomResponsable());
+
+                    activity.setupViews(report);
+
+                } catch (Exception ex) {
+                    if (activity != null)
+                        new ResultBottomDialog(ex.getMessage(), 3).show(activity.getSupportFragmentManager(), null);
+                }
+
+            } else {
+                new ResultBottomDialog("Error while getting report infos", 3).show(activity.getSupportFragmentManager(), null);
+            }
+            loadingReports.dismiss();
+        }
+    }
+
+    public static class GetReportFiles extends AsyncTask<Void, Void, Void> {
+        LoadingButton loadingReports;
+        TaskPreviewMedias fragment;
+        int numTask;
+        Report report;
+        boolean server_error = false;
+
+        List<File> videos;
+        List<File> images;
+        List<String> comments;
+        List<File> audios;
+
+
+        public GetReportFiles(Report report, TaskPreviewMedias fragment, int numTask, LoadingButton downloadBtn) {
+            this.fragment = fragment;
+            this.report = report;
+            this.numTask = numTask;
+            loadingReports = downloadBtn;
+            videos = new ArrayList<>();
+            images = new ArrayList<>();
+            comments = new ArrayList<>();
+            audios = new ArrayList<>();
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+            loadingReports.startLoading();
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            try {
+                //Download Images :
+                if (numTask == report.getListTasks().size()) {
+                    //Download Videos :
+                    for (int i = 0; i < report.getVideosList().size(); i++) {
+                        videos.add(getFilefromInputStream(MEDIA_TYPE_VIDEO, getOutputTempFile(MEDIA_TYPE_VIDEO, report.getVideosList().get(i), fragment.getContext())));
+                    }
+
+                    for (int i = 0; i < report.getImagesList().size(); i++) {
+                        images.add(getFilefromInputStream(MEDIA_TYPE_IMAGE, getOutputTempFile(MEDIA_TYPE_IMAGE, report.getImagesList().get(i), fragment.getContext())));
+                    }
+
+                    //Download Audios :
+                    for (int i = 0; i < report.getAudiosList().size(); i++) {
+                        audios.add(getFilefromInputStream(MEDIA_TYPE_AUDIO, getOutputTempFile(MEDIA_TYPE_AUDIO, report.getAudiosList().get(i), fragment.getContext())));
+                    }
+
+                    //Download Comment :
+                    comments.addAll(report.getCommentsList());
+                    fragment.getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            fragment.previewImage(images);
+                            fragment.previewAudio(audios);
+                            fragment.previewVideo(videos);
+                            fragment.previewComment(comments);
+                        }
+                    });
+                    return null;
+                }
+
+                for (int i = 0; i < report.getListTasks().get(numTask).getImagesString().size(); i++) {
+                    images.add(getFilefromInputStream(MEDIA_TYPE_IMAGE, getOutputTempFile(MEDIA_TYPE_IMAGE, report.getListTasks().get(numTask).getImagesString().get(i), fragment.getContext())));
+                }
+
+                //Download Videos :
+                for (int i = 0; i < report.getListTasks().get(numTask).getVideosString().size(); i++) {
+                    videos.add(getFilefromInputStream(MEDIA_TYPE_VIDEO, getOutputTempFile(MEDIA_TYPE_VIDEO, report.getListTasks().get(numTask).getVideosString().get(i), fragment.getContext())));
+                }
+
+                //Download Audios :
+                for (int i = 0; i < report.getListTasks().get(numTask).getAudiosString().size(); i++) {
+                    audios.add(getFilefromInputStream(MEDIA_TYPE_AUDIO, getOutputTempFile(MEDIA_TYPE_AUDIO, report.getListTasks().get(numTask).getAudiosString().get(i), fragment.getContext())));
+                }
+
+                //Download Audios :
+                comments.addAll(report.getListTasks().get(numTask).getCommentsString());
+
+                Log.e("ReportInfo", "Nb Images : " + images.size() + " - Nb Videos : " + videos.size() + " - Nb Audios : " + audios.size() + " - Nb Comments : " + comments.size());
+                fragment.getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        fragment.previewImage(images);
+                        fragment.previewAudio(audios);
+                        fragment.previewVideo(videos);
+                        fragment.previewComment(comments);
+                    }
+                });
+            } catch (Exception ex) {
+                new ResultBottomDialog(fragment.getResources().getString(R.string.errorOccured),3).show(fragment.getActivity().getSupportFragmentManager(),null);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if (!server_error) {
+                try {
+                    loadingReports.loadingSuccessful();
+                    fragment.downloadLayout.setVisibility(View.GONE);
+                    fragment.previewScroll.setVisibility(View.VISIBLE);
+
+                } catch (Exception ex) {
+                    if (fragment != null) {
+                        ex.printStackTrace();
+                        loadingReports.loadingFailed();
+                        new ResultBottomDialog("Error while getting report infos", 3).show(fragment.getActivity().getSupportFragmentManager(), null);
+                    }
+                }
+
+            } else {
+                loadingReports.loadingFailed();
+                new ResultBottomDialog("Error while getting report infos", 3).show(fragment.getActivity().getSupportFragmentManager(), null);
+            }
+
+        }
+    }
+
+
 }
+

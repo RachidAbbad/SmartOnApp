@@ -90,7 +90,7 @@ public class DashboardViewModel extends ViewModel {
                 URL url = new URL("http://smartonviatoile.com/api/Data/currentChaudiere/" + SessionManager.getIdCapteur(dash.getContext()) + "/1");
                 http = (HttpURLConnection) url.openConnection();
                 http.setRequestProperty("Accept", "application/json");
-                http.setRequestProperty("Authorization", "Bearer " + SessionManager.getAuthToken());
+                http.setRequestProperty("Authorization", "Bearer " + SessionManager.getAuthTokenWithContext(dash.getContext()));
                 if (http.getResponseCode() != HttpURLConnection.HTTP_OK) {
                     server_error = true;
                     return null;
@@ -146,6 +146,7 @@ public class DashboardViewModel extends ViewModel {
                 if (!first_time) {
                     first_time = true;
                 }
+                server_error = false;
                 reader = new BufferedReader(new InputStreamReader(http.getInputStream()));
                 sb = new StringBuilder();
                 line = "";
@@ -289,7 +290,7 @@ public class DashboardViewModel extends ViewModel {
                 }
             }
             Comun.nbTasksOnline++;
-            if (Comun.nbTasksOnline == 4 && !Comun.isAllTasksFinished){
+            if (Comun.nbTasksOnline == Comun.totalTasks && !Comun.isAllTasksFinished){
                 MainActivity.loadingBottomDialog.dismiss();
                 InterventionFragment.checkInCompletedIntervention((MainActivity) dash.getActivity());
                 Comun.isAllTasksFinished = true;

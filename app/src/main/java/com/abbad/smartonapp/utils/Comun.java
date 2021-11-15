@@ -41,7 +41,9 @@ public class Comun {
     public static MainActivity mainActivity;
 
     public static int nbTasksOnline = 0;
+    public static int totalTasks = 4;
     public static int nbErrors = 0;
+    public static int nbExit = 0;
     public static boolean isAllTasksFinished = false;
 
     public static void askCameraPermission(Activity activity){

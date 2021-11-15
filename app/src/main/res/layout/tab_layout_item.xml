@@ -13,7 +13,7 @@
     android:marqueeRepeatLimit ="marquee_forever"
     android:text="@string/task"
     android:textColor="@color/uiTextColor"
-    android:textSize="22sp">
+    android:textSize="20sp">
 
 
 </TextView>

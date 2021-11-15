@@ -37,12 +37,19 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.sql.Time;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class InterventionData {
     public static List<Intervention> listInterventions;
@@ -60,46 +67,6 @@ public class InterventionData {
         getInterventions.execute();
 
         return listInterventions;
-    }
-
-    private static void fillInterv1() {
-        List<User> listUsers;
-        List<Task> listTasks;
-        List<String> listMateriels;
-        List<String> listOutils;
-        for (int i = 0; i < 10; i++) {
-            //List of collaborators
-            listUsers = new ArrayList<>();
-            listUsers.add(new User("UZY763EUU", "Samir", "ElHilali", "samir.elhilali@viatoile.com"));
-            listUsers.add(new User("UDGEU3763", "Alae", "Saadi", "alae.saadi@viatoile.com"));
-
-            //List of tasks
-            listTasks = new ArrayList<>();
-            listTasks.add(new Task("Interv735651", 1, "le nettoyage intérieur avec repose après travaux", Arrays.asList("Equipement 1", "Equipement 2"), Arrays.asList("Action 1", "Action 2")));
-            listTasks.add(new Task("Interv735651", 2, "le nettoyage des éléments et du local après intervention", Arrays.asList("Equipement 1", "Equipement 2"), Arrays.asList("Action 1", "Action 2")));
-
-            //List of Materials :
-            listMateriels = new ArrayList<>();
-            listMateriels.add("Amperemetre");
-            listMateriels.add("Barometre");
-
-            //List of outils
-            listOutils = new ArrayList<>();
-            listOutils.add("Tournevis");
-            listOutils.add("Lunettes de protection");
-
-            Intervention intervention = new Intervention("Interv735651",
-                    "la dépose de la buse de fumée du raccordement au conduit",
-                    "30-08-2021",
-                    listUsers,
-                    listTasks,
-                    listMateriels,
-                    listOutils);
-
-            intervention.setType("corrective");
-
-            listInterventions.add(intervention);
-        }
     }
 
     public static Intervention getInterventionById(String id) {
@@ -201,21 +168,24 @@ public class InterventionData {
     }
 
     public static class GetInterventions extends AsyncTask<Void, Void, Void> {
-        JSONArray infosJson;
         InterventionFragment fragment;
         HttpURLConnection http;
+        JSONArray infosJson;
         SimpleDateFormat sdf;
         SimpleDateFormat output;
+        SimpleDateFormat hourOutput;
+        List<Intervention> interventionList;
 
         public GetInterventions(InterventionFragment f) {
             fragment = f;
+            interventionList = new ArrayList<>();
         }
 
         @Override
-        protected void onPreExecute() {
-            sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        protected void onPreExecute(){
+            sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
             output = new SimpleDateFormat("dd-MM-yyyy");
-            listInterventions = new ArrayList<>();
+            hourOutput = new SimpleDateFormat("HH:mm");
         }
 
         @Override
@@ -242,6 +212,8 @@ public class InterventionData {
                     });
                     return null;
                 }
+
+                server_error = false;
                 BufferedReader reader = new BufferedReader(new InputStreamReader(http.getInputStream()));
                 StringBuilder sb = new StringBuilder();
                 String line;
@@ -255,7 +227,7 @@ public class InterventionData {
             } catch (IOException | JSONException e) {
                 Log.i("Exception :", "NoConnection to get Interventions");
                 if(fragment.getActivity() != null)
-                new ResultBottomDialog(e.getMessage(), 3).show(fragment.getActivity().getSupportFragmentManager(), null);
+                //new ResultBottomDialog(e.getMessage(), 3).show(fragment.getActivity().getSupportFragmentManager(), null);
                 this.cancel(true);
             }
             return null;
@@ -336,15 +308,31 @@ public class InterventionData {
                         intervention.setNomResponsableExecutif(object.getString("nom_responsable_executif"));
                         intervention.setNomContremaitreExploitation(object.getString("nom_contremaitre_exploitation"));
                         intervention.setNomSite(object.getString("nom_site"));
+                        Date heureDebut = sdf.parse(object.getString("heure_debut"));
+                        Date heureFin = sdf.parse(object.getString("heure_fin"));
+                        intervention.setHeureDebut(hourOutput.format(heureDebut));
+                        intervention.setHeureFin(hourOutput.format(heureFin));
 
-                        listInterventions.add(intervention);
+                        interventionList.add(intervention);
                     }
                     try {
+                        listInterventions.clear();
+                        Collections.sort(interventionList,new Comparator<Intervention>() {
+                            DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+                            @Override
+                            public int compare(Intervention s1, Intervention s2) {
+                                try {
+                                    return df.parse(s1.getDate()).compareTo(df.parse(s2.getDate())) * (-1);
+                                } catch (ParseException e) {
+                                    throw new IllegalArgumentException(e);
+                                }
+                            }});
+                        listInterventions.addAll(interventionList);
                         if (listInterventions.size() == 0)
                             fragment.noIntervention();
                         else {
                             fragment.backToService();
-                            Collections.reverse(listInterventions);
+
                             fragment.refreshAll(listInterventions);
                         }
                     } catch (Exception ex) {
@@ -354,16 +342,17 @@ public class InterventionData {
 
                 } catch (Exception ex) {
                     if(fragment.getActivity() != null)
-                        new ResultBottomDialog(ex.getMessage(), 3).show(fragment.getActivity().getSupportFragmentManager(), null);
+                        ex.printStackTrace();
+                        //new ResultBottomDialog(ex.getMessage(), 3).show(fragment.getActivity().getSupportFragmentManager(), null);
                 }
 
-                Comun.nbTasksOnline++;
-                if (Comun.nbTasksOnline == 4 && !Comun.isAllTasksFinished){
-                    MainActivity.loadingBottomDialog.dismiss();
-                    InterventionFragment.checkInCompletedIntervention((MainActivity) fragment.getActivity());
-                    Comun.isAllTasksFinished = true;
-                }
+            }
 
+            Comun.nbTasksOnline++;
+            if (Comun.nbTasksOnline == 4 && !Comun.isAllTasksFinished){
+                MainActivity.loadingBottomDialog.dismiss();
+                InterventionFragment.checkInCompletedIntervention((MainActivity) fragment.getActivity());
+                Comun.isAllTasksFinished = true;
             }
         }
     }

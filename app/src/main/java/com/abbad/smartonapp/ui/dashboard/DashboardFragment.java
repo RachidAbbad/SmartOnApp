@@ -118,9 +118,15 @@ public class DashboardFragment extends Fragment {
 
 
     public void reportError(String content){
-        getServerError().setVisibility(View.VISIBLE);
-        getMainLayout().setVisibility(View.GONE);
-        getExceptionText().setText(content);
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                getServerError().setVisibility(View.VISIBLE);
+                getMainLayout().setVisibility(View.GONE);
+                getExceptionText().setText(content);
+            }
+        });
+
     }
 
     public void errorSolved(){

@@ -106,6 +106,19 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
+                <com.dx.dxloadingbutton.lib.LoadingButton
+                    android:id="@+id/submitBtn"
+                    android:layout_width="160dp"
+
+                    android:layout_height="65dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:lb_btnColor="@color/secondColor"
+                    app:lb_btnText="@string/submitBtn"
+                    app:lb_cornerRadius="20dp"
+                    app:lb_textColor="@color/white" />
 
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton

@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".Fragments.TaskPreviewMedias"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/download_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center">
+        <com.dx.dxloadingbutton.lib.LoadingButton
+            android:id="@+id/download_btn"
+            android:layout_width="180dp"
+            android:layout_height="60dp"
+            app:lb_cornerRadius="100dp"
+            app:lb_btnColor="@color/secondColor"
+            app:lb_textColor="@color/white"
+            app:lb_btnText="Download"/>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ScrollView
+            android:id="@+id/preview_scroll_preview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <androidx.cardview.widget.CardView
+                    app:cardCornerRadius="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="5dp"
+                    android:layout_marginVertical="4dp">
+
+                    <LinearLayout
+                        android:id="@+id/general_preview_image"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="20dp"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/catamaran_medium"
+                            android:textColor="@color/uiTextColor"
+                            android:layout_marginEnd="4dp"
+                            android:layout_marginBottom="10dp"
+                            android:text="@string/imagesCaptured"
+                            android:textStyle="bold"
+                            android:textSize="20sp" />
+
+                        <TextView
+                            android:id="@+id/no_image_file"
+                            android:visibility="gone"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/catamaran_medium"
+                            android:textColor="@color/uiTextColor"
+                            android:layout_marginEnd="4dp"
+                            android:layout_gravity="center"
+                            android:layout_margin="30dp"
+                            android:text="No Images"
+                            android:textStyle="bold"
+                            android:textSize="20sp" />
+
+                        <HorizontalScrollView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                            <GridLayout
+                                android:id="@+id/preview_image_layout"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:rowCount="1">
+                            </GridLayout>
+                        </HorizontalScrollView>
+
+
+
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    app:cardCornerRadius="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="10dp">
+
+                    <LinearLayout
+                        android:id="@+id/general_preview_video"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="20dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/catamaran_medium"
+                            android:textColor="@color/uiTextColor"
+                            android:layout_marginEnd="4dp"
+                            android:layout_marginBottom="10dp"
+                            android:text="Captured Videos :"
+                            android:textStyle="bold"
+                            android:textSize="20sp" />
+
+                        <TextView
+                            android:id="@+id/no_video_file"
+                            android:visibility="gone"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/catamaran_medium"
+                            android:textColor="@color/uiTextColor"
+                            android:layout_marginEnd="4dp"
+                            android:layout_gravity="center"
+                            android:layout_margin="30dp"
+                            android:text="No Videos"
+                            android:textStyle="bold"
+                            android:textSize="20sp" />
+
+                        <HorizontalScrollView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                            <GridLayout
+                                android:id="@+id/preview_video_layout"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:rowCount="1">
+                            </GridLayout>
+                        </HorizontalScrollView>
+
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    app:cardCornerRadius="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="10dp">
+
+                    <LinearLayout
+                        android:id="@+id/general_preview_audio"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="20dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/catamaran_medium"
+                            android:textColor="@color/uiTextColor"
+                            android:layout_marginEnd="4dp"
+                            android:layout_marginBottom="10dp"
+                            android:text="Recorded audios :"
+                            android:textStyle="bold"
+                            android:textSize="20sp" />
+
+                        <TextView
+                            android:id="@+id/no_audio_file"
+                            android:visibility="gone"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/catamaran_medium"
+                            android:textColor="@color/uiTextColor"
+                            android:layout_marginEnd="4dp"
+                            android:layout_gravity="center"
+                            android:layout_margin="30dp"
+                            android:text="No Audios"
+                            android:textStyle="bold"
+                            android:textSize="20sp" />
+
+                        <ScrollView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                            <LinearLayout
+                                android:id="@+id/preview_audio_layout"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+                            </LinearLayout>
+                        </ScrollView>
+
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    app:cardCornerRadius="15dp"
+                    android:layout_marginBottom="30dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="10dp">
+                    <LinearLayout
+                        android:id="@+id/general_preview_comment"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="20dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/catamaran_medium"
+                            android:textColor="@color/uiTextColor"
+                            android:layout_marginEnd="4dp"
+                            android:layout_marginBottom="10dp"
+                            android:text="Saved Comments :"
+                            android:textStyle="bold"
+                            android:textSize="20sp" />
+
+                        <TextView
+                            android:id="@+id/no_comment_file"
+                            android:visibility="gone"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/catamaran_medium"
+                            android:textColor="@color/uiTextColor"
+                            android:layout_marginEnd="4dp"
+                            android:layout_gravity="center"
+                            android:layout_margin="30dp"
+                            android:text="No Comments"
+                            android:textStyle="bold"
+                            android:textSize="20sp" />
+
+                        <ScrollView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                            <LinearLayout
+                                android:id="@+id/preview_comment_layout"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+                            </LinearLayout>
+                        </ScrollView>
+
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+
+
+</LinearLayout>

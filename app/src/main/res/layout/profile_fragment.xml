@@ -194,6 +194,22 @@
                         android:textAllCaps="false"
                         android:textSize="19sp" />
 
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/list_reports_btn"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="6dp"
+                        android:background="@drawable/btn_ui_style"
+                        android:drawableStart="@drawable/ic_report_1"
+                        android:drawablePadding="12dp"
+                        android:fontFamily="@font/catamaran_medium"
+                        android:outlineSpotShadowColor="@color/transparent"
+                        android:paddingHorizontal="10dp"
+                        android:text="Rapports"
+                        android:textAlignment="textStart"
+                        android:textAllCaps="false"
+                        android:textSize="19sp" />
+
                 </LinearLayout>
             </ScrollView>
         </LinearLayout>

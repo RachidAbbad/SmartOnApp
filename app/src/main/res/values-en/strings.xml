@@ -117,4 +117,8 @@
 
     <string name="noInterventionMain">No scheduled intervention!</string>
     <string name="noInterventionOk">No intervention carried out!</string>
+
+    <string name="noReport">no report submitted!</string>
+    <string name="completedReports">Submitted reports</string>
+
 </resources>

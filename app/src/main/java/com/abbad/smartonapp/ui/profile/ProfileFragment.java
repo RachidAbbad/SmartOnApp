@@ -5,6 +5,7 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
@@ -20,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.abbad.smartonapp.R;
+import com.abbad.smartonapp.activities.ListReports;
 
 public class ProfileFragment extends Fragment {
 
@@ -32,6 +34,7 @@ public class ProfileFragment extends Fragment {
     private LinearLayout gsmLayout;
     private AppCompatButton authSite;
     private AppCompatButton languge_btn;
+    private AppCompatButton rapport_btn;
 
     public static ProfileFragment newInstance() {
         return new ProfileFragment();
@@ -46,6 +49,7 @@ public class ProfileFragment extends Fragment {
         typeUser = root.findViewById(R.id.userType);
         logouBtn = root.findViewById(R.id.logout_btn);
         fullname = root.findViewById(R.id.userName);
+        rapport_btn = root.findViewById(R.id.list_reports_btn);
         gsm = root.findViewById(R.id.userGsm);
         gsmLayout = root.findViewById(R.id.gsmLayout);
         email = root.findViewById(R.id.userEmail);
@@ -57,7 +61,13 @@ public class ProfileFragment extends Fragment {
         mViewModel.changeLanguageHandler(languge_btn);
 
 
-
+        rapport_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), ListReports.class);
+                startActivity(intent);
+            }
+        });
 
 
         return root;

@@ -90,6 +90,8 @@ public class InterventionFragment extends Fragment {
         workLayout = root.findViewById(R.id.workLayout);
         exceptionText = root.findViewById(R.id.exceptionText);
 
+        InterventionData.listInterventions = new ArrayList<>();
+
         historiqueInterv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -106,8 +108,7 @@ public class InterventionFragment extends Fragment {
         currentMonth.setText(month+" "+cal.get(Calendar.YEAR));
 
         //
-
-
+        //interventionViewModel.displayDayIntervention(interventionList, recyclerViewCalendar, noIntervText, clickedDate);
         //Set layout manager to recyleViews
         recyclerView.setLayoutManager( new LinearLayoutManager(getContext()));
         recyclerViewCalendar.setLayoutManager( new LinearLayoutManager(getContext()));
@@ -119,7 +120,6 @@ public class InterventionFragment extends Fragment {
         refreshIntervention();
 
         clickedDate = new Date();
-        interventionViewModel.displayDayIntervention(list_intervention,recyclerViewCalendar,noIntervText,clickedDate);
 
         //Switch between listView & Calendar view
         interventionViewModel.switchViewSetter(viewSwitcher,intervLayout,calendarLayout);
@@ -144,20 +144,17 @@ public class InterventionFragment extends Fragment {
         Calendar cal = Calendar.getInstance();
         calendarView.removeAllEvents();
         for (Intervention in: listIntervention){
-            cal.setTime(new SimpleDateFormat("dd-MM-yyyy").parse(in.getDate()));
+            cal.setTime(new SimpleDateFormat("yyyy-MM-dd").parse(in.getDate()));
             Log.e("generatedDate","new SimpleDateFormat(.parse(in.getDate()).toString()");
             switch (in.getType()){
-                case "corrective":
-                    calendarView.addEvent(new Event(getResources().getColor(R.color.danger2), cal.getTimeInMillis()));
+                case "correctif":
+                    calendarView.addEvent(new Event(getResources().getColor(R.color.danger1), cal.getTimeInMillis()));
                     break;
-                case "preventive":
-                    calendarView.addEvent(new Event(getResources().getColor(R.color.danger5), cal.getTimeInMillis()));
-                    break;
-                case "préventive":
+                case "preventif":
                     calendarView.addEvent(new Event(getResources().getColor(R.color.danger5), cal.getTimeInMillis()));
                     break;
                 default:
-                    calendarView.addEvent(new Event(getResources().getColor(R.color.danger1), cal.getTimeInMillis()));
+                    calendarView.addEvent(new Event(getResources().getColor(R.color.danger2), cal.getTimeInMillis()));
                     break;
             }
         }
@@ -186,11 +183,10 @@ public class InterventionFragment extends Fragment {
     public void refreshAll(List<Intervention> interventionList) throws ParseException {
         Log.e("ListInterv",interventionList.size()+"");
         setupEvents(interventionList);
-
         list_intervention = interventionList;
         adapter.setList_intervention(interventionList);
+        adapter.notifyDataSetChanged();
         interventionViewModel.calendarClickHandler(intervLayout, calendarView, currentMonth,recyclerViewCalendar,noIntervText, interventionList);
-        interventionViewModel.displayDayIntervention(interventionList, recyclerViewCalendar, noIntervText, clickedDate);
     }
 
     public void noIntervention(){

@@ -66,6 +66,8 @@ public class AlertesData {
                     serverError = true;
                     return null;
                 }
+                serverError = false;
+
                 BufferedReader reader = new BufferedReader(new InputStreamReader(http.getInputStream()));
                 StringBuilder sb = new StringBuilder();
                 String line;
@@ -105,14 +107,12 @@ public class AlertesData {
                     listAlertes.add(notification);
                     tempListNotification.add(notification);
                 }
-
-                Comun.nbTasksOnline++;
-                if (Comun.nbTasksOnline == 4 && !Comun.isAllTasksFinished){
-                    MainActivity.loadingBottomDialog.dismiss();
-                    InterventionFragment.checkInCompletedIntervention(mainActivity);
-                    Comun.isAllTasksFinished = true;
-
-                }
+            }
+            Comun.nbTasksOnline++;
+            if (Comun.nbTasksOnline == Comun.totalTasks && !Comun.isAllTasksFinished){
+                MainActivity.loadingBottomDialog.dismiss();
+                InterventionFragment.checkInCompletedIntervention(mainActivity);
+                Comun.isAllTasksFinished = true;
             }
 
         }

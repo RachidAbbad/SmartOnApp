@@ -5,7 +5,7 @@
     <string name="title_notifications">Notifications</string>
     <string name="title_intervention">Interventions</string>
     <string name="previousInterv">Interventions effectuées</string>
-    <string name="title_auth_site" translatable="false">Authentification au site</string>
+    <string name="title_auth_site">Authentification au site</string>
     <string name="title_profile">Profil</string>
     <string name="warningTitle">Alertes</string>
 
@@ -14,14 +14,14 @@
     <string name="hintPass">Mot de passe</string>
     <string name="login_btn_text">Se connecter</string>
     <string name="reconnectMsg">Une erreur s\'est produite, essayez de vous reconnecter</string>
-    <string name="logout_btn_text" translatable="false">Déconnexion</string>
-    <string name="language_btn_text" translatable="false">Langue</string>
+    <string name="logout_btn_text">Déconnexion</string>
+    <string name="language_btn_text">Langue</string>
     <string name="login_btn_forgot_pass">Mot de passe oublié ?</string>
     <string name="app_logo">Application Logo</string>
-    <string name="infos_incorrect_msg" translatable="false">Email ou Mot de passe incorrect</string>
-    <string name="auth_site_loading_msg" translatable="false">Email ou Mot de passe incorrect</string>
-    <string name="chaudiereName" translatable="false">Chaudère</string>
-    <string name="ballonName" translatable="false">Ballon de chaudière</string>
+    <string name="infos_incorrect_msg">Email ou Mot de passe incorrect</string>
+    <string name="auth_site_loading_msg">Email ou Mot de passe incorrect</string>
+    <string name="chaudiereName">Chaudière</string>
+    <string name="ballonName">Ballon de chaudière</string>
 
     <string name="temp1Text">T° de départ</string>
     <string name="temp2Text">T° de retour</string>
@@ -31,50 +31,50 @@
     <string name="temp6Text">Luminosité</string>
     <string name="temp7Text">Temp N7</string>
     <string name="temp8Text">Temp N8</string>
-    <string name="error404" translatable="false">Erreur 404</string>
-    <string name="coming_soon" translatable="false">Bientôt disponible</string>
-    <string name="generalErreur" translatable="false">Une erreur s\'est produite lors de la connexion au serveur</string>
-    <string name="cnxMainErreur" translatable="false">Impossible de se connecter à Internet</string>
-    <string name="cnxSecondErreur" translatable="false">L\'application ne peut pas fonctionner hors connexion, vérifiez votre connexion et essayez.</string>
+    <string name="error404">Erreur 404</string>
+    <string name="coming_soon">Bientôt disponible</string>
+    <string name="generalErreur">Une erreur s\'est produite lors de la connexion au serveur</string>
+    <string name="cnxMainErreur">Impossible de se connecter à Internet</string>
+    <string name="cnxSecondErreur">L\'application ne peut pas fonctionner hors connexion, vérifiez votre connexion et essayez.</string>
 
 
-    <string name="modeOperatoire" translatable="false">Mode opératoire :</string>
-    <string name="usedToold" translatable="false">Outils utilisés :</string>
-    <string name="Interv_desc" translatable="false">Description :</string>
-    <string name="task" translatable="false">Tache </string>
-    <string name="zone" translatable="false">Zone : </string>
+    <string name="modeOperatoire">Mode opératoire :</string>
+    <string name="usedToold">Outils utilisés :</string>
+    <string name="Interv_desc">Description :</string>
+    <string name="task">Tâche</string>
+    <string name="zone">Zone : </string>
 
 
-    <string name="cnxStatusTitle" translatable="false">Statut de connexion : </string>
-    <string name="cnxStatusMsgOnline" translatable="false">En Ligne</string>
-    <string name="cnxStatusMsgOffline" translatable="false">Hors ligne</string>
+    <string name="cnxStatusTitle">Statut de connexion : </string>
+    <string name="cnxStatusMsgOnline">En Ligne</string>
+    <string name="cnxStatusMsgOffline">Hors ligne</string>
 
-    <string name="authSiteSuccess" translatable="false">Authentification au site avec succès</string>
-    <string name="authSiteFailed" translatable="false">Échec de l\'authentification au site</string>
+    <string name="authSiteSuccess">Authentification au site avec succès</string>
+    <string name="authSiteFailed">Échec de l\'authentification au site</string>
 
-    <string name="confirmInterv" translatable="false">Glisser pour démarrer l\'intervention</string>
-    <string name="nfcScanReady" translatable="false">Prêt à scanner ...</string>
-    <string name="nfcNotSupported" translatable="false">NFC n\'est pas pris en charge dans cet appareil</string>
-    <string name="noDisponible" translatable="false">Non disponible</string>
-    <string name="noBalloons" translatable="false">Pas de ballons sur ce site</string>
-    <string name="noSilos" translatable="false">Pas de silos sur ce site</string>
-    <string name="temperature" translatable="false">Température</string>
+    <string name="confirmInterv">Démarrer l\'intervention</string>
+    <string name="nfcScanReady">Prêt à scanner ...</string>
+    <string name="nfcNotSupported">NFC n\'est pas pris en charge dans cet appareil</string>
+    <string name="noDisponible">Non disponible</string>
+    <string name="noBalloons">Pas de ballons sur ce site</string>
+    <string name="noSilos">Pas de silos sur ce site</string>
+    <string name="temperature">Température</string>
 
 
-    <string name="intervTitle" translatable="false">Vos interventions</string>
-    <string name="notifTitle" translatable="false">Notifications</string>
+    <string name="intervTitle">Vos interventions</string>
+    <string name="notifTitle">Notifications</string>
 
-    <string name="taskStatus" translatable="false">État de la tâche :</string>
-    <string name="taskDone" translatable="false">Terminée</string>
-    <string name="taskNotDone" translatable="false">Non terminée</string>
-    <string name="chooseImage" translatable="false">Ajouter images</string>
-    <string name="chooseImageGallery" translatable="false">Importer depuis la galerie</string>
-    <string name="chooseImageCamera" translatable="false">Utiliser la caméra</string>
-    <string name="selectVideo" translatable="false">Capturer une vidéo</string>
-    <string name="recordAudio" translatable="false">Enregistrer un audio</string>
-    <string name="writeComment" translatable="false">Écrire un commentaire</string>
-    <string name="submitBtn" translatable="false">Valider le rapport</string>
-    <string name="addComment" translatable="false">Ajouter un commentaire</string>
+    <string name="taskStatus">État de la tâche :</string>
+    <string name="taskDone">Terminée</string>
+    <string name="taskNotDone">Non terminée</string>
+    <string name="chooseImage">Ajouter images</string>
+    <string name="chooseImageGallery">Importer depuis la galerie</string>
+    <string name="chooseImageCamera">Utiliser la caméra</string>
+    <string name="selectVideo">Capturer une vidéo</string>
+    <string name="recordAudio">Enregistrer un audio</string>
+    <string name="writeComment">Écrire un commentaire</string>
+    <string name="submitBtn">Valider le rapport</string>
+    <string name="addComment">Ajouter</string>
     <string name="resumeReportMsg">Vous avez déjà une intervention incomplète</string>
     <string name="resumeReportBtn">Reprendre</string>
     <string name="cancelReportBtn">Annuler</string>
@@ -120,6 +120,10 @@
 
     <string name="noInterventionMain">Aucune intervention programmée !</string>
     <string name="noInterventionOk">Aucune intervention effectuée !</string>
+
+    <string name="noReport">Aucun rapport soumis !</string>
+    <string name="completedReports">Rapports soumis</string>
+
 
 
 </resources>

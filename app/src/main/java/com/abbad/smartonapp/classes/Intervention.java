@@ -31,6 +31,7 @@ public class Intervention  implements Parcelable{
     private String nomContremaitreExploitation;
     private String nomResponsable;
     private String nomSite;
+    private String heureDebut,heureFin;
 
 
 
@@ -51,36 +52,21 @@ public class Intervention  implements Parcelable{
         title = in.readString();
         date = in.readString();
         gravity = in.readInt();
+        type = in.readString();
         listTaches = in.createTypedArrayList(Task.CREATOR);
         listMaterials = in.createStringArrayList();
         listOutils = in.createStringArrayList();
-    }
-
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
-        dest.writeString(title);
-        dest.writeString(date);
-        dest.writeInt(gravity);
-        dest.writeString(type);
-        dest.writeTypedList(listTaches);
-        dest.writeStringList(listMaterials);
-        dest.writeStringList(listOutils);
-        dest.writeString(idResponsableExecutif);
-        dest.writeString(idContremaitreExploitation);
-        dest.writeString(idResponsable);
-        dest.writeString(fullDateFormat);
-        dest.writeString(idSite);
-        dest.writeString(nomResponsableExecutif);
-        dest.writeString(nomContremaitreExploitation);
-        dest.writeString(nomResponsable);
-        dest.writeString(nomSite);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
+        idResponsableExecutif = in.readString();
+        idContremaitreExploitation = in.readString();
+        idResponsable = in.readString();
+        fullDateFormat = in.readString();
+        idSite = in.readString();
+        nomResponsableExecutif = in.readString();
+        nomContremaitreExploitation = in.readString();
+        nomResponsable = in.readString();
+        nomSite = in.readString();
+        heureDebut = in.readString();
+        heureFin = in.readString();
     }
 
     public static final Creator<Intervention> CREATOR = new Creator<Intervention>() {
@@ -94,6 +80,10 @@ public class Intervention  implements Parcelable{
             return new Intervention[size];
         }
     };
+
+    public Intervention() {
+
+    }
 
     public String getTitle() {
         return title;
@@ -239,5 +229,47 @@ public class Intervention  implements Parcelable{
         this.nomSite = nomSite;
     }
 
+    public String getHeureDebut() {
+        return heureDebut;
+    }
 
+    public void setHeureDebut(String heureDebut) {
+        this.heureDebut = heureDebut;
+    }
+
+    public String getHeureFin() {
+        return heureFin;
+    }
+
+    public void setHeureFin(String heureFin) {
+        this.heureFin = heureFin;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(title);
+        dest.writeString(date);
+        dest.writeInt(gravity);
+        dest.writeString(type);
+        dest.writeTypedList(listTaches);
+        dest.writeStringList(listMaterials);
+        dest.writeStringList(listOutils);
+        dest.writeString(idResponsableExecutif);
+        dest.writeString(idContremaitreExploitation);
+        dest.writeString(idResponsable);
+        dest.writeString(fullDateFormat);
+        dest.writeString(idSite);
+        dest.writeString(nomResponsableExecutif);
+        dest.writeString(nomContremaitreExploitation);
+        dest.writeString(nomResponsable);
+        dest.writeString(nomSite);
+        dest.writeString(heureDebut);
+        dest.writeString(heureFin);
+    }
 }

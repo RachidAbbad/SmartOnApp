@@ -1,6 +1,7 @@
 package com.abbad.smartonapp.ui.interventions;
 
 import android.os.Build;
+import android.provider.CalendarContract;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
@@ -53,19 +54,21 @@ public class InterventionViewModel extends ViewModel {
         }
         @Override
         public void onClick(View v) {
+            viewSwitcher.animate().alpha(0.0F).setDuration(500).start();
+            viewSwitcher.animate().alpha(1.0F).setDuration(500).start();
             if (calendarView.getVisibility() == GONE){
-                viewSwitcher.animate().alpha(0.0F).setDuration(500).start();
-                viewSwitcher.animate().alpha(1.0F).setDuration(500).start();
-                viewSwitcher.setImageResource(R.drawable.ic_calendar_view);
+                viewSwitcher.setImageResource(R.drawable.ic_list_view);
                 listView.animate().alpha(0.0F).setDuration(500).start();
                 calendarView.animate().alpha(1.0F).setDuration(500).start();
                 calendarView.setVisibility(View.VISIBLE);
                 listView.setVisibility(GONE);
             }
             else{
+                viewSwitcher.setImageResource(R.drawable.ic_calendar_view);
+
                 calendarView.animate().alpha(0.0F).setDuration(500).start();
                 listView.animate().alpha(1.0F).setDuration(500).start();
-                viewSwitcher.setImageResource(R.drawable.ic_list_view);
+
                 calendarView.setVisibility(GONE);
                 listView.setVisibility(View.VISIBLE);
             }
@@ -102,7 +105,7 @@ public class InterventionViewModel extends ViewModel {
                 interventionList = new ArrayList<>();
             for (Intervention intervention: interventionList){
                 try {
-                    if (new SimpleDateFormat("dd-MM-yyyy").parse(intervention.getDate()).compareTo(dateClicked)==0)
+                    if (new SimpleDateFormat("yyyy-MM-dd").parse(intervention.getDate()).compareTo(dateClicked)==0)
                         interventions.add(intervention);
                 } catch (ParseException parseException) {
                     parseException.printStackTrace();
@@ -137,11 +140,15 @@ public class InterventionViewModel extends ViewModel {
 
     public void displayDayIntervention(List<Intervention> interventionList, RecyclerView recyclerView, TextView noIntervText,Date dateClicked){
         List<Intervention> interventions = new ArrayList<>();
+        Calendar calendar = Calendar.getInstance();
+        String todayDate = calendar.get(Calendar.YEAR)+"-"+calendar.get(Calendar.MONTH)+"-"+calendar.get(Calendar.DAY_OF_MONTH);
+        Log.e("TodayDateString",todayDate);
+        SimpleDateFormat dateParser = new SimpleDateFormat("yyyy-MM-dd");
         if (interventionList == null)
             interventionList = new ArrayList<>();
         for (Intervention intervention: interventionList){
             try {
-                if (new SimpleDateFormat("dd-MM-yyyy").parse(intervention.getDate()).compareTo(dateClicked)==0)
+                if (dateParser.parse(intervention.getDate()).compareTo(dateParser.parse(todayDate))==0)
                     interventions.add(intervention);
             } catch (ParseException parseException) {
                 parseException.printStackTrace();

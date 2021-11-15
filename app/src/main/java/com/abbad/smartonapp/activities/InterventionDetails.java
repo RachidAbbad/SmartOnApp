@@ -5,9 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
 import android.annotation.SuppressLint;
+import android.content.AsyncQueryHandler;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -17,21 +21,28 @@ import com.abbad.smartonapp.classes.Intervention;
 import com.abbad.smartonapp.classes.Task;
 import com.abbad.smartonapp.classes.User;
 import com.abbad.smartonapp.datas.InterventionData;
+import com.abbad.smartonapp.dialogs.LoadingBottomDialog;
 import com.abbad.smartonapp.dialogs.ResultBottomDialog;
 import com.abbad.smartonapp.dialogs.SubmitGeneralDialog;
 import com.abbad.smartonapp.utils.InterventionManager;
+import com.abbad.smartonapp.utils.SessionManager;
+import com.dx.dxloadingbutton.lib.LoadingButton;
 import com.ncorti.slidetoact.SlideToActView;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public class InterventionDetails extends AppCompatActivity {
 
     private Intervention intervention;
     private LinearLayout tasksLayout,toolsLayout,materialsLayout;
-    private TextView inter_title,interv_date,collaborateurs;
+    private TextView inter_title,interv_date,collaborateurs,heureDebut,heureFin;
     private SlideToActView confirmInterv;
 
     private LinearLayout resumeLayout;
@@ -63,37 +74,49 @@ public class InterventionDetails extends AppCompatActivity {
         confirmInterv = findViewById(R.id.confirmInterv);
         resumeLayout = findViewById(R.id.resumeLayout);
         resumeBtn = findViewById(R.id.resumeBtn);
+        heureDebut = findViewById(R.id.heure_debut);
+        heureFin = findViewById(R.id.heure_fin);
         //inter_id = findViewById(R.id.interv_id);
         if (InterventionData.currentIntervention != null)
             intervention = InterventionData.currentIntervention;
-        else
+        else if (InterventionData.getInterventionById(InterventionManager.getCurrentIntervention()) == null)
             intervention = InterventionData.getInterventionById(InterventionManager.getCurrentIntervention());
 
-        inter_title.setText(intervention.getTitle());
-        interv_date.setText(intervention.getDate());
-        confirmInterv.setOnSlideCompleteListener(new InterventionDetails.IntervConfirmedEvent());
-        //inter_id.append(intervention.getId());
-        displayTasks(intervention.getListTaches(),tasksLayout);
-        displayMaterials(intervention.getListMaterials(),toolsLayout);
-        displayTools(intervention.getListOutils(),toolsLayout);
-        displayCollaborateurs(intervention.getCollaboraters(),toolsLayout);
+        if (intervention == null){
+            ResultBottomDialog resultBottomDialog = new ResultBottomDialog(getResources().getString(R.string.errorOccured),3);
+            resultBottomDialog.show(getSupportFragmentManager(),null);
 
+        }
+        else{
+            inter_title.setText(intervention.getTitle());
+            interv_date.setText(intervention.getDate());
+            confirmInterv.setOnSlideCompleteListener(new InterventionDetails.IntervConfirmedEvent());
+            //inter_id.append(intervention.getId());
+            displayTasks(intervention.getListTaches(),tasksLayout);
+            displayMaterials(intervention.getListMaterials(),toolsLayout);
+            displayTools(intervention.getListOutils(),toolsLayout);
+            displaySimpleData(intervention.getCollaboraters(),toolsLayout);
 
-        isPreview = getIntent().getBooleanExtra("isPreview",false);
-        if (isPreview){
-            resumeLayout.setVisibility(View.GONE);
-            confirmInterv.setVisibility(View.GONE);
-        }else {
-            try {
-                checkInCompletedIntervention();
-            } catch (JSONException e) {
-                new ResultBottomDialog(getResources().getString(R.string.errorOccured),3).show(getSupportFragmentManager(),null);
+            isPreview = getIntent().getBooleanExtra("isPreview",false);
+            if (isPreview){
+                resumeLayout.setVisibility(View.GONE);
+                confirmInterv.setVisibility(View.GONE);
+            }else {
+                try {
+                    checkInCompletedIntervention();
+                } catch (JSONException e) {
+                    new ResultBottomDialog(getResources().getString(R.string.errorOccured),3).show(getSupportFragmentManager(),null);
+                }
             }
         }
+
+
     }
 
-    private void displayCollaborateurs(List<User> collaboraters, LinearLayout toolsLayout) {
+    private void displaySimpleData(List<User> collaboraters, LinearLayout toolsLayout) {
             collaborateurs.append(intervention.getNomResponsableExecutif());
+            heureFin.setText(intervention.getHeureFin());
+            heureDebut.setText(intervention.getHeureDebut());
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -151,14 +174,22 @@ public class InterventionDetails extends AppCompatActivity {
         @SuppressLint("ShowToast")
         @Override
         public void onSlideComplete(@NotNull SlideToActView slideToActView) {
-            if (InterventionManager.getInterventionReport(intervention.getId())){
-                new SubmitGeneralDialog(intervention).show(getSupportFragmentManager(),null);
+            if (intervention == null){
+                ResultBottomDialog resultBottomDialog = new ResultBottomDialog(getResources().getString(R.string.errorOccured),3);
+                resultBottomDialog.onDismiss(new DialogInterface() {
+                    @Override
+                    public void cancel() {
+                        InterventionDetails.this.finish();
+                    }
+
+                    @Override
+                    public void dismiss() {
+                        InterventionDetails.this.finish();
+                    }
+                });
+                return;
             }
-            else{
-                Intent intent= new Intent(InterventionDetails.this, OnInterventionActivity.class);
-                InterventionData.currentIntervention = intervention;
-                startActivity(intent);
-            }
+            new ChangeInterventionEtat().execute();
         }
     }
 
@@ -182,6 +213,59 @@ public class InterventionDetails extends AppCompatActivity {
                 });
             }
 
+        }
+    }
+
+    private class ChangeInterventionEtat extends AsyncTask<Void,Void,Void>{
+
+        LoadingBottomDialog loadingBottomDialog;
+        HttpURLConnection http;
+
+        public ChangeInterventionEtat(){
+            loadingBottomDialog = new LoadingBottomDialog("Loading");
+        }
+
+        @Override
+        protected void onPreExecute() {
+            loadingBottomDialog.show(getSupportFragmentManager(),null);
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            try {
+                URL url = new URL("http://admin.smartonviatoile.com/api/Intervention/etat/"+intervention.getId());
+                HttpURLConnection http = (HttpURLConnection) url.openConnection();
+                http.setRequestMethod("PUT");
+                http.setDoOutput(true);
+                http.setRequestProperty("Accept", "application/json");
+                http.setRequestProperty("Authorization", "Bearer " + SessionManager.getAuthToken());
+                http.setRequestProperty("Content-Type", "application/json");
+
+                byte[] out = "{ etat : \"En Cours\"}".getBytes(StandardCharsets.UTF_8);
+
+                OutputStream stream = http.getOutputStream();
+                stream.write(out);
+                Log.e("UploadInterventionEtat", http.getResponseCode() + " " + http.getResponseMessage());
+                http.disconnect();
+            }catch (Exception ex){
+                loadingBottomDialog.dismiss();
+                new ResultBottomDialog(getResources().getString(R.string.errorOccured),3).show(getSupportFragmentManager(),null);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            loadingBottomDialog.dismiss();
+
+            if (InterventionManager.getInterventionReport(intervention.getId()) || intervention.getListTaches().size() == 0){
+                new SubmitGeneralDialog(intervention).show(getSupportFragmentManager(),null);
+            }
+            else{
+                Intent intent= new Intent(InterventionDetails.this, OnInterventionActivity.class);
+                InterventionData.currentIntervention = intervention;
+                startActivity(intent);
+            }
         }
     }
 }

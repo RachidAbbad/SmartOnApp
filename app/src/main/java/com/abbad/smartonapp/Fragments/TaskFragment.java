@@ -3,11 +3,13 @@ package com.abbad.smartonapp.Fragments;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.ClipData;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.media.MediaPlayer;
 import android.media.MediaRecorder;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,7 +24,9 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Chronometer;
 import android.widget.EditText;
+import android.widget.GridLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -36,6 +40,7 @@ import com.abbad.smartonapp.R;
 import com.abbad.smartonapp.activities.OnInterventionActivity;
 import com.abbad.smartonapp.classes.Intervention;
 import com.abbad.smartonapp.classes.Task;
+import com.abbad.smartonapp.datas.ReportData;
 import com.abbad.smartonapp.datas.TaskData;
 import com.abbad.smartonapp.dialogs.ResultBottomDialog;
 import com.abbad.smartonapp.dialogs.SubmitGeneralDialog;
@@ -44,17 +49,14 @@ import com.dx.dxloadingbutton.lib.LoadingButton;
 import com.rm.rmswitch.RMSwitch;
 
 import org.json.JSONException;
-import org.w3c.dom.Text;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import me.weyye.hipermission.HiPermission;
 import me.weyye.hipermission.PermissionCallback;
@@ -89,10 +91,8 @@ public class TaskFragment extends Fragment {
     //Task status
     private RMSwitch taskStatus;
     private TextView taskStatusText;
-    //Submit the report
-    private AppCompatButton saveComment;
-    //Submit subReport
-    private LoadingButton submitBtn;
+    //Submit comment
+    private LoadingButton submitComment;
     //MediaRecorder & MediaPlayer
     private MediaRecorder mediaRecorder;
     private int AudioRecordingStatus = 0;
@@ -101,10 +101,12 @@ public class TaskFragment extends Fragment {
     private Task currentTask;
     private int currentTaskIndex;
     //Captured image index :
-    private int imageIndex = 1;
-
-    //Flags:
-    private boolean isFirstVideo=true,isFirstImage=true,isFirstComment=true;
+    private int imageIndex = 0, videoIndex = 0, audioIndex = 0, commentIndex = 0;
+    //Preview Medias :
+    private LinearLayout generalVideoPreview, generalImagePreview, generalCommentPreview, generalAudioPreview;
+    private GridLayout previewVideo, previewImage;
+    private LinearLayout previewComment, previewAudio;
+    private TextView noImages, noVideos, noComments, noAudios;
 
     public TaskFragment() {
     }
@@ -117,13 +119,17 @@ public class TaskFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.task_rapport, container, false);
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
         initViews(view);
         setupComponentsEvents();
         try {
             resumeTask();
-        } catch (JSONException | FileNotFoundException ex) {
+        } catch (JSONException | IOException ex) {
             ex.printStackTrace();
         }
+
+        Log.e("ExternalCache", getActivity().getExternalCacheDir().getAbsolutePath());
         return view;
     }
 
@@ -143,6 +149,20 @@ public class TaskFragment extends Fragment {
         audioCounterTimer = view.findViewById(R.id.recordCounterChrono);
         audioRemoveBtn = view.findViewById(R.id.audioRemoveBtn);
         audioSaveBtn = view.findViewById(R.id.audioSaveBtn);
+        //Preview Layouts
+        previewImage = view.findViewById(R.id.preview_image_layout);
+        previewVideo = view.findViewById(R.id.preview_video_layout);
+        previewComment = view.findViewById(R.id.preview_comment_layout);
+        previewAudio = view.findViewById(R.id.preview_audio_layout);
+        generalVideoPreview = view.findViewById(R.id.general_preview_video);
+        generalImagePreview = view.findViewById(R.id.general_preview_image);
+        generalAudioPreview = view.findViewById(R.id.general_preview_audio);
+        generalCommentPreview = view.findViewById(R.id.general_preview_comment);
+        noImages = view.findViewById(R.id.no_image_file);
+        noVideos = view.findViewById(R.id.no_video_file);
+        noAudios = view.findViewById(R.id.no_audio_file);
+        noComments = view.findViewById(R.id.no_comment_file);
+
         //Init Video Components :
         videoLayoutInput = view.findViewById(R.id.videoLayoutInput);
         videoAddStatus = view.findViewById(R.id.videoAddStatus);
@@ -157,10 +177,9 @@ public class TaskFragment extends Fragment {
         task_zone = view.findViewById(R.id.task_zone);
 
         //Submit button :
-        saveComment = view.findViewById(R.id.saveComment);
 
         //Submit subReport
-        submitBtn = view.findViewById(R.id.submitBtn);
+        submitComment = view.findViewById(R.id.saveComment);
 
         //Set Task Body :
         currentIntervention = getArguments().getParcelable("intervention");
@@ -181,7 +200,7 @@ public class TaskFragment extends Fragment {
             actions.setTextColor(getResources().getColor(R.color.uiTextColor));
 
             equip.setText(currentTask.getListEquipements().get(k) + " : ");
-            actions.setText("- "+currentTask.getListActions().get(k));
+            actions.setText("- " + currentTask.getListActions().get(k));
 
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -220,6 +239,12 @@ public class TaskFragment extends Fragment {
                 videoLayout.setVisibility(View.GONE);
                 audioLayout.setVisibility(View.GONE);
                 commentLayout.setVisibility(View.GONE);
+
+                generalImagePreview.startAnimation(animation);
+                generalImagePreview.setVisibility(View.VISIBLE);
+                generalVideoPreview.setVisibility(View.GONE);
+                generalAudioPreview.setVisibility(View.GONE);
+                generalCommentPreview.setVisibility(View.GONE);
                 //Set opacity to 0.7 to other toggles
 
                 imageToggle.getBackground().setAlpha(255);
@@ -242,6 +267,12 @@ public class TaskFragment extends Fragment {
                 imageLayout.setVisibility(View.GONE);
                 audioLayout.setVisibility(View.GONE);
                 commentLayout.setVisibility(View.GONE);
+
+                generalVideoPreview.startAnimation(animation);
+                generalVideoPreview.setVisibility(View.VISIBLE);
+                generalImagePreview.setVisibility(View.GONE);
+                generalAudioPreview.setVisibility(View.GONE);
+                generalCommentPreview.setVisibility(View.GONE);
                 //Set opacity to 0.7 to other toggles
 
                 videoToggle.getBackground().setAlpha(255);
@@ -266,6 +297,12 @@ public class TaskFragment extends Fragment {
                 imageLayout.setVisibility(View.GONE);
                 videoLayout.setVisibility(View.GONE);
                 commentLayout.setVisibility(View.GONE);
+
+                generalAudioPreview.setAnimation(animation);
+                generalAudioPreview.setVisibility(View.VISIBLE);
+                generalCommentPreview.setVisibility(View.GONE);
+                generalVideoPreview.setVisibility(View.GONE);
+                generalImagePreview.setVisibility(View.GONE);
                 //Set opacity to 0.7 to other toggles
 
                 audioToggle.getBackground().setAlpha(255);
@@ -289,6 +326,13 @@ public class TaskFragment extends Fragment {
                 imageLayout.setVisibility(View.GONE);
                 videoLayout.setVisibility(View.GONE);
                 audioLayout.setVisibility(View.GONE);
+
+                generalCommentPreview.setAnimation(animation);
+                generalAudioPreview.setVisibility(View.GONE);
+                generalCommentPreview.setVisibility(View.VISIBLE);
+                generalVideoPreview.setVisibility(View.GONE);
+                generalImagePreview.setVisibility(View.GONE);
+
                 //Set opacity to 0.7 to other toggles
 
                 commentToggle.getBackground().setAlpha(255);
@@ -319,7 +363,11 @@ public class TaskFragment extends Fragment {
         audioSaveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveAudio();
+                try {
+                    saveAudio();
+                } catch (IOException exception) {
+                    exception.printStackTrace();
+                }
             }
         });
 
@@ -359,110 +407,71 @@ public class TaskFragment extends Fragment {
             }
         });
 
-        saveComment.setOnClickListener(new View.OnClickListener() {
+
+        submitComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
                     saveComment();
                 } catch (IOException exception) {
-                    exception.printStackTrace();
+                    submitComment.startLoading();
+                    submitComment.loadingFailed();
+                    showResultDialog(exception.getMessage(), 3);
                 }
-            }
-        });
-
-        submitBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (taskStatus.isChecked()) {
-                    //TODO Task is completed : validate report
-                    InterventionManager.saveTaskReportStatus(currentIntervention.getId(), currentTaskIndex, true);
-                    submitBtn.startLoading();
-                    submitBtn.loadingSuccessful();
-                    submitBtn.setEnabled(false);
-                }else {
-                    if (TaskData.getAudio(currentIntervention.getId(), currentTaskIndex, getContext()) == null
-                            && TaskData.getComment(currentIntervention.getId(), currentTaskIndex, getContext()) == null
-                            && TaskData.getImage(currentIntervention.getId(), currentTaskIndex, getContext()) == null
-                            && TaskData.getVideo(currentIntervention.getId(), currentTaskIndex, getContext()) == null){
-                        //All comments are null & Task is not completed : show message
-                        showResultDialog(getResources().getString(R.string.fillMinMediaToSubmit),2);
-                    }else {
-                        //TODO Task is not completed && at least one comment are not null : validate report
-                        InterventionManager.saveTaskReportStatus(currentIntervention.getId(), currentTaskIndex, true);
-                        submitBtn.startLoading();
-                        submitBtn.loadingSuccessful();
-                        submitBtn.setEnabled(false);
-                    }
-                }
-
-                int nbTaskDone = 0;
-                int nbTask = currentIntervention.getListTaches().size();
-                for (int i = 0; i < nbTask; i++) {
-                    if (InterventionManager.getTaskReportStatus(currentIntervention.getId(), i)) {
-                        nbTaskDone++;
-                    }
-                }
-                Log.e("TaskDone", nbTaskDone + " " + nbTask);
-                if (nbTaskDone == nbTask) {
-                    if (!InterventionManager.getInterventionReport(currentIntervention.getId()))
-                        InterventionManager.saveInterventionReport(currentIntervention.getId(), true);
-                    new SubmitGeneralDialog(currentIntervention).show(getActivity().getSupportFragmentManager(), null);
-                }
-
-
             }
         });
     }
 
-    public void resumeTask() throws JSONException, FileNotFoundException {
+    public void resumeTask() throws JSONException, IOException {
         if (InterventionManager.getCurrentIntervention().equals(currentIntervention.getId())) {
             //Task Status
             taskStatus.setChecked(InterventionManager.getTaskStatus(currentIntervention.getId(), currentTaskIndex));
             //Image Section
             imageNumber.setVisibility(View.VISIBLE);
             if (TaskData.getImages(currentIntervention.getId(), currentTaskIndex, getActivity()).size() != 0) {
-                isFirstImage = false;
                 imageIndex = TaskData.getImages(currentIntervention.getId(), currentTaskIndex, getActivity()).size() + 1;
                 imageNumber.setText(TaskData.getImages(currentIntervention.getId(), currentTaskIndex, getActivity()).size() + " Images has added");
-            } else
+                previewImage();
+            } else {
                 imageNumber.setText(getResources().getString(R.string.imagesNotCaptured));
+                previewImage.setVisibility(View.GONE);
+                noImages.setVisibility(View.VISIBLE);
+            }
+
             //Video Section
             videoAddStatus.setVisibility(View.VISIBLE);
             if (TaskData.getVideos(currentIntervention.getId(), currentTaskIndex, getActivity()).size() != 0) {
-                isFirstVideo = false;
+                videoIndex = TaskData.getVideos(currentIntervention.getId(), currentTaskIndex, getActivity()).size() + 1;
                 videoAddStatus.setText(getResources().getString(R.string.videoAlreadyRecorded));
-            } else
+                previewVideo();
+            } else {
                 videoAddStatus.setText(getResources().getString(R.string.videoNotRecorded));
+                previewVideo.setVisibility(View.GONE);
+                noVideos.setVisibility(View.VISIBLE);
+            }
             //Audio Section
             audioSaveStatus.setVisibility(View.VISIBLE);
             if (TaskData.getAudios(currentIntervention.getId(), currentTaskIndex, getActivity()).size() != 0) {
-                AudioRecordingStatus = 2;
+                audioIndex = TaskData.getAudios(currentIntervention.getId(), currentTaskIndex, getActivity()).size() + 1;
                 audioSaveStatus.setText(getResources().getString(R.string.audioAlreadyRecorded));
-            } else
+                previewAudio();
+            } else {
                 audioSaveStatus.setText(getResources().getString(R.string.audioNotRecorded));
+
+            }
             //Comments :
             if (TaskData.getComments(currentIntervention.getId(), currentTaskIndex, getActivity()).size() != 0) {
-                isFirstComment = false;
-                Scanner in = new Scanner(new FileReader(TaskData.getComments(currentIntervention.getId(), currentTaskIndex, getActivity()).get(0)));
-                StringBuilder sb = new StringBuilder();
-                while (in.hasNext()) {
-                    sb.append(in.next());
-                }
-                in.close();
-
-                commentEditText.setText(sb.toString());
-                commentEditText.setFocusable(false);
+                commentIndex = TaskData.getComments(currentIntervention.getId(), currentTaskIndex, getActivity()).size() + 1;
+                previewComment();
             }
             //Resume Task Status :
             if (InterventionManager.getTaskReportStatus(currentIntervention.getId(), currentTaskIndex)) {
-                submitBtn.startLoading();
-                submitBtn.loadingSuccessful();
+                submitComment.startLoading();
+                submitComment.loadingSuccessful();
                 imageLayoutInput.setEnabled(false);
                 videoLayoutInput.setEnabled(false);
                 audioMainButton.setEnabled(false);
                 commentEditText.setEnabled(false);
-                saveComment.setEnabled(false);
             }
             //Check if all tasks completed
             if (InterventionManager.getInterventionReport(currentIntervention.getId())) {
@@ -472,51 +481,230 @@ public class TaskFragment extends Fragment {
         }
     }
 
+    //Preview Media :
+    public void previewVideo() {
+        List<File> listVideos = TaskData.getVideos(currentIntervention.getId(), currentTaskIndex, getContext());
+        if (listVideos == null) {
+            if (listVideos.size() == 0) {
+                generalImagePreview.setVisibility(View.GONE);
+                generalVideoPreview.setVisibility(View.VISIBLE);
+                previewVideo.setVisibility(View.GONE);
+                noVideos.setVisibility(View.VISIBLE);
+            }
+            return;
+        }
+        Bitmap bMap;
+        previewVideo.removeAllViews();
+        for (int i = 0; i < listVideos.size(); i++) {
+
+            File file = listVideos.get(i);
+            bMap = ThumbnailUtils.createVideoThumbnail(file.getAbsolutePath(), MediaStore.Video.Thumbnails.MICRO_KIND);
+            ImageView pVideo = new ImageView(getContext());
+
+            pVideo.setLayoutParams(new ViewGroup.LayoutParams(400, 400));
+
+            pVideo.setImageBitmap(bMap);
+            previewVideo.addView(pVideo);
+
+            pVideo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setDataAndType(Uri.fromFile(file), "video/*");
+                    getActivity().startActivity(intent);
+                }
+            });
+        }
+
+        generalImagePreview.setVisibility(View.GONE);
+        generalVideoPreview.setVisibility(View.VISIBLE);
+        previewVideo.setVisibility(View.VISIBLE);
+        noVideos.setVisibility(View.GONE);
+    }
+
+    public void previewImage() {
+        List<File> listImages = TaskData.getImages(currentIntervention.getId(), currentTaskIndex, getContext());
+        if (listImages == null) {
+            if (listImages.size() == 0) {
+                generalImagePreview.setVisibility(View.VISIBLE);
+                generalVideoPreview.setVisibility(View.GONE);
+                previewImage.setVisibility(View.GONE);
+                noImages.setVisibility(View.VISIBLE);
+            }
+            return;
+        }
+        Bitmap bMap;
+        previewImage.removeAllViews();
+        for (int i = 0; i < listImages.size(); i++) {
+            File file = listImages.get(i);
+            bMap = BitmapFactory.decodeFile(file.getAbsolutePath());
+            ImageView pImage = new ImageView(getContext());
+
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(400, 400);
+            params.setMargins(2, 4, 2, 0);
+            pImage.setLayoutParams(params);
+
+            pImage.setImageBitmap(bMap);
+
+            previewImage.addView(pImage);
+
+            pImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setDataAndType(Uri.fromFile(file), "image/*");
+                    getActivity().startActivity(intent);
+                }
+            });
+        }
+
+        generalImagePreview.setVisibility(View.VISIBLE);
+        generalVideoPreview.setVisibility(View.GONE);
+        previewImage.setVisibility(View.VISIBLE);
+        noImages.setVisibility(View.GONE);
+    }
+
+    public void previewAudio() {
+        List<File> listAudios = TaskData.getAudios(currentIntervention.getId(), currentTaskIndex, getContext());
+        if (listAudios == null) {
+            if (listAudios.size() == 0) {
+                generalImagePreview.setVisibility(View.GONE);
+                generalVideoPreview.setVisibility(View.GONE);
+                generalCommentPreview.setVisibility(View.GONE);
+                generalAudioPreview.setVisibility(View.VISIBLE);
+                previewAudio.setVisibility(View.GONE);
+                noAudios.setVisibility(View.VISIBLE);
+            }
+            return;
+        }
+        previewAudio.removeAllViews();
+        for (int i = 0; i < listAudios.size(); i++) {
+            try {
+                File file = listAudios.get(i);
+
+                View view = getLayoutInflater().inflate(R.layout.audio_player_layout, null);
+
+                ImageButton audioMainButton = view.findViewById(R.id.audioButton);
+                TextView recordCounterMsg = view.findViewById(R.id.recordCounterMsg);
+                Chronometer audioCounterTimer = view.findViewById(R.id.recordCounterChrono);
+
+                boolean firstPlay = true;
+                MediaPlayer mediaPlayer = new MediaPlayer();
+                recordCounterMsg.setVisibility(View.GONE);
+                audioCounterTimer.setVisibility(View.VISIBLE);
+                mediaPlayer.setDataSource(file.getPath());
+                mediaPlayer.prepare();
+                mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mp) {
+                        audioMainButton.animate().alpha(0.2f).setDuration(400);
+                        audioMainButton.animate().alpha(1).setDuration(400);
+                        audioMainButton.setImageResource(R.drawable.ic_play);
+                        audioCounterTimer.stop();
+                        audioCounterTimer.setBase(SystemClock.elapsedRealtime() - mediaPlayer.getDuration());
+                    }
+                });
+                audioCounterTimer.setBase(SystemClock.elapsedRealtime() - mediaPlayer.getDuration());
+                audioMainButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        try {
+                            if (!mediaPlayer.isPlaying()) {
+                                if (mediaPlayer.getCurrentPosition() == 0)
+                                    audioCounterTimer.setBase(SystemClock.elapsedRealtime());
+                                audioMainButton.animate().alpha(0.2f).setDuration(400);
+                                audioMainButton.animate().alpha(1).setDuration(400);
+                                audioMainButton.setImageResource(R.drawable.ic_pause);
+                                mediaPlayer.start();
+                                audioCounterTimer.start();
+                            } else {
+
+                                audioMainButton.animate().alpha(0.2f).setDuration(400);
+                                audioMainButton.animate().alpha(1).setDuration(400);
+                                audioMainButton.setImageResource(R.drawable.ic_play);
+                                mediaPlayer.pause();
+                                audioCounterTimer.stop();
+                            }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                });
+
+
+                previewAudio.addView(view);
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        generalImagePreview.setVisibility(View.GONE);
+        generalVideoPreview.setVisibility(View.GONE);
+        generalCommentPreview.setVisibility(View.GONE);
+        generalAudioPreview.setVisibility(View.VISIBLE);
+        previewAudio.setVisibility(View.VISIBLE);
+        noAudios.setVisibility(View.GONE);
+    }
+
+    public void previewComment() {
+        List<File> listComments = TaskData.getComments(currentIntervention.getId(), currentTaskIndex, getContext());
+        if (listComments == null) {
+            if (listComments.size() == 0) {
+                generalImagePreview.setVisibility(View.GONE);
+                generalVideoPreview.setVisibility(View.GONE);
+                generalCommentPreview.setVisibility(View.VISIBLE);
+                generalAudioPreview.setVisibility(View.GONE);
+                previewComment.setVisibility(View.GONE);
+                noComments.setVisibility(View.VISIBLE);
+            }
+            return;
+        }
+        previewComment.removeAllViews();
+        for (int i = 0; i < listComments.size(); i++) {
+            try {
+                File file = listComments.get(i);
+
+                View view = getLayoutInflater().inflate(R.layout.comment_preview_layout, null);
+
+                TextView numComment = view.findViewById(R.id.numComment);
+                TextView bodyComment = view.findViewById(R.id.bodyComment);
+
+                numComment.append((i + 1) + " :");
+                bodyComment.setText(ReportData.readTextFile(Uri.fromFile(file), getContext()));
+
+                previewComment.addView(view);
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        generalImagePreview.setVisibility(View.GONE);
+        generalVideoPreview.setVisibility(View.GONE);
+        generalCommentPreview.setVisibility(View.VISIBLE);
+        generalAudioPreview.setVisibility(View.GONE);
+        previewComment.setVisibility(View.VISIBLE);
+        noComments.setVisibility(View.GONE);
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1002) {
             if (resultCode == Activity.RESULT_OK) {
                 showResultDialog(getResources().getString(R.string.saveSuccessVideoMsg), 1);
+                previewVideo();
+                videoIndex++;
             } else {
                 showResultDialog(getResources().getString(R.string.saveCancelVideoMsg), 2);
             }
         }
-        if (requestCode == 200) {
-            if (resultCode == Activity.RESULT_OK) {
-                int imageNb;
-                ClipData clipData = data.getClipData();
-                imageNb = clipData.getItemCount();
-                if (clipData != null) {
-                    for (int i = 0; i < imageNb; i++) {
-                        ClipData.Item item = clipData.getItemAt(i);
-                        Uri uri = item.getUri();
-                        try {
-                            imageIndex++;
-                            File file = getOutputMediaFile(1, currentIntervention.getId() + "_taskNum(" + currentTaskIndex + ")" + imageIndex);
-                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), item.getUri());
-
-                            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100 /*ignored for PNG*/, bos);
-                            byte[] bitmapdata = bos.toByteArray();
-                            FileOutputStream fos = new FileOutputStream(file);
-                            fos.write(bitmapdata);
-                            fos.flush();
-                            fos.close();
-                        } catch (IOException exception) {
-                            showResultDialog(getResources().getString(R.string.errorOccured), 3);
-                        }
-                    }
-                }
-                showResultDialog(imageNb + getResources().getString(R.string.saveSuccessImagesMsg), 1);
-            } else {
-                showResultDialog(getResources().getString(R.string.saveCancelImageMsg), 2);
-            }
-
-        }
         if (requestCode == 100) {
             if (resultCode == Activity.RESULT_OK) {
                 showResultDialog(getResources().getString(R.string.saveSuccessImageMsg), 1);
+                previewImage();
+                imageIndex++;
             } else {
                 showResultDialog(getResources().getString(R.string.saveCancelImageMsg), 2);
             }
@@ -539,6 +727,7 @@ public class TaskFragment extends Fragment {
 
                     @Override
                     public void onFinish() {
+
                     }
 
                     @Override
@@ -583,18 +772,13 @@ public class TaskFragment extends Fragment {
     }
 
     public void captureImage() {
-        if (!isFirstImage){
-            showResultDialog(getResources().getString(R.string.imageAlreadyRecorded),2);
-            return;
-        }
-        isFirstImage = false;
         imageNumber.setVisibility(View.GONE);
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         Uri fileUri;
         // create a file to save the video
-        fileUri = Uri.fromFile(getOutputMediaFile(1, currentIntervention.getId() + "_taskNum(" + currentTaskIndex + ")" + (imageIndex++)));
+        fileUri = Uri.fromFile(getOutputMediaFile(1, currentIntervention.getId() + "_taskNum(" + currentTaskIndex + ")_num" + (imageIndex)));
         // set the image file name
         intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
         startActivityForResult(intent, 100);
@@ -632,18 +816,13 @@ public class TaskFragment extends Fragment {
     }
 
     public void recordVideo() {
-        if (!isFirstVideo){
-            showResultDialog(getResources().getString(R.string.videoAlreadyRecorded),2);
-            return;
-        }
-        isFirstVideo = false;
         videoAddStatus.setVisibility(View.GONE);
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
         Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
         Uri fileUri;
         // create a file to save the video
-        fileUri = Uri.fromFile(getOutputMediaFile(3, currentIntervention.getId() + "_taskNum(" + currentTaskIndex + ")"));
+        fileUri = Uri.fromFile(getOutputMediaFile(3, currentIntervention.getId() + "_taskNum(" + currentTaskIndex + ")_num" + (videoIndex)));
 
         // set the image file name
         intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
@@ -704,7 +883,11 @@ public class TaskFragment extends Fragment {
                     @RequiresApi(api = Build.VERSION_CODES.O)
                     @Override
                     public void onFinish() {
-                        manageAudio();
+                        try {
+                            manageAudio();
+                        } catch (IOException exception) {
+                            exception.printStackTrace();
+                        }
                     }
 
                     @Override
@@ -715,13 +898,17 @@ public class TaskFragment extends Fragment {
                     @RequiresApi(api = Build.VERSION_CODES.O)
                     @Override
                     public void onGuarantee(String permission, int position) {
-                        manageAudio();
+                        try {
+                            manageAudio();
+                        } catch (IOException exception) {
+                            exception.printStackTrace();
+                        }
                     }
                 });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void manageAudio() {
+    public void manageAudio() throws IOException {
         if (AudioRecordingStatus == 0) {
             try {
                 AudioRecordingStatus = 1;
@@ -732,7 +919,6 @@ public class TaskFragment extends Fragment {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return;
         } else if (AudioRecordingStatus == 1) {
             stopRecording();
             AudioRecordingStatus = 2;
@@ -740,11 +926,9 @@ public class TaskFragment extends Fragment {
             audioMainButton.animate().alpha(1).setDuration(400);
             audioMainButton.setImageResource(R.drawable.ic_rounded_mic);
             audioSaveStatus.setVisibility(View.VISIBLE);
-            return;
-        } else if (AudioRecordingStatus == 2) {
-            new ResultBottomDialog(getResources().getString(R.string.audioAlreadyRecorded), 3).show(getActivity().getSupportFragmentManager(), null);
         }
     }
+
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void startRecording() throws IOException {
@@ -757,7 +941,7 @@ public class TaskFragment extends Fragment {
         mediaRecorder = new MediaRecorder();
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-        mediaRecorder.setOutputFile(getOutputMediaFile(2, currentIntervention.getId() + "_taskNum(" + currentTaskIndex + ")"));
+        mediaRecorder.setOutputFile(getOutputMediaFile(2, currentIntervention.getId() + "_taskNum(" + currentTaskIndex + ")_num" + audioIndex));
         mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
         try {
             mediaRecorder.prepare();
@@ -792,7 +976,7 @@ public class TaskFragment extends Fragment {
 
     }
 
-    public void saveAudio() {
+    public void saveAudio() throws IOException {
         if (mediaRecorder != null) {
             recordResultLayout.animate().alpha(0).setDuration(700);
             recordResultLayout.setVisibility(View.GONE);
@@ -800,24 +984,34 @@ public class TaskFragment extends Fragment {
             mediaRecorder = null;
             showResultDialog(getResources().getString(R.string.saveSuccessAudioMsg), 1);
             audioSaveStatus.setVisibility(View.GONE);
+
+            previewAudio();
+
+            resetAudio();
+
+            audioIndex++;
         }
     }
 
     //Comments Methodes :
 
     public void saveComment() throws IOException {
-        if (!isFirstComment){
-            showResultDialog(getResources().getString(R.string.videoAlreadyRecorded),2);
-            return;
-        }
-        isFirstComment = false;
         if (commentEditText.getText().toString().length() != 0 || !commentEditText.getText().toString().equals("")) {
-            File commentFile = getOutputMediaFile(10, currentIntervention.getId() + "_taskNum(" + currentTaskIndex + ")");
+            submitComment.startLoading();
+
+            File commentFile = getOutputMediaFile(10, currentIntervention.getId() + "_taskNum(" + currentTaskIndex + ")_num" + commentIndex);
             FileOutputStream out = new FileOutputStream(commentFile);
             out.write(commentEditText.getText().toString().getBytes());
             out.close();
-        } else
+            previewComment();
+            commentIndex++;
+            submitComment.loadingSuccessful();
+            submitComment.reset();
+        } else {
             showResultDialog(getResources().getString(R.string.fillCommentToSubmit), 2);
+            submitComment.startLoading();
+            submitComment.loadingFailed();
+        }
 
     }
 

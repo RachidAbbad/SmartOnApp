@@ -19,6 +19,7 @@ import com.abbad.smartonapp.R;
 import com.abbad.smartonapp.datas.InterventionData;
 import com.abbad.smartonapp.datas.ReportData;
 import com.abbad.smartonapp.dialogs.AuthSiteDialog;
+import com.abbad.smartonapp.dialogs.ComfirmExit;
 import com.abbad.smartonapp.dialogs.LoadingBottomDialog;
 import com.abbad.smartonapp.dialogs.ResultBottomDialog;
 import com.abbad.smartonapp.ui.alerts.AlertsFragment;
@@ -159,8 +160,15 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        fm.beginTransaction().hide(active).show(fragment1).commit();
-        active = fragment1;
+
+            if (active == fragment1){
+                new ComfirmExit().show(getSupportFragmentManager(),null);
+            }
+            else {
+                fm.beginTransaction().hide(active).show(fragment1).commit();
+                active = fragment1;
+            }
+
     }
 
     public void enableNfcScan() {
@@ -242,4 +250,6 @@ public class MainActivity extends AppCompatActivity {
         }
         return null;
     }
+
+    //TODO start "pushNotificationsService" when this activity is destroyed
 }

@@ -120,7 +120,7 @@
                                 app:sv_minSpeed="0"
                                 app:sv_maxSpeed="40"
                                 app:sv_speedTextSize="22dp"
-                                app:sv_unit="Pa"
+                                app:sv_unit="°C"
                                 app:sv_centerCircleRadius="12dp"
                                 app:sv_unitUnderSpeedText="true"
                                 app:sv_speedTextFormat="FLOAT"

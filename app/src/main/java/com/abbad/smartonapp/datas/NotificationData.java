@@ -8,6 +8,7 @@ import com.abbad.smartonapp.R;
 import com.abbad.smartonapp.activities.MainActivity;
 import com.abbad.smartonapp.classes.Notification;
 import com.abbad.smartonapp.dialogs.ResultBottomDialog;
+import com.abbad.smartonapp.services.PushNotificationsService;
 import com.abbad.smartonapp.ui.interventions.InterventionFragment;
 import com.abbad.smartonapp.ui.notifications.NotificationsFragment;
 import com.abbad.smartonapp.utils.Comun;
@@ -38,27 +39,57 @@ public class NotificationData {
     }
 
 
-    public static class GetNotificationsOnService extends AsyncTask<Void, Void, Void> {
+    public static class GetAllNotification extends AsyncTask<Void, Void, Void> {
+        PushNotificationsService pushNotificationsService;
+        List<Notification> list_notifications;
+        JSONArray infosJson;
 
-
-        public GetNotificationsOnService() {
-
+        public GetAllNotification(PushNotificationsService pushNotificationsService) {
+            this.pushNotificationsService = pushNotificationsService;
         }
 
         @Override
         protected void onPreExecute() {
-            listNotifications = new ArrayList<>();
+            list_notifications = new ArrayList<>();
+            infosJson = new JSONArray();
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
-
+            try{
+                URL url = new URL("http://admin.smartonviatoile.com/api/Notification/user/" + SessionManager.getUserId(pushNotificationsService.getApplicationContext()));
+                HttpURLConnection http = (HttpURLConnection) url.openConnection();
+                http.setRequestProperty("Accept", "application/json");
+                http.setRequestProperty("Authorization", "Bearer " + SessionManager.getAuthToken());
+                if (http.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                    pushNotificationsService.errorServer(http.getResponseCode()+" "+http.getResponseMessage());
+                    return null;
+                }
+                BufferedReader reader = new BufferedReader(new InputStreamReader(http.getInputStream()));
+                StringBuilder sb = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line);
+                }
+                JSONObject obj = new JSONObject(sb.toString());
+                Log.e("IntervResponce", obj.toString());
+                infosJson = obj.getJSONArray("data");
+                http.disconnect();
+            }catch (Exception ex){
+                ex.printStackTrace();
+            }
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
+            //TODO Check every notification is new or old
+            //TODO Add the new notifications to list_notifications
+            //TODO if the notification is new -> new Notification will be displayed
+        }
 
+        private boolean isNewNotification(){
+            return false;
         }
     }
 
@@ -93,6 +124,8 @@ public class NotificationData {
                     notificationsFragment.errorServer(http.getResponseCode()+" "+http.getResponseMessage());
                     return null;
                 }
+
+                serverError = false;
                 BufferedReader reader = new BufferedReader(new InputStreamReader(http.getInputStream()));
                 StringBuilder sb = new StringBuilder();
                 String line;
@@ -135,13 +168,13 @@ public class NotificationData {
                 if (listNotifications.size()==0){
                     notificationsFragment.noNotifications();
                 }
+            }
 
-                Comun.nbTasksOnline++;
-                if (Comun.nbTasksOnline == 4 && !Comun.isAllTasksFinished){
-                    MainActivity.loadingBottomDialog.dismiss();
-                    InterventionFragment.checkInCompletedIntervention((MainActivity) notificationsFragment.getActivity());
-                    Comun.isAllTasksFinished = true;
-                }
+            Comun.nbTasksOnline++;
+            if (Comun.nbTasksOnline == Comun.totalTasks && !Comun.isAllTasksFinished){
+                MainActivity.loadingBottomDialog.dismiss();
+                InterventionFragment.checkInCompletedIntervention((MainActivity) notificationsFragment.getActivity());
+                Comun.isAllTasksFinished = true;
             }
 
         }

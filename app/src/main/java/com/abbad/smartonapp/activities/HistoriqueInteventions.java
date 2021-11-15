@@ -66,7 +66,8 @@ public class HistoriqueInteventions extends AppCompatActivity {
         JSONArray infosJson;
         HttpURLConnection http;
         SimpleDateFormat sdf;
-        SimpleDateFormat output;
+        SimpleDateFormat output,hourOutput;
+
         boolean server_error;
 
         @Override
@@ -74,13 +75,14 @@ public class HistoriqueInteventions extends AppCompatActivity {
             showLoading();
             sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
             output = new SimpleDateFormat("dd-MM-yyyy");
+            hourOutput = new SimpleDateFormat("HH:mm");
             listInterventions = new ArrayList<>();
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
             try {
-                URL url = new URL("http://admin.smartonviatoile.com/api/Intervention/Filtre/n/"+SessionManager.getUserId(getApplicationContext())+"/true/n");
+                URL url = new URL("http://admin.smartonviatoile.com/api/Intervention/Filtre/n/"+SessionManager.getUserId(getApplicationContext())+"/Termin%C3%A9e/n");
                 http = (HttpURLConnection) url.openConnection();
                 http.setRequestProperty("Accept", "application/json");
                 http.setRequestProperty("Authorization", "Bearer " + SessionManager.getAuthToken());
@@ -191,6 +193,8 @@ public class HistoriqueInteventions extends AppCompatActivity {
                         intervention.setNomResponsableExecutif(object.getString("nom_responsable_executif"));
                         intervention.setNomContremaitreExploitation(object.getString("nom_contremaitre_exploitation"));
                         intervention.setNomSite(object.getString("nom_site"));
+                        intervention.setHeureDebut(hourOutput.format(sdf.parse(object.getString("heure_debut"))));
+                        intervention.setHeureFin(hourOutput.format(sdf.parse(object.getString("heure_fin"))));
 
                         listInterventions.add(intervention);
                     }

@@ -143,7 +143,7 @@ public class UploadReportService extends Service {
 
         @Override
         protected void onPreExecute() {
-            sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            sdf = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
             output = new SimpleDateFormat("dd-MM-yyyy");
 
         }
@@ -170,8 +170,7 @@ public class UploadReportService extends Service {
                 infosJson = obj.getJSONObject("data");
                 http.disconnect();
             } catch (IOException | JSONException e) {
-                //e.printStackTrace();
-                this.cancel(true);
+                e.printStackTrace();
             }
             return null;
         }
@@ -251,10 +250,10 @@ public class UploadReportService extends Service {
                     intervention.setNomContremaitreExploitation(object.getString("nom_contremaitre_exploitation"));
                     intervention.setNomSite(object.getString("nom_site"));
 
-                    new ReportData.SendReportFiles(UploadReportService.this, intervention, intervStat).execute();
+                    new ReportData.SendReportFiles(UploadReportService.this, intervention).execute();
 
                 } catch (Exception ex) {
-                    //ex.printStackTrace();
+                    ex.printStackTrace();
                 }
 
             }

@@ -22,8 +22,17 @@ public class Task implements Parcelable {
     private List<String> listEquipements;
     private List<String> listActions;
 
+    private List<String> imagesString;
+    private List<String> videosString;
+    private List<String> audiosString;
+    private List<String> commentsString;
+
 
     public Task() {
+        videosString = new ArrayList<>();
+        imagesString = new ArrayList<>();
+        audiosString = new ArrayList<>();
+        commentsString = new ArrayList<>();
     }
 
     public Task(String idIntervention) {
@@ -162,5 +171,37 @@ public class Task implements Parcelable {
         dest.writeString(titleTache);
         dest.writeStringList(listEquipements);
         dest.writeStringList(listActions);
+    }
+
+    public List<String> getImagesString() {
+        return imagesString;
+    }
+
+    public void setImagesString(List<String> imagesString) {
+        this.imagesString = imagesString;
+    }
+
+    public List<String> getVideosString() {
+        return videosString;
+    }
+
+    public void setVideosString(List<String> videosString) {
+        this.videosString = videosString;
+    }
+
+    public List<String> getAudiosString() {
+        return audiosString;
+    }
+
+    public void setAudiosString(List<String> audiosString) {
+        this.audiosString = audiosString;
+    }
+
+    public List<String> getCommentsString() {
+        return commentsString;
+    }
+
+    public void setCommentsString(List<String> commentsString) {
+        this.commentsString = commentsString;
     }
 }
