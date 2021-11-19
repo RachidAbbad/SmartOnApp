@@ -515,73 +515,46 @@ public class ReportData {
 
     }
 
-    public static class GetAllReport extends AsyncTask<Void, Void, Void> {
-        LoadingBottomDialog loadingReports;
-        List<Report> listReports;
-        ListReports activity;
-        boolean server_error = false;
-        JSONArray infosJson;
-        SimpleDateFormat sdf;
-        SimpleDateFormat output, hourOutput;
+    //Update GetAllReports :
+    static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+    static SimpleDateFormat output = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+    static LoadingBottomDialog loadingReports = new LoadingBottomDialog("Loading Reports ...");
+    static List<Report> listReports = new ArrayList<>();
+    static JSONArray jsonArray = new JSONArray();
+    static JSONObject jsonObject = new JSONObject();
 
-        public GetAllReport(ListReports activity) {
-            this.activity = activity;
-            listReports = new ArrayList<>();
-            sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-            output = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-            loadingReports = new LoadingBottomDialog("Loading Reports ...");
-
-        }
-
-        @Override
-        protected void onPreExecute() {
-            loadingReports.show(activity.getSupportFragmentManager(), null);
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            try {
-                URL url = new URL("http://admin.smartonviatoile.com/api/Rapport/ResponsableExecutif/"+SessionManager.getUserId(activity.getApplicationContext()));
-                HttpURLConnection http = (HttpURLConnection) url.openConnection();
-                http = (HttpURLConnection) url.openConnection();
-                http.setRequestProperty("Accept", "application/json");
-                http.setRequestProperty("Authorization", "Bearer " + SessionManager.getAuthTokenWithContext(activity.getApplicationContext()));
-                if (http.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                    server_error = true;
-                    String error = http.getResponseCode() + " " + http.getResponseMessage();
-                    activity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            activity.errorServer(error);
-                        }
-                    });
-                    return null;
-                }
-                BufferedReader reader = new BufferedReader(new InputStreamReader(http.getInputStream()));
-                StringBuilder sb = new StringBuilder();
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    sb.append(line);
-                }
-                JSONObject obj = new JSONObject(sb.toString());
-                Log.e("IntervResponce", obj.toString());
-                infosJson = obj.getJSONArray("data");
-                http.disconnect();
-
-
-            } catch (Exception ex) {
-                new ResultBottomDialog(activity.getResources().getString(R.string.errorOccured),3).show(activity.getSupportFragmentManager(),null);
+    public static void getAllReports(ListReports activity){
+        loadingReports.content = "Loading Reports ...";
+        loadingReports.show(activity.getSupportFragmentManager(),"");
+        OkHttpClient.Builder builderClient = new OkHttpClient.Builder();
+        builderClient.connectTimeout(300, TimeUnit.MINUTES);
+        builderClient.readTimeout(300, TimeUnit.MINUTES);
+        builderClient.writeTimeout(300, TimeUnit.MINUTES);
+        OkHttpClient client = builderClient.build();
+        Request request = new Request.Builder()
+                .url("http://admin.smartonviatoile.com/api/Rapport/ResponsableExecutif/"+SessionManager.getUserId(activity.getApplicationContext()))
+                .addHeader("Authorization", "Bearer " + SessionManager.getAuthToken())
+                .get().build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                loadingReports.dismiss();
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        activity.errorServer(e.getMessage());
+                    }
+                });
+                e.printStackTrace();
             }
 
-            return null;
-        }
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
 
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            if (!server_error) {
                 try {
-                    for (int i = 0; i < infosJson.length(); i++) {
-                        JSONObject object = infosJson.getJSONObject(i);
+                    jsonArray = new JSONObject(response.body().string()).getJSONArray("data");
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject object = jsonArray.getJSONObject(i);
 
                         Report report = new Report();
                         report.setNomIntervention(object.getString("nom_intervention"));
@@ -643,104 +616,67 @@ public class ReportData {
                         if (listReports.size() == 0)
                             activity.noIntervention();
                         else {
-                            activity.backToService();
                             Collections.reverse(listReports);
-                            activity.displayData(listReports);
+                            activity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    activity.backToService();
+                                    activity.displayData(listReports);
+                                }
+                            });
                         }
                     } catch (Exception ex) {
                         if (activity != null)
                             ex.printStackTrace();
                         //new ResultBottomDialog(activity.getResources().getString(R.string.errorOccured),3).show(activity.getSupportFragmentManager(),null);
                     }
-
+                    loadingReports.dismiss();
                 } catch (Exception ex) {
                     if (activity != null)
                         ex.printStackTrace();
+                    loadingReports.dismiss();
                     //new ResultBottomDialog(ex.getMessage(), 3).show(activity.getSupportFragmentManager(), null);
                 }
 
             }
-            loadingReports.dismiss();
-        }
+        });
     }
 
-    public static class GetReportById extends AsyncTask<Void, Void, Void> {
-        LoadingBottomDialog loadingReports;
-        PreviewReport activity;
-        String idReport;
-        boolean server_error = false;
-        JSONObject infosJson;
-        SimpleDateFormat sdf;
-        SimpleDateFormat output, hourOutput;
-
-        public GetReportById(String idReport, PreviewReport activity) {
-            this.activity = activity;
-            this.idReport = idReport;
-            sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-            output = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-            loadingReports = new LoadingBottomDialog("Loading Reports ...");
-
-        }
-
-        @Override
-        protected void onPreExecute() {
-            loadingReports.show(activity.getSupportFragmentManager(), null);
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            try {
-                URL url = new URL("http://admin.smartonviatoile.com/api/Rapport/" + idReport);
-                HttpURLConnection http = (HttpURLConnection) url.openConnection();
-                http = (HttpURLConnection) url.openConnection();
-                http.setRequestProperty("Accept", "application/json");
-                http.setRequestProperty("Authorization", "Bearer " + SessionManager.getAuthToken());
-                if (http.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                    server_error = true;
-                    String error = http.getResponseCode() + " " + http.getResponseMessage();
-                    activity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            activity.errorServer(error);
-                        }
-                    });
-                    return null;
-                }
-                BufferedReader reader = new BufferedReader(new InputStreamReader(http.getInputStream()));
-                StringBuilder sb = new StringBuilder();
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    sb.append(line);
-                }
-                JSONObject obj = new JSONObject(sb.toString());
-                Log.e("ReportResponce", obj.toString());
-                infosJson = obj.getJSONObject("data");
-                http.disconnect();
-
-
-            } catch (Exception ex) {
-                ex.printStackTrace();
+    //Get Report By Id Update :
+    public static void getReportById(PreviewReport activity,String idReport){
+        loadingReports.content = "Chargement de rapport ...";
+        loadingReports.show(activity.getSupportFragmentManager(),"");
+        OkHttpClient.Builder builderClient = new OkHttpClient.Builder();
+        builderClient.connectTimeout(300, TimeUnit.MINUTES);
+        builderClient.readTimeout(300, TimeUnit.MINUTES);
+        builderClient.writeTimeout(300, TimeUnit.MINUTES);
+        OkHttpClient client = builderClient.build();
+        Request request = new Request.Builder()
+                .url("http://admin.smartonviatoile.com/api/Rapport/" + idReport)
+                .addHeader("Authorization", "Bearer " + SessionManager.getAuthToken())
+                .get().build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                loadingReports.dismiss();
+                new ResultBottomDialog("Echec de chargé les rapports",3).show(activity.getSupportFragmentManager(),"");
             }
 
-            return null;
-        }
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
 
-        @RequiresApi(api = Build.VERSION_CODES.O)
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            if (!server_error) {
                 try {
-
+                    jsonObject = new JSONObject(response.body().string()).getJSONObject("data");
                     Report report = new Report();
-                    report.setNomIntervention(infosJson.getString("nom_intervention"));
-                    report.setNomSite(infosJson.getString("nom_site"));
-                    report.setDateIntervention(output.format(sdf.parse(infosJson.getString("date_intervention"))));
-                    report.setDateValidation(output.format(sdf.parse(infosJson.getString("date_rapport"))));
-                    report.setNomResponsable(infosJson.getString("nom_responsable"));
-                    report.setEtat(infosJson.getBoolean("etat_rapport"));
-                    report.setIdReport(infosJson.getString("id"));
+                    report.setNomIntervention(jsonObject.getString("nom_intervention"));
+                    report.setNomSite(jsonObject.getString("nom_site"));
+                    report.setDateIntervention(output.format(sdf.parse(jsonObject.getString("date_intervention"))));
+                    report.setDateValidation(output.format(sdf.parse(jsonObject.getString("date_rapport"))));
+                    report.setNomResponsable(jsonObject.getString("nom_responsable"));
+                    report.setEtat(jsonObject.getBoolean("etat_rapport"));
+                    report.setIdReport(jsonObject.getString("id"));
 
-                    JSONObject commentGeneral = infosJson.getJSONObject("commantaire_generale");
+                    JSONObject commentGeneral = jsonObject.getJSONObject("commantaire_generale");
 
                     for (int j = 0; j < commentGeneral.getJSONArray("audio").length(); j++) {
                         report.getAudiosList().add(commentGeneral.getJSONArray("audio").getString(j));
@@ -758,7 +694,7 @@ public class ReportData {
                         report.getCommentsList().add(commentGeneral.getJSONArray("text").getString(j));
                     }
 
-                    JSONArray commentTask = infosJson.getJSONArray("commentaire_tache");
+                    JSONArray commentTask = jsonObject.getJSONArray("commentaire_tache");
 
                     for (int j = 0; j < commentTask.length(); j++) {
                         JSONObject objectTask = commentTask.getJSONObject(j);
@@ -786,18 +722,21 @@ public class ReportData {
 
                     Log.e("ReportInfo", report.getIdReport() + " - " + report.getNomResponsable());
 
-                    activity.setupViews(report);
+                    activity.runOnUiThread(new Runnable() {
+                        @RequiresApi(api = Build.VERSION_CODES.O)
+                        @Override
+                        public void run() {
+                            activity.setupViews(report);
+                        }
+                    });
 
                 } catch (Exception ex) {
                     if (activity != null)
                         new ResultBottomDialog(ex.getMessage(), 3).show(activity.getSupportFragmentManager(), null);
                 }
-
-            } else {
-                new ResultBottomDialog("Error while getting report infos", 3).show(activity.getSupportFragmentManager(), null);
+                loadingReports.dismiss();
             }
-            loadingReports.dismiss();
-        }
+        });
     }
 
     public static class GetReportFiles extends AsyncTask<Void, Void, Void> {

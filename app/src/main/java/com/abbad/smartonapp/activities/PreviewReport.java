@@ -69,7 +69,7 @@ public class PreviewReport extends AppCompatActivity {
         initViews();
         idReport = getIntent().getStringExtra("idReport");
         if (idReport != null)
-            new ReportData.GetReportById(getIntent().getStringExtra("idReport"), this).execute();
+            ReportData.getReportById(this,getIntent().getStringExtra("idReport"));
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)

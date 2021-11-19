@@ -36,7 +36,7 @@ public class ListReports extends AppCompatActivity {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
-        new ReportData.GetAllReport(this).execute();
+        ReportData.getAllReports(this);
     }
 
     public void displayData(List<Report> listReports) {

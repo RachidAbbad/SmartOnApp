@@ -19,7 +19,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import org.w3c.dom.Text;
 
 public class LoadingBottomDialog extends BottomSheetDialogFragment {
-    private String content;
+    public String content;
 
     public LoadingBottomDialog(String content){
         this.content = content;
