@@ -19,9 +19,9 @@
     <string name="login_btn_forgot_pass">Mot de passe oublié ?</string>
     <string name="app_logo">Application Logo</string>
     <string name="infos_incorrect_msg">Email ou Mot de passe incorrect</string>
-    <string name="auth_site_loading_msg">Email ou Mot de passe incorrect</string>
-    <string name="chaudiereName">Chaudière</string>
-    <string name="ballonName">Ballon de chaudière</string>
+    <string name="auth_site_loading_msg" translatable="false">Email ou Mot de passe incorrect</string>
+    <string name="chaudiereName">Chaudière :</string>
+    <string name="ballonName">Ballon de chaudière :</string>
 
     <string name="temp1Text">T° de départ</string>
     <string name="temp2Text">T° de retour</string>

@@ -28,8 +28,8 @@
     <string name="temp8Text">Temp N8</string>
     <string name="error404">404 Error</string>
     <string name="coming_soon">Coming soon</string>
-    <string name="chaudiereName">Boiler</string>
-    <string name="ballonName">Boiler tank</string>
+    <string name="chaudiereName">Boiler :</string>
+    <string name="ballonName">Boiler tank :</string>
     <string name="noBalloons" translatable="false">There is no balloons in this site</string>
     <string name="noSilos" translatable="false">There is no silos in this site</string>
     <string name="temperature" translatable="false">Temperature</string>

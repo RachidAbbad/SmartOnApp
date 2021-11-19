@@ -32,15 +32,14 @@ public class DashboardFragment extends Fragment {
 
     private LinearLayout containerLayout;
     private LinearLayout serverError;
-    private TextView exceptionText, chadiereId;
+    private TextView exceptionText;
     private SpeedView s1, s2, s3, s4, s5, s6;
 
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        dashboardViewModel =
-                new ViewModelProvider(this).get(DashboardViewModel.class);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        dashboardViewModel = new ViewModelProvider(this).get(DashboardViewModel.class);
 
+        //Init Views :
         View root = inflater.inflate(R.layout.fragment_dashboard, container, false);
         s1 = root.findViewById(R.id.t_depart_indicator);
         s2 = root.findViewById(R.id.t_retoure_indicator);
@@ -51,20 +50,15 @@ public class DashboardFragment extends Fragment {
         serverError = root.findViewById(R.id.serverError);
         mainLayout = root.findViewById(R.id.mainLayout);
         containerLayout = root.findViewById(R.id.containerLayout);
-
         exceptionText = root.findViewById(R.id.exceptionText);
-        chadiereId = root.findViewById(R.id.chadiereId);
 
 
-
-        chadiereId.append(SessionManager.getIdCapteur(getContext()));
+        //Exécuter le ASyncTask pour afficher les données :
         try {
             dashboardViewModel.refreshData(this);
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
         return root;
     }
 

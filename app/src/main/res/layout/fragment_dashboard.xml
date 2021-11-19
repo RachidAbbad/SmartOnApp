@@ -28,15 +28,6 @@
                 android:fontFamily="sans-serif-condensed-medium"
                 android:textColor="@color/uiTextColor"
                 android:textSize="20dp"/>
-            <TextView
-                android:id="@+id/chadiereId"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Id : "
-                android:layout_margin="1dp"
-                android:fontFamily="sans-serif-condensed-medium"
-                android:textColor="@color/uiTextColor"
-                android:textSize="15dp"/>
             <!--Row1-->
             <LinearLayout
                 android:layout_width="match_parent"

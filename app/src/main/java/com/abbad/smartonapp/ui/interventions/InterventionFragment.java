@@ -9,6 +9,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,6 +25,7 @@ import android.widget.TextView;
 import com.abbad.smartonapp.R;
 import com.abbad.smartonapp.activities.HistoriqueInteventions;
 import com.abbad.smartonapp.activities.InterventionDetails;
+import com.abbad.smartonapp.activities.ListReports;
 import com.abbad.smartonapp.activities.MainActivity;
 import com.abbad.smartonapp.adapters.RecycleViewAdapter;
 import com.abbad.smartonapp.classes.Intervention;
@@ -57,7 +59,7 @@ public class InterventionFragment extends Fragment {
     private LinearLayout calendarLayout,serverError,noInterventionLayout,workLayout;
     private LinearLayout intervLayout;
     private TextView currentMonth,noIntervText,exceptionText;
-    private ImageButton viewSwitcher,historiqueInterv;
+    private ImageButton viewSwitcher,historiqueInterv,rapport_btn;
     private CompactCalendarView calendarView;
     public Date clickedDate;
 
@@ -66,6 +68,8 @@ public class InterventionFragment extends Fragment {
      public RecycleViewAdapter adapter;
     //Static List of interventions :
     public List<Intervention> list_intervention;
+
+    //
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -84,6 +88,7 @@ public class InterventionFragment extends Fragment {
         noIntervText = root.findViewById(R.id.noIntervText) ;
         calendarLayout = root.findViewById(R.id.calendarView) ;
         viewSwitcher = root.findViewById(R.id.viewSwitcher) ;
+        rapport_btn = root.findViewById(R.id.list_reports_btn);
         historiqueInterv = root.findViewById(R.id.historiqueInterv);
         noInterventionLayout = root.findViewById(R.id.noInterventionLayout);
         serverError = root.findViewById(R.id.serverError);
@@ -107,8 +112,6 @@ public class InterventionFragment extends Fragment {
         String month = InterventionViewModel.getMonthName(cal.get(Calendar.MONTH));
         currentMonth.setText(month+" "+cal.get(Calendar.YEAR));
 
-        //
-        //interventionViewModel.displayDayIntervention(interventionList, recyclerViewCalendar, noIntervText, clickedDate);
         //Set layout manager to recyleViews
         recyclerView.setLayoutManager( new LinearLayoutManager(getContext()));
         recyclerViewCalendar.setLayoutManager( new LinearLayoutManager(getContext()));
@@ -125,7 +128,13 @@ public class InterventionFragment extends Fragment {
         interventionViewModel.switchViewSetter(viewSwitcher,intervLayout,calendarLayout);
         adapter.notifyDataSetChanged();
 
-
+        rapport_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), ListReports.class);
+                startActivity(intent);
+            }
+        });
 
         return root;
     }

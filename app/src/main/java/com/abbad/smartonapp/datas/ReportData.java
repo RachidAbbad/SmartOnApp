@@ -392,9 +392,9 @@ public class ReportData {
 
             for (File file : listVideos) {
                 OkHttpClient.Builder builderClient = new OkHttpClient.Builder();
-                builderClient.connectTimeout(20, TimeUnit.MINUTES);
-                builderClient.readTimeout(20, TimeUnit.MINUTES);
-                builderClient.writeTimeout(20, TimeUnit.MINUTES);
+                builderClient.connectTimeout(300, TimeUnit.MINUTES);
+                builderClient.readTimeout(300, TimeUnit.MINUTES);
+                builderClient.writeTimeout(300, TimeUnit.MINUTES);
                 OkHttpClient client = builderClient.build();
                 MultipartBody.Builder builder = new MultipartBody.Builder();
                 builder.setType(MultipartBody.FORM);

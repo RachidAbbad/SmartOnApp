@@ -26,6 +26,17 @@
             android:layout_margin="10dp"/>
 
         <ImageButton
+            android:id="@+id/list_reports_btn"
+            android:padding="20dp"
+            android:layout_width="0dp"
+            android:background="@color/transparent"
+            android:layout_marginEnd="5dp"
+            android:layout_weight=".2"
+            android:layout_height="30dp"
+            android:src="@drawable/ic_report_1"
+             />
+
+        <ImageButton
             android:id="@+id/historiqueInterv"
             android:padding="20dp"
             android:layout_width="0dp"

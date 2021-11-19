@@ -39,8 +39,8 @@ import java.util.TimerTask;
 public class DashboardViewModel extends ViewModel {
 
     public boolean server_error = false, first_time = true, firstUse = true;
+    public List<View> ballonsViews, silosViews;
     private Timer timer = new Timer();
-    public List<View> ballonsViews,silosViews;
 
     public DashboardViewModel() {
 
@@ -52,15 +52,9 @@ public class DashboardViewModel extends ViewModel {
             @Override
             public void run() {
                 Log.i("sys_output", "DashBoard values has been updated");
-
-                AsyncTask.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        new GetInfoTask(dash).execute();
-                    }
-                });
+                new GetInfoTask(dash).execute();
             }
-        }, 0, 10000);
+        }, 0, 5000);
     }
 
     public class GetInfoTask extends AsyncTask<Void, Void, Void> {
@@ -68,7 +62,6 @@ public class DashboardViewModel extends ViewModel {
         JSONArray infosBallons, infosSilo;
         DashboardFragment dash;
         HttpURLConnection http;
-
 
 
         public GetInfoTask(DashboardFragment f) {
@@ -172,7 +165,7 @@ public class DashboardViewModel extends ViewModel {
         protected void onPostExecute(Void param) {
             if (!server_error) {
                 try {
-                    //Apply Boiler Data
+                    //Afficher les valeurs à propos de chaudiére :
                     dash.errorSolved();
                     dash.getS1().speedTo((float) infosJson.getDouble("temperatura_Ida"));
                     dash.getS2().speedTo((float) infosJson.getDouble("temperatura_Retorno"));
@@ -181,8 +174,7 @@ public class DashboardViewModel extends ViewModel {
                     dash.getS5().speedTo((float) infosJson.getDouble("dépression"));
                     dash.getS6().speedTo((float) infosJson.getDouble("luminosidad"));
 
-                    //Apply Ballons Data
-
+                    //Afficher les valeurs à propos des ballons
                     if (firstUse) {
                         if (infosBallons.length() == 0) {
                             View v = LayoutInflater.from(dash.getContext()).inflate(R.layout.ballon_layout, null);
@@ -197,58 +189,42 @@ public class DashboardViewModel extends ViewModel {
                                 ballonsViews.add(v);
                                 SpeedView tempView = v.findViewById(R.id.ballon_temp);
                                 SpeedView pressureView = v.findViewById(R.id.ballon_pressure);
-                                TextView idBallon = v.findViewById(R.id.idBallon);
 
                                 tempView.speedTo((float) ballon.getDouble("temperature"));
                                 pressureView.speedTo((float) ballon.getDouble("pression"));
-                                idBallon.append(ballon.getString("id"));
 
                                 dash.getContainerLayout().addView(v);
 
                             }
                         }
 
-                        //Apply Silos Data
+                        //Afficher les valeurs à propos des silos
                         if (infosSilo.length() == 0) {
                             View v = LayoutInflater.from(dash.getContext()).inflate(R.layout.silos_container, null);
                             v.findViewById(R.id.noSilo).setVisibility(View.VISIBLE);
                             v.findViewById(R.id.silosContainer).setVisibility(View.GONE);
                             dash.getContainerLayout().addView(v);
-                        }else {
-
+                        } else {
                             silosViews = new ArrayList<>();
-
                             for (int i = 0; i < infosSilo.length(); i++) {
                                 JSONObject silo = infosSilo.getJSONObject(i);
-                                LinearLayout siloContainer = null;
-                                LinearLayout siloGeneralContainer = null;
                                 LinearLayout v = (LinearLayout) LayoutInflater.from(dash.getContext()).inflate(R.layout.silo_layout, null);
                                 silosViews.add(v);
+
                                 TextView nomSilo = v.findViewById(R.id.nomSilo);
                                 PercentageChartView percentSilo = v.findViewById(R.id.siloPercent);
 
-                                nomSilo.setText("Silo "+(i+1));
-                                if (silo.getString("niveau")==null)
-                                    percentSilo.setProgress(0,true);
-                                else
-                                    percentSilo.setProgress((float) silo.getDouble("niveau"),true);
+                                nomSilo.setText("Silo " + (i + 1));
+                                percentSilo.setProgress((float) silo.getDouble("niveau"), true);
 
                                 dash.getContainerLayout().addView(v);
-                                /*if (i%2==0){
-                                    siloGeneralContainer = (LinearLayout) LayoutInflater.from(dash.getContext()).inflate(R.layout.silos_container, null);
-                                    siloContainer = siloGeneralContainer.findViewById(R.id.silosContainer);
-
-                                    siloContainer.addView(v);
-                                    dash.getContainerLayout().addView(siloGeneralContainer);
-                                }
-                                else {
-                                    siloContainer.addView(v);
-                                }*/
                             }
                         }
+
+                        //Affecter false à firstUse pour arréter la création des nouveaux views pour les ballons et les silos
                         firstUse = false;
-                    }else {
-                        if (infosBallons.length() != 0){
+                    } else {
+                        if (infosBallons.length() != 0) {
                             for (int i = 0; i < ballonsViews.size(); i++) {
                                 JSONObject ballon = infosBallons.getJSONObject(i);
                                 View v = ballonsViews.get(i);
@@ -260,19 +236,15 @@ public class DashboardViewModel extends ViewModel {
                             }
                         }
 
-
-                        if (infosSilo.length() != 0){
+                        if (infosSilo.length() != 0) {
                             for (int i = 0; i < silosViews.size(); i++) {
                                 JSONObject silo = infosSilo.getJSONObject(i);
                                 View v = silosViews.get(i);
                                 TextView nomSilo = v.findViewById(R.id.nomSilo);
                                 PercentageChartView percentSilo = v.findViewById(R.id.siloPercent);
 
-                                nomSilo.setText("Silo "+(i+1));
-                                if (silo.getString("niveau")==null)
-                                    percentSilo.setProgress(0,true);
-                                else
-                                    percentSilo.setProgress((float) silo.getDouble("niveau"),true);
+                                nomSilo.setText("Silo " + (i + 1));
+                                percentSilo.setProgress((float) silo.getDouble("niveau"), true);
                             }
                         }
                     }
@@ -290,7 +262,7 @@ public class DashboardViewModel extends ViewModel {
                 }
             }
             Comun.nbTasksOnline++;
-            if (Comun.nbTasksOnline == Comun.totalTasks && !Comun.isAllTasksFinished){
+            if (Comun.nbTasksOnline == Comun.totalTasks && !Comun.isAllTasksFinished) {
                 MainActivity.loadingBottomDialog.dismiss();
                 InterventionFragment.checkInCompletedIntervention((MainActivity) dash.getActivity());
                 Comun.isAllTasksFinished = true;
