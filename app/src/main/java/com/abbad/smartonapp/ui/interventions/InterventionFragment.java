@@ -120,8 +120,6 @@ public class InterventionFragment extends Fragment {
         adapter = new RecycleViewAdapter((MainActivity) getActivity());
         recyclerView.setAdapter(adapter);
 
-        refreshIntervention();
-
         clickedDate = new Date();
 
         //Switch between listView & Calendar view
@@ -225,6 +223,4 @@ public class InterventionFragment extends Fragment {
         viewSwitcher.setEnabled(true);
         historiqueInterv.setEnabled(true);
     }
-
-
 }

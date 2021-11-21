@@ -170,12 +170,6 @@ public class NotificationData {
                 }
             }
 
-            Comun.nbTasksOnline++;
-            if (Comun.nbTasksOnline == Comun.totalTasks && !Comun.isAllTasksFinished){
-                MainActivity.loadingBottomDialog.dismiss();
-                InterventionFragment.checkInCompletedIntervention((MainActivity) notificationsFragment.getActivity());
-                Comun.isAllTasksFinished = true;
-            }
 
         }
     }

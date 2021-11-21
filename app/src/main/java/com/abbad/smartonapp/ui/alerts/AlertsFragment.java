@@ -47,7 +47,6 @@ public class AlertsFragment extends Fragment {
 
         alertsAdapter = new NotificationAdapter(listAlerts);
         alerteRecyclerView.setAdapter(alertsAdapter);
-        refreshNotificationsList();
 
         return  view;
     }
@@ -56,9 +55,7 @@ public class AlertsFragment extends Fragment {
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                Log.i("sys_output", "Notifications had been updated");
-
-                new AlertsViewModel.GetAlertsOnActivty((MainActivity) getActivity()).execute();
+                AlertsViewModel.getAlerts(AlertsFragment.this);
             }
         }, 0, 6000);
     }

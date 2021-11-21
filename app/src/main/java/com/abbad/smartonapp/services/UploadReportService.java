@@ -115,8 +115,7 @@ public class UploadReportService extends Service {
     }
 
     public void doneUpload() {
-        Comun.isAllTasksFinished = false;
-        Comun.nbTasksOnline = 0;
+
         notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("Upload Report")
                 .setContentText("Upload Done")

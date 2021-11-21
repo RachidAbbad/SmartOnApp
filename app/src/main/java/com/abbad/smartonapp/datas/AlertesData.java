@@ -108,13 +108,6 @@ public class AlertesData {
                     tempListNotification.add(notification);
                 }
             }
-            Comun.nbTasksOnline++;
-            if (Comun.nbTasksOnline == Comun.totalTasks && !Comun.isAllTasksFinished){
-                MainActivity.loadingBottomDialog.dismiss();
-                InterventionFragment.checkInCompletedIntervention(mainActivity);
-                Comun.isAllTasksFinished = true;
-            }
-
         }
 
         private void reportError() {

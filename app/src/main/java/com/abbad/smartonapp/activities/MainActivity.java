@@ -20,7 +20,6 @@ import com.abbad.smartonapp.datas.InterventionData;
 import com.abbad.smartonapp.datas.ReportData;
 import com.abbad.smartonapp.dialogs.AuthSiteDialog;
 import com.abbad.smartonapp.dialogs.ComfirmExit;
-import com.abbad.smartonapp.dialogs.LoadingBottomDialog;
 import com.abbad.smartonapp.dialogs.ResultBottomDialog;
 import com.abbad.smartonapp.ui.alerts.AlertsFragment;
 import com.abbad.smartonapp.ui.dashboard.DashboardFragment;
@@ -53,9 +52,9 @@ public class MainActivity extends AppCompatActivity {
 
     public static AuthSiteDialog authSiteDialog;
     final Fragment fragment1 = new DashboardFragment();
-    final Fragment fragment2 = new InterventionFragment();
-    final Fragment fragment3 = new NotificationsFragment();
-    final Fragment fragment4 = new AlertsFragment();
+    final InterventionFragment fragment2 = new InterventionFragment();
+    final NotificationsFragment fragment3 = new NotificationsFragment();
+    final AlertsFragment fragment4 = new AlertsFragment();
     final Fragment fragment5 = new ProfileFragment();
     final FragmentManager fm = getSupportFragmentManager();
     Fragment active = fragment1;
@@ -63,15 +62,12 @@ public class MainActivity extends AppCompatActivity {
     private CardView cnxStatusColor;
     private NfcAdapter nfcAdapter;
     private PendingIntent pendingIntent;
-    public static LoadingBottomDialog loadingBottomDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         BottomNavigationView navView = findViewById(R.id.nav_view);
-        loadingBottomDialog = new LoadingBottomDialog("Loading ...");
-        loadingBottomDialog.show(getSupportFragmentManager(),null);
         cnxStatus = findViewById(R.id.cnxStatus);
         cnxStatusColor = findViewById(R.id.cnxStatusColor);
         Timer timer = new Timer();
@@ -107,16 +103,22 @@ public class MainActivity extends AppCompatActivity {
                         return true;
 
                     case R.id.navigation_intervention:
+                        if (Comun.firstLoadInterventions)
+                            fragment2.refreshIntervention();
                         fm.beginTransaction().hide(active).show(fragment2).commit();
                         active = fragment2;
                         return true;
 
                     case R.id.navigation_notifications:
+                        if (Comun.firstLoadNotifications)
+                            fragment3.refreshNotificationsList();
                         fm.beginTransaction().hide(active).show(fragment3).commit();
                         active = fragment3;
                         return true;
 
                     case R.id.navigation_alerts:
+                        if (Comun.firstLoadAlerts)
+                            fragment4.refreshNotificationsList();
                         fm.beginTransaction().hide(active).show(fragment4).commit();
                         active = fragment4;
                         return true;
@@ -125,13 +127,10 @@ public class MainActivity extends AppCompatActivity {
                         fm.beginTransaction().hide(active).show(fragment5).commit();
                         active = fragment5;
                         return true;
-                }
-                ;
+                };
                 return false;
             }
         });
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
 
         fm.beginTransaction().add(R.id.nav_host_fragment, fragment3, "3").hide(fragment3).commit();
         fm.beginTransaction().add(R.id.nav_host_fragment, fragment2, "2").hide(fragment2).commit();

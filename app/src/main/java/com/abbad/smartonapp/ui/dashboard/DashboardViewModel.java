@@ -3,6 +3,7 @@ package com.abbad.smartonapp.ui.dashboard;
 import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 
+import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,10 +11,15 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.RequiresApi;
 import androidx.lifecycle.ViewModel;
 
 import com.abbad.smartonapp.R;
+import com.abbad.smartonapp.activities.LoginActivity;
 import com.abbad.smartonapp.activities.MainActivity;
+import com.abbad.smartonapp.classes.Report;
+import com.abbad.smartonapp.classes.Task;
+import com.abbad.smartonapp.dialogs.LoadingBottomDialog;
 import com.abbad.smartonapp.dialogs.ResultBottomDialog;
 import com.abbad.smartonapp.ui.interventions.InterventionFragment;
 import com.abbad.smartonapp.utils.Comun;
@@ -21,6 +27,7 @@ import com.abbad.smartonapp.utils.SessionManager;
 import com.github.anastr.speedviewlib.SpeedView;
 import com.ramijemli.percentagechartview.PercentageChartView;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,240 +41,288 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 
 public class DashboardViewModel extends ViewModel {
 
-    public boolean server_error = false, first_time = true, firstUse = true;
-    public List<View> ballonsViews, silosViews;
+    public boolean server_error = false;
+    public List<View> ballonsViews = new ArrayList<>(), silosViews = new ArrayList<>();
+    JSONObject infosJson;
+    JSONArray infosBallons, infosSilo;
+    LoadingBottomDialog loadingReports = new LoadingBottomDialog("Chargement de dashBoard ...");
     private Timer timer = new Timer();
-
     public DashboardViewModel() {
 
     }
 
     public void refreshData(DashboardFragment dash) throws IOException {
-
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                Log.i("sys_output", "DashBoard values has been updated");
-                new GetInfoTask(dash).execute();
+                getDashboardInfo(dash);
             }
         }, 0, 5000);
+
     }
 
-    public class GetInfoTask extends AsyncTask<Void, Void, Void> {
-        JSONObject infosJson;
-        JSONArray infosBallons, infosSilo;
-        DashboardFragment dash;
-        HttpURLConnection http;
-
-
-        public GetInfoTask(DashboardFragment f) {
-            dash = f;
-        }
-
-        @Override
-        protected void onPreExecute() {
-
-
-        }
-
-        @Override
-        protected Void doInBackground(Void... arg0) {
-            try {
-                if (dash.getContext() == null)
-                    this.cancel(true);
-                //Get Boiler Data
-                URL url = new URL("http://smartonviatoile.com/api/Data/currentChaudiere/" + SessionManager.getIdCapteur(dash.getContext()) + "/1");
-                http = (HttpURLConnection) url.openConnection();
-                http.setRequestProperty("Accept", "application/json");
-                http.setRequestProperty("Authorization", "Bearer " + SessionManager.getAuthTokenWithContext(dash.getContext()));
-                if (http.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                    server_error = true;
-                    return null;
-                }
-                if (!first_time) {
-                    first_time = true;
-                }
-                BufferedReader reader = new BufferedReader(new InputStreamReader(http.getInputStream()));
-                StringBuilder sb = new StringBuilder();
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    sb.append(line);
-                }
-                JSONObject obj = new JSONObject(sb.toString());
-                JSONArray data = obj.getJSONArray("data");
-                infosJson = (JSONObject) data.get(0);
-                http.disconnect();
-
-                //Get Silos Data
-                url = new URL("http://admin.smartonviatoile.com/api/Silo/Site/" + SessionManager.getIdOrg(dash.getContext()));
-                http = (HttpURLConnection) url.openConnection();
-                http.setRequestProperty("Accept", "application/json");
-                http.setRequestProperty("Authorization", "Bearer " + SessionManager.getAuthToken());
-                if (http.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                    server_error = true;
-                    return null;
-                }
-                if (!first_time) {
-                    first_time = true;
-                }
-                reader = new BufferedReader(new InputStreamReader(http.getInputStream()));
-                sb = new StringBuilder();
-                line = "";
-                while ((line = reader.readLine()) != null) {
-                    sb.append(line);
-                }
-                obj = new JSONObject(sb.toString());
-                infosSilo = obj.getJSONArray("data");
-                http.disconnect();
-
-
-                //Get Ballons Data
-
-                url = new URL("http://admin.smartonviatoile.com/api/Ballon/Site/" + SessionManager.getIdOrg(dash.getContext()));
-                http = (HttpURLConnection) url.openConnection();
-                http.setRequestProperty("Accept", "application/json");
-                http.setRequestProperty("Authorization", "Bearer " + SessionManager.getAuthToken());
-                if (http.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                    Log.e("ErrorServer", http.getResponseCode() + " " + http.getResponseMessage());
-                    server_error = true;
-                    return null;
-                }
-                if (!first_time) {
-                    first_time = true;
-                }
-                server_error = false;
-                reader = new BufferedReader(new InputStreamReader(http.getInputStream()));
-                sb = new StringBuilder();
-                line = "";
-                while ((line = reader.readLine()) != null) {
-                    sb.append(line);
-                }
-
-                //Log.e("Ballons",SessionManager.);
-                obj = new JSONObject(sb.toString());
-                infosBallons = obj.getJSONArray("data");
-                http.disconnect();
-
-
-            } catch (IOException | JSONException e) {
-                Log.i("Exception :", "NoConnection to get chaudiere values");
-                dash.reportError(dash.getResources().getString(R.string.reconnectMsg));
+    private void getDashboardInfo(DashboardFragment dash) {
+        Log.e("Token", SessionManager.getAuthToken());
+        if (Comun.firstLoadDashboard) {
+            if (!loadingReports.isAdded()) {
+                loadingReports.show(dash.getActivity().getSupportFragmentManager(), "");
             }
-            return null;
         }
 
-        @SuppressLint("SetTextI18n")
-        @Override
-        protected void onPostExecute(Void param) {
-            if (!server_error) {
+        OkHttpClient.Builder builderClient = new OkHttpClient.Builder();
+        builderClient.connectTimeout(300, TimeUnit.MINUTES);
+        builderClient.readTimeout(300, TimeUnit.MINUTES);
+        builderClient.writeTimeout(300, TimeUnit.MINUTES);
+
+        getBoilerData(builderClient, dash);
+    }
+
+    private void getBoilerData(OkHttpClient.Builder builder, DashboardFragment dash) {
+        OkHttpClient.Builder builderClient = new OkHttpClient.Builder();
+        builderClient.connectTimeout(300, TimeUnit.MINUTES);
+        builderClient.readTimeout(300, TimeUnit.MINUTES);
+        builderClient.writeTimeout(300, TimeUnit.MINUTES);
+        OkHttpClient client = builder.build();
+        Request request = new Request.Builder()
+                .url("http://smartonviatoile.com/api/Data/currentChaudiere/" + SessionManager.getIdCapteur(dash.getActivity().getApplicationContext()) + "/1")
+                .addHeader("Authorization", "Bearer " + SessionManager.getAuthToken())
+                .get().build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                new ResultBottomDialog(e.getMessage(), 3).show(dash.getActivity().getSupportFragmentManager(), null);
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try {
-                    //Afficher les valeurs à propos de chaudiére :
-                    dash.errorSolved();
-                    dash.getS1().speedTo((float) infosJson.getDouble("temperatura_Ida"));
-                    dash.getS2().speedTo((float) infosJson.getDouble("temperatura_Retorno"));
-                    dash.getS3().speedTo((float) infosJson.getDouble("temperatura_Inercia"));
-                    dash.getS4().speedTo((float) infosJson.getDouble("temperatura_Humos"));
-                    dash.getS5().speedTo((float) infosJson.getDouble("dépression"));
-                    dash.getS6().speedTo((float) infosJson.getDouble("luminosidad"));
-
-                    //Afficher les valeurs à propos des ballons
-                    if (firstUse) {
-                        if (infosBallons.length() == 0) {
-                            View v = LayoutInflater.from(dash.getContext()).inflate(R.layout.ballon_layout, null);
-                            v.findViewById(R.id.noBalloons).setVisibility(View.VISIBLE);
-                            v.findViewById(R.id.mainLayout).setVisibility(View.GONE);
-                            dash.getContainerLayout().addView(v);
-                        } else {
-                            ballonsViews = new ArrayList<>();
-                            for (int i = 0; i < infosBallons.length(); i++) {
-                                JSONObject ballon = infosBallons.getJSONObject(i);
-                                View v = LayoutInflater.from(dash.getContext()).inflate(R.layout.ballon_layout, null);
-                                ballonsViews.add(v);
-                                SpeedView tempView = v.findViewById(R.id.ballon_temp);
-                                SpeedView pressureView = v.findViewById(R.id.ballon_pressure);
-
-                                tempView.speedTo((float) ballon.getDouble("temperature"));
-                                pressureView.speedTo((float) ballon.getDouble("pression"));
-
-                                dash.getContainerLayout().addView(v);
-
+                    infosJson = new JSONObject(response.body().string()).getJSONArray("data").getJSONObject(0);
+                    dash.getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                dash.getS1().speedTo((float) infosJson.getDouble("temperatura_Ida"));
+                                dash.getS2().speedTo((float) infosJson.getDouble("temperatura_Retorno"));
+                                dash.getS3().speedTo((float) infosJson.getDouble("temperatura_Inercia"));
+                                dash.getS4().speedTo((float) infosJson.getDouble("temperatura_Humos"));
+                                dash.getS5().speedTo((float) infosJson.getDouble("dépression"));
+                                dash.getS6().speedTo((float) infosJson.getDouble("luminosidad"));
+                            } catch (Exception ex) {
+                                new ResultBottomDialog(ex.getMessage(), 3).show(dash.getActivity().getSupportFragmentManager(), null);
                             }
                         }
+                    });
 
-                        //Afficher les valeurs à propos des silos
+                    getBallonsData(builderClient, dash);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    new ResultBottomDialog(ex.getMessage(), 3).show(dash.getActivity().getSupportFragmentManager(), null);
+                }
+            }
+        });
+    }
+
+    private void getBallonsData(OkHttpClient.Builder builder, DashboardFragment dash) {
+
+        OkHttpClient client = builder.build();
+        Request request = new Request.Builder()
+                .url("http://admin.smartonviatoile.com/api/Ballon/Site/" + SessionManager.getIdOrg(dash.getContext()))
+                .addHeader("Authorization", "Bearer " + SessionManager.getAuthToken())
+                .get().build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                new ResultBottomDialog(e.getMessage(), 3).show(dash.getActivity().getSupportFragmentManager(), null);
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    try {
+                        infosBallons = new JSONObject(response.body().string()).getJSONArray("data");
+                        if (Comun.firstLoadDashboard) {
+                            if (infosBallons.length() == 0) {
+                                View v = LayoutInflater.from(dash.getContext()).inflate(R.layout.ballon_layout, null);
+                                dash.getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        v.findViewById(R.id.noBalloons).setVisibility(View.VISIBLE);
+                                        v.findViewById(R.id.mainLayout).setVisibility(View.GONE);
+                                        dash.getContainerLayout().addView(v);
+                                    }
+                                });
+                            } else {
+                                dash.getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            for (int i = 0; i < infosBallons.length(); i++) {
+                                                JSONObject ballon = infosBallons.getJSONObject(i);
+                                                View v = LayoutInflater.from(dash.getContext()).inflate(R.layout.ballon_layout, null);
+                                                ballonsViews.add(v);
+                                                SpeedView tempView = v.findViewById(R.id.ballon_temp);
+                                                SpeedView pressureView = v.findViewById(R.id.ballon_pressure);
+
+                                                tempView.speedTo((float) ballon.getDouble("temperature"));
+                                                pressureView.speedTo((float) ballon.getDouble("pression"));
+
+                                                dash.getContainerLayout().addView(v);
+                                            }
+                                        } catch (Exception ex) {
+                                            ex.printStackTrace();
+                                        }
+
+                                    }
+                                });
+
+                            }
+                        } else {
+                            if (ballonsViews.size() != 0) {
+                                dash.getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            for (int i = 0; i < ballonsViews.size(); i++) {
+                                                JSONObject ballon = infosBallons.getJSONObject(i);
+                                                View v = ballonsViews.get(i);
+                                                SpeedView tempView = v.findViewById(R.id.ballon_temp);
+                                                SpeedView pressureView = v.findViewById(R.id.ballon_pressure);
+
+                                                tempView.speedTo((float) ballon.getDouble("temperature"));
+                                                pressureView.speedTo((float) ballon.getDouble("pression"));
+                                            }
+                                        } catch (Exception ex) {
+                                            ex.printStackTrace();
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                        getSilosData(builder, dash);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        new ResultBottomDialog(ex.getMessage(), 3).show(dash.getActivity().getSupportFragmentManager(), null);
+                    }
+                } else {
+                    dash.getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            dash.reportError(response.code() + " " + response.message());
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    private void getSilosData(OkHttpClient.Builder builder, DashboardFragment dash) {
+        OkHttpClient client = builder.build();
+        Request request = new Request.Builder()
+                .url("http://admin.smartonviatoile.com/api/Silo/Site/" + SessionManager.getIdOrg(dash.getContext()))
+                .addHeader("Authorization", "Bearer " + SessionManager.getAuthToken())
+                .get().build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                new ResultBottomDialog(e.getMessage(), 3).show(dash.getActivity().getSupportFragmentManager(), null);
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+
+                try {
+                    infosSilo = new JSONObject(response.body().string()).getJSONArray("data");
+                    Log.d("Response silo", infosJson.toString());
+                    if (Comun.firstLoadDashboard) {
                         if (infosSilo.length() == 0) {
                             View v = LayoutInflater.from(dash.getContext()).inflate(R.layout.silos_container, null);
-                            v.findViewById(R.id.noSilo).setVisibility(View.VISIBLE);
-                            v.findViewById(R.id.silosContainer).setVisibility(View.GONE);
-                            dash.getContainerLayout().addView(v);
+                            dash.getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    v.findViewById(R.id.noSilo).setVisibility(View.VISIBLE);
+                                    v.findViewById(R.id.silosContainer).setVisibility(View.GONE);
+                                    dash.getContainerLayout().addView(v);
+                                }
+                            });
                         } else {
                             silosViews = new ArrayList<>();
-                            for (int i = 0; i < infosSilo.length(); i++) {
-                                JSONObject silo = infosSilo.getJSONObject(i);
-                                LinearLayout v = (LinearLayout) LayoutInflater.from(dash.getContext()).inflate(R.layout.silo_layout, null);
-                                silosViews.add(v);
+                            try {
+                                for (int i = 0; i < infosSilo.length(); i++) {
+                                    JSONObject silo = infosSilo.getJSONObject(i);
+                                    LinearLayout v = (LinearLayout) LayoutInflater.from(dash.getContext()).inflate(R.layout.silo_layout, null);
+                                    silosViews.add(v);
 
-                                TextView nomSilo = v.findViewById(R.id.nomSilo);
-                                PercentageChartView percentSilo = v.findViewById(R.id.siloPercent);
+                                    TextView nomSilo = v.findViewById(R.id.nomSilo);
+                                    PercentageChartView percentSilo = v.findViewById(R.id.siloPercent);
+                                    nomSilo.setText("Silo " + (i + 1));
 
-                                nomSilo.setText("Silo " + (i + 1));
-                                percentSilo.setProgress((float) silo.getDouble("niveau"), true);
+                                    dash.getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            try {
+                                                percentSilo.setProgress((float) silo.getDouble("niveau"), true);
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
+                                            }
+                                            dash.getContainerLayout().addView(v);
+                                        }
+                                    });
+                                }
 
-                                dash.getContainerLayout().addView(v);
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
                             }
-                        }
 
-                        //Affecter false à firstUse pour arréter la création des nouveaux views pour les ballons et les silos
-                        firstUse = false;
+
+                        }
+                        Comun.firstLoadDashboard = false;
+                        Log.e("firstLoadDashboard", String.valueOf(Comun.firstLoadDashboard));
                     } else {
-                        if (infosBallons.length() != 0) {
-                            for (int i = 0; i < ballonsViews.size(); i++) {
-                                JSONObject ballon = infosBallons.getJSONObject(i);
-                                View v = ballonsViews.get(i);
-                                SpeedView tempView = v.findViewById(R.id.ballon_temp);
-                                SpeedView pressureView = v.findViewById(R.id.ballon_pressure);
-
-                                tempView.speedTo((float) ballon.getDouble("temperature"));
-                                pressureView.speedTo((float) ballon.getDouble("pression"));
-                            }
-                        }
+                        Log.e("Outsade if",infosSilo.length()+"");
 
                         if (infosSilo.length() != 0) {
-                            for (int i = 0; i < silosViews.size(); i++) {
-                                JSONObject silo = infosSilo.getJSONObject(i);
-                                View v = silosViews.get(i);
-                                TextView nomSilo = v.findViewById(R.id.nomSilo);
-                                PercentageChartView percentSilo = v.findViewById(R.id.siloPercent);
+                            Log.e("Inside if",infosSilo.length()+"");
+                            dash.getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        for (int i = 0; i < silosViews.size(); i++) {
+                                            JSONObject silo = infosSilo.getJSONObject(i);
+                                            View v = silosViews.get(i);
+                                            TextView nomSilo = v.findViewById(R.id.nomSilo);
+                                            PercentageChartView percentSilo = v.findViewById(R.id.siloPercent);
 
-                                nomSilo.setText("Silo " + (i + 1));
-                                percentSilo.setProgress((float) silo.getDouble("niveau"), true);
-                            }
+                                            nomSilo.setText("Silo " + (i + 1));
+                                            percentSilo.setProgress((float) silo.getDouble("niveau"), true);
+                                        }
+                                    } catch (Exception ex) {
+                                        ex.printStackTrace();
+                                    }
+                                }
+                            });
+
                         }
                     }
 
-                } catch (Exception ex) {
-                    dash.reportError(dash.getResources().getString(R.string.errorOccured));
-                    ex.printStackTrace();
-                }
-            } else if (first_time) {
-                first_time = false;
-                try {
-                    dash.reportError(http.getResponseCode() + " " + http.getResponseMessage());
-                } catch (IOException exception) {
-                    exception.printStackTrace();
-                }
-            }
-            Comun.nbTasksOnline++;
-            if (Comun.nbTasksOnline == Comun.totalTasks && !Comun.isAllTasksFinished) {
-                MainActivity.loadingBottomDialog.dismiss();
-                InterventionFragment.checkInCompletedIntervention((MainActivity) dash.getActivity());
-                Comun.isAllTasksFinished = true;
-            }
-        }
-    }
 
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    new ResultBottomDialog(ex.getMessage(), 3).show(dash.getActivity().getSupportFragmentManager(), null);
+                }
+
+                loadingReports.dismiss();
+            }
+        });
+    }
 }

@@ -40,11 +40,11 @@ import java.util.zip.Inflater;
 public class Comun {
     public static MainActivity mainActivity;
 
-    public static int nbTasksOnline = 0;
-    public static int totalTasks = 4;
-    public static int nbErrors = 0;
-    public static int nbExit = 0;
-    public static boolean isAllTasksFinished = false;
+    public static boolean firstLoadDashboard=true;
+    public static boolean firstLoadInterventions=true;
+    public static boolean firstLoadNotifications=true;
+    public static boolean firstLoadAlerts=true;
+
 
     public static void askCameraPermission(Activity activity){
         int grant = ContextCompat.checkSelfPermission(activity, Manifest.permission.CAMERA);

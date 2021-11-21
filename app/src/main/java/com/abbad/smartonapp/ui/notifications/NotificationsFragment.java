@@ -47,7 +47,7 @@ public class NotificationsFragment extends Fragment {
         exceptionText = root.findViewById(R.id.exceptionText);
         notificationAdapter = new NotificationAdapter(listNotifications);
         recyclerView.setAdapter(notificationAdapter);
-        refreshNotificationsList();
+
         return root;
     }
 
@@ -56,9 +56,7 @@ public class NotificationsFragment extends Fragment {
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                Log.i("sys_output", "Notifications had been updated");
-
-                new NotificationsViewModel.GetNotificationsOnActivty((MainActivity) getActivity()).execute();
+                NotificationsViewModel.getNotifications(NotificationsFragment.this);
             }
         }, 0, 6000);
     }

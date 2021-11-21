@@ -51,8 +51,6 @@ public class LanguagePickerDialog extends BottomSheetDialogFragment {
                 Comun.setLocale(LanguagePickerDialog.this.getActivity(), "en");
                 LanguagePickerDialog.this.getActivity().finish();
                 LanguagePickerDialog.this.getActivity().startActivity(getActivity().getIntent());
-                Comun.isAllTasksFinished = false;
-                Comun.nbTasksOnline = 0;
 
             }
         });
@@ -63,8 +61,7 @@ public class LanguagePickerDialog extends BottomSheetDialogFragment {
                 Comun.setLocale(LanguagePickerDialog.this.getActivity(), "fr");
                 LanguagePickerDialog.this.getActivity().finish();
                 LanguagePickerDialog.this.getActivity().startActivity(getActivity().getIntent());
-                Comun.isAllTasksFinished = false;
-                Comun.nbTasksOnline = 0;
+
 
             }
         });
