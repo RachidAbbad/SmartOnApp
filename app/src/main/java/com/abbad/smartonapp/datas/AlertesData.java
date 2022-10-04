@@ -1,5 +1,7 @@
 package com.abbad.smartonapp.datas;
 
+import static com.abbad.smartonapp.utils.Comun.API_URL;
+
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -58,7 +60,7 @@ public class AlertesData {
         @Override
         protected Void doInBackground(Void... voids) {
             try {
-                URL url = new URL("http://admin.smartonviatoile.com/api/Notification/Alertes/" + SessionManager.getUserId(mainActivity.getApplicationContext()));
+                URL url = new URL(API_URL+"/api/Notification/Alertes/" + SessionManager.getUserId(mainActivity.getApplicationContext()));
                 http = (HttpURLConnection) url.openConnection();
                 http.setRequestProperty("Accept", "application/json");
                 http.setRequestProperty("Authorization", "Bearer " + SessionManager.getAuthToken());

@@ -152,7 +152,6 @@ public class InterventionFragment extends Fragment {
         calendarView.removeAllEvents();
         for (Intervention in: listIntervention){
             cal.setTime(new SimpleDateFormat("yyyy-MM-dd").parse(in.getDate()));
-            Log.e("generatedDate","new SimpleDateFormat(.parse(in.getDate()).toString()");
             switch (in.getType()){
                 case "correctif":
                     calendarView.addEvent(new Event(getResources().getColor(R.color.danger1), cal.getTimeInMillis()));
@@ -177,7 +176,6 @@ public class InterventionFragment extends Fragment {
     public List<Intervention> getList_intervention() {
         return list_intervention;
     }
-
     public Intervention getInterventionById(String id){
         for (Intervention inter: list_intervention) {
             if (inter.getId().equals(id))

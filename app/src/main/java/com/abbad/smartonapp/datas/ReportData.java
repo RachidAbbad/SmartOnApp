@@ -79,6 +79,7 @@ import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_AUDIO;
 import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE;
 import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
 import static com.abbad.smartonapp.services.UploadReportService.CHANNEL_ID;
+import static com.abbad.smartonapp.utils.Comun.API_URL;
 
 public class ReportData {
 
@@ -238,7 +239,7 @@ public class ReportData {
                 break;
         }
         urlExtention = urlExtention.concat("/" + outputFile.getName());
-        URL url = new URL("http://admin.smartonviatoile.com/" + urlExtention);
+        URL url = new URL(API_URL+"/" + urlExtention);
         HttpURLConnection c = (HttpURLConnection) url.openConnection();
         c.setReadTimeout(3000000);
 
@@ -331,6 +332,7 @@ public class ReportData {
         @Override
         protected Void doInBackground(Void... voids) {
             try {
+                Log.e("Report Status", "Report Started");
                 //Upload Media
 
                 sendVideos();
@@ -341,7 +343,7 @@ public class ReportData {
 
                 //Upload ReportInfos
 
-                URL url = new URL("http://admin.smartonviatoile.com/api/Rapport");
+                URL url = new URL(API_URL+"/api/Rapport");
                 HttpURLConnection http = (HttpURLConnection) url.openConnection();
                 http.setRequestMethod("POST");
                 http.setDoOutput(true);
@@ -401,17 +403,19 @@ public class ReportData {
                 builder.addFormDataPart("file", file.getName(), RequestBody.create(MediaType.parse("text/plain"), file));
                 MultipartBody formBody = builder.build();
                 Request request = new Request.Builder()
-                        .url("http://admin.smartonviatoile.com/api/Rapport/uploadvideo")
+                        .url(API_URL+"/api/Rapport/uploadvideo")
                         .addHeader("Authorization", "Bearer " + SessionManager.getAuthToken())
                         .post(formBody).build();
                 client.newCall(request).enqueue(new Callback() {
                     @Override
                     public void onFailure(@NotNull Call call, @NotNull IOException e) {
                         e.printStackTrace();
+                        Log.e("Report Videos : ", "Failed , Ex : "+e.getMessage());
                     }
 
                     @Override
                     public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                        Log.e("Report Videos : ", "Success");
                         service.counter++;
                         checkFinish();
                     }
@@ -444,17 +448,19 @@ public class ReportData {
                 builder.addFormDataPart("file", file.getName(), RequestBody.create(MediaType.parse("text/plain"), file));
                 MultipartBody formBody = builder.build();
                 Request request = new Request.Builder()
-                        .url("http://admin.smartonviatoile.com/api/Rapport/uploadimage")
+                        .url(API_URL+"/api/Rapport/uploadimage")
                         .addHeader("Authorization", "Bearer " + SessionManager.getAuthToken())
                         .post(formBody).build();
                 client.newCall(request).enqueue(new Callback() {
                     @Override
                     public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        Log.e("Report Images : ", "Failed , Ex : "+e.getMessage());
                         e.printStackTrace();
                     }
 
                     @Override
                     public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                        Log.e("Report Images : ", "Success");
                         service.counter++;
                         checkFinish();
                     }
@@ -488,17 +494,19 @@ public class ReportData {
                 builder.addFormDataPart("file", file.getName(), RequestBody.create(MediaType.parse("text/plain"), file));
                 MultipartBody formBody = builder.build();
                 Request request = new Request.Builder()
-                        .url("http://admin.smartonviatoile.com/api/Rapport/uploadaudio")
+                        .url(API_URL+"/api/Rapport/uploadaudio")
                         .addHeader("Authorization", "Bearer " + SessionManager.getAuthToken())
                         .post(formBody).build();
                 client.newCall(request).enqueue(new Callback() {
                     @Override
                     public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        Log.e("Report Audios : ", "Failed , Ex : "+e.getMessage());
                         e.printStackTrace();
                     }
 
                     @Override
                     public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                        Log.e("Report Audios : ", "Success");
                         service.counter++;
                         checkFinish();
                     }
@@ -532,7 +540,7 @@ public class ReportData {
         builderClient.writeTimeout(300, TimeUnit.MINUTES);
         OkHttpClient client = builderClient.build();
         Request request = new Request.Builder()
-                .url("http://admin.smartonviatoile.com/api/Rapport/ResponsableExecutif/"+SessionManager.getUserId(activity.getApplicationContext()))
+                .url(API_URL+"/api/Rapport/ResponsableExecutif/"+SessionManager.getUserId(activity.getApplicationContext()))
                 .addHeader("Authorization", "Bearer " + SessionManager.getAuthToken())
                 .get().build();
         client.newCall(request).enqueue(new Callback() {
@@ -614,7 +622,13 @@ public class ReportData {
                     }
                     try {
                         if (listReports.size() == 0)
+                            activity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
                             activity.noIntervention();
+
+                                }
+                            });
                         else {
                             Collections.reverse(listReports);
                             activity.runOnUiThread(new Runnable() {
@@ -652,7 +666,7 @@ public class ReportData {
         builderClient.writeTimeout(300, TimeUnit.MINUTES);
         OkHttpClient client = builderClient.build();
         Request request = new Request.Builder()
-                .url("http://admin.smartonviatoile.com/api/Rapport/" + idReport)
+                .url(API_URL+"/api/Rapport/" + idReport)
                 .addHeader("Authorization", "Bearer " + SessionManager.getAuthToken())
                 .get().build();
         client.newCall(request).enqueue(new Callback() {

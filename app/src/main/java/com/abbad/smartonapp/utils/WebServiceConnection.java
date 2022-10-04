@@ -1,5 +1,7 @@
 package com.abbad.smartonapp.utils;
 
+import static com.abbad.smartonapp.utils.Comun.API_URL;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -54,7 +56,7 @@ public class WebServiceConnection {
         protected Void doInBackground(Void... arg0) {
 
             try{
-                URL url = new URL("http://admin.smartonviatoile.com/api/Auth/login");
+                URL url = new URL(API_URL+"/api/Auth/login");
                 HttpURLConnection http = (HttpURLConnection)url.openConnection();
                 http.setRequestMethod("POST");
                 http.setDoOutput(true);

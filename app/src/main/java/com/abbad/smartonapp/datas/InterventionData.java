@@ -1,5 +1,7 @@
 package com.abbad.smartonapp.datas;
 
+import static com.abbad.smartonapp.utils.Comun.API_URL;
+
 import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
@@ -194,7 +196,7 @@ public class InterventionData {
         builderClient.writeTimeout(300, TimeUnit.MINUTES);
         OkHttpClient client = builderClient.build();
         Request request = new Request.Builder()
-                .url("http://admin.smartonviatoile.com/api/Intervention/Technicien/" + SessionManager.getUserId(interventionFragment.getActivity().getApplicationContext()))
+                .url(API_URL+"/api/Intervention/Technicien/" + SessionManager.getUserId(interventionFragment.getActivity().getApplicationContext()))
                 .addHeader("Authorization", "Bearer " + SessionManager.getAuthToken())
                 .get().build();
         client.newCall(request).enqueue(new Callback() {
@@ -206,7 +208,8 @@ public class InterventionData {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try {
-                    listInterventions = new ArrayList<>();
+                    interventionList.clear();
+                    listInterventions.clear();
                     infosJson = new JSONObject(response.body().string()).getJSONArray("data");
                     for (int i = 0; i < infosJson.length(); i++) {
                         JSONObject object = infosJson.getJSONObject(i);
@@ -353,7 +356,7 @@ public class InterventionData {
                 if (fragment.getActivity() == null) {
                     this.cancel(true);
                 }
-                URL url = new URL("http://admin.smartonviatoile.com/api/Intervention/Technicien/" + SessionManager.getUserId(fragment.getActivity().getApplicationContext()));
+                URL url = new URL(API_URL+"/api/Intervention/Technicien/" + SessionManager.getUserId(fragment.getActivity().getApplicationContext()));
                 http = (HttpURLConnection) url.openConnection();
                 http.setRequestProperty("Accept", "application/json");
                 http.setRequestProperty("Authorization", "Bearer " + SessionManager.getAuthToken());
@@ -504,7 +507,7 @@ public class InterventionData {
                 } catch (Exception ex) {
                     if (fragment.getActivity() != null)
                         ex.printStackTrace();
-                    //new ResultBottomDialog(ex.getMessage(), 3).show(fragment.getActivity().getSupportFragmentManager(), null);
+                    new ResultBottomDialog(ex.getMessage(), 3).show(fragment.getActivity().getSupportFragmentManager(), null);
                 }
 
             }

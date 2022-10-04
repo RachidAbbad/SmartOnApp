@@ -1,5 +1,7 @@
 package com.abbad.smartonapp.services;
 
+import static com.abbad.smartonapp.utils.Comun.API_URL;
+
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -150,7 +152,7 @@ public class UploadReportService extends Service {
         @Override
         protected Void doInBackground(Void... arg0) {
             try {
-                URL url = new URL("http://admin.smartonviatoile.com/api/Intervention/" + InterventionManager.getCurrentIntervention());
+                URL url = new URL(API_URL+"/api/Intervention/" + InterventionManager.getCurrentIntervention());
                 http = (HttpURLConnection) url.openConnection();
                 http.setRequestProperty("Accept", "application/json");
                 http.setRequestProperty("Authorization", "Bearer " + SessionManager.getAuthToken());

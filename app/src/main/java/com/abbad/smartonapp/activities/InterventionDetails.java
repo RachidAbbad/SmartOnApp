@@ -1,5 +1,7 @@
 package com.abbad.smartonapp.activities;
 
+import static com.abbad.smartonapp.utils.Comun.API_URL;
+
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
@@ -233,7 +235,7 @@ public class InterventionDetails extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... voids) {
             try {
-                URL url = new URL("http://admin.smartonviatoile.com/api/Intervention/etat/"+intervention.getId());
+                URL url = new URL(API_URL+"/api/Intervention/etat/"+intervention.getId());
                 HttpURLConnection http = (HttpURLConnection) url.openConnection();
                 http.setRequestMethod("PUT");
                 http.setDoOutput(true);

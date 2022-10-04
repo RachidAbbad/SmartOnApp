@@ -37,33 +37,34 @@ public class InterventionViewModel extends ViewModel {
 
 
     //Constructors :
-    public InterventionViewModel(InterventionFragment f){
+    public InterventionViewModel(InterventionFragment f) {
         this.f = f;
     }
 
 
     //Calendar section :
-    public class ViewSwitcherHandler implements View.OnClickListener{
+    public class ViewSwitcherHandler implements View.OnClickListener {
         private ImageButton viewSwitcher;
         private LinearLayout listView;
         private LinearLayout calendarView;
-        public ViewSwitcherHandler(ImageButton viewSwitcher, LinearLayout listView,LinearLayout calendarView){
+
+        public ViewSwitcherHandler(ImageButton viewSwitcher, LinearLayout listView, LinearLayout calendarView) {
             this.calendarView = calendarView;
             this.listView = listView;
             this.viewSwitcher = viewSwitcher;
         }
+
         @Override
         public void onClick(View v) {
             viewSwitcher.animate().alpha(0.0F).setDuration(500).start();
             viewSwitcher.animate().alpha(1.0F).setDuration(500).start();
-            if (calendarView.getVisibility() == GONE){
+            if (calendarView.getVisibility() == GONE) {
                 viewSwitcher.setImageResource(R.drawable.ic_list_view);
                 listView.animate().alpha(0.0F).setDuration(500).start();
                 calendarView.animate().alpha(1.0F).setDuration(500).start();
                 calendarView.setVisibility(View.VISIBLE);
                 listView.setVisibility(GONE);
-            }
-            else{
+            } else {
                 viewSwitcher.setImageResource(R.drawable.ic_calendar_view);
 
                 calendarView.animate().alpha(0.0F).setDuration(500).start();
@@ -76,17 +77,18 @@ public class InterventionViewModel extends ViewModel {
         }
     }
 
-    public void switchViewSetter(ImageButton viewSwitcher, LinearLayout listView,LinearLayout calendarView ){
-        viewSwitcher.setOnClickListener(new ViewSwitcherHandler(viewSwitcher,listView,calendarView ));
+    public void switchViewSetter(ImageButton viewSwitcher, LinearLayout listView, LinearLayout calendarView) {
+        viewSwitcher.setOnClickListener(new ViewSwitcherHandler(viewSwitcher, listView, calendarView));
     }
 
-    public class CalendarClickHandler implements CompactCalendarView.CompactCalendarViewListener{
+    public class CalendarClickHandler implements CompactCalendarView.CompactCalendarViewListener {
         private LinearLayout interLayout;
         private CompactCalendarView calendarView;
-        private TextView currentDate,noIntervText;
+        private TextView currentDate, noIntervText;
         private RecyclerView recyclerView;
         private List<Intervention> interventionList;
-        public CalendarClickHandler(LinearLayout interLayout, CompactCalendarView calendarView, TextView currentDate, RecyclerView recyclerView, TextView noIntervText,List<Intervention> listIntervention){
+
+        public CalendarClickHandler(LinearLayout interLayout, CompactCalendarView calendarView, TextView currentDate, RecyclerView recyclerView, TextView noIntervText, List<Intervention> listIntervention) {
             this.interLayout = interLayout;
             this.calendarView = calendarView;
             this.currentDate = currentDate;
@@ -100,12 +102,12 @@ public class InterventionViewModel extends ViewModel {
         public void onDayClick(Date dateClicked) {
             List<Intervention> interventions = new ArrayList<>();
             f.clickedDate = dateClicked;
-            Log.i("dateClicked",dateClicked.toString());
+            Log.i("dateClicked", dateClicked.toString());
             if (interventionList == null)
                 interventionList = new ArrayList<>();
-            for (Intervention intervention: interventionList){
+            for (Intervention intervention : interventionList) {
                 try {
-                    if (new SimpleDateFormat("yyyy-MM-dd").parse(intervention.getDate()).compareTo(dateClicked)==0)
+                    if (new SimpleDateFormat("yyyy-MM-dd").parse(intervention.getDate()).compareTo(dateClicked) == 0)
                         interventions.add(intervention);
                 } catch (ParseException parseException) {
                     parseException.printStackTrace();
@@ -113,15 +115,14 @@ public class InterventionViewModel extends ViewModel {
             }
             Animation animation = AnimationUtils.loadAnimation(f.getActivity().getApplicationContext(), R.anim.slide_in);
             animation.setDuration(500);
-            if (interventions.size()==0){
+            if (interventions.size() == 0) {
                 recyclerView.setVisibility(GONE);
                 noIntervText.setVisibility(View.VISIBLE);
                 noIntervText.setAnimation(animation);
-            }
-            else {
+            } else {
                 recyclerView.setVisibility(View.VISIBLE);
                 noIntervText.setVisibility(GONE);
-                RecycleViewAdapter adapter = new RecycleViewAdapter((MainActivity) f.getActivity(),interventions);
+                RecycleViewAdapter adapter = new RecycleViewAdapter((MainActivity) f.getActivity(), interventions);
                 recyclerView.setAdapter(adapter);
                 recyclerView.startAnimation(animation);
             }
@@ -133,43 +134,42 @@ public class InterventionViewModel extends ViewModel {
             Calendar cal = Calendar.getInstance();
             cal.setTime(calendarView.getFirstDayOfCurrentMonth());
             String month = getMonthName(cal.get(Calendar.MONTH));
-            currentDate.setText(month+" "+cal.get(Calendar.YEAR));
+            currentDate.setText(month + " " + cal.get(Calendar.YEAR));
         }
     }
 
 
-    public void displayDayIntervention(List<Intervention> interventionList, RecyclerView recyclerView, TextView noIntervText,Date dateClicked){
+    public void displayDayIntervention(List<Intervention> interventionList, RecyclerView recyclerView, TextView noIntervText, Date dateClicked) {
         List<Intervention> interventions = new ArrayList<>();
         Calendar calendar = Calendar.getInstance();
-        String todayDate = calendar.get(Calendar.YEAR)+"-"+calendar.get(Calendar.MONTH)+"-"+calendar.get(Calendar.DAY_OF_MONTH);
-        Log.e("TodayDateString",todayDate);
+        String todayDate = calendar.get(Calendar.YEAR) + "-" + calendar.get(Calendar.MONTH) + "-" + calendar.get(Calendar.DAY_OF_MONTH);
+        Log.e("TodayDateString", todayDate);
         SimpleDateFormat dateParser = new SimpleDateFormat("yyyy-MM-dd");
         if (interventionList == null)
             interventionList = new ArrayList<>();
-        for (Intervention intervention: interventionList){
+        for (Intervention intervention : interventionList) {
             try {
-                if (dateParser.parse(intervention.getDate()).compareTo(dateParser.parse(todayDate))==0)
+                if (dateParser.parse(intervention.getDate()).compareTo(dateParser.parse(todayDate)) == 0)
                     interventions.add(intervention);
             } catch (ParseException parseException) {
                 parseException.printStackTrace();
             }
         }
 
-        if (interventions.size()==0){
+        if (interventions.size() == 0) {
             recyclerView.setVisibility(GONE);
             noIntervText.setVisibility(View.VISIBLE);
-        }
-        else {
+        } else {
             recyclerView.setVisibility(View.VISIBLE);
             noIntervText.setVisibility(GONE);
-            RecycleViewAdapter adapter = new RecycleViewAdapter((MainActivity) f.getActivity(),interventions);
+            RecycleViewAdapter adapter = new RecycleViewAdapter((MainActivity) f.getActivity(), interventions);
             recyclerView.setAdapter(adapter);
         }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void calendarClickHandler(LinearLayout interLayout, CompactCalendarView calendarView, TextView currentDate, RecyclerView recyclerView, TextView noIntervText,List<Intervention> listIntervention){
-        CalendarClickHandler calendarClickHandler = new CalendarClickHandler(interLayout, calendarView,  currentDate,recyclerView,noIntervText,listIntervention);
+    public void calendarClickHandler(LinearLayout interLayout, CompactCalendarView calendarView, TextView currentDate, RecyclerView recyclerView, TextView noIntervText, List<Intervention> listIntervention) {
+        CalendarClickHandler calendarClickHandler = new CalendarClickHandler(interLayout, calendarView, currentDate, recyclerView, noIntervText, listIntervention);
         calendarView.setListener(calendarClickHandler);
     }
 

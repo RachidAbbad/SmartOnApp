@@ -1,5 +1,7 @@
 package com.abbad.smartonapp.activities;
 
+import static com.abbad.smartonapp.utils.Comun.API_URL;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -82,7 +84,7 @@ public class HistoriqueInteventions extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... voids) {
             try {
-                URL url = new URL("http://admin.smartonviatoile.com/api/Intervention/Filtre/n/"+SessionManager.getUserId(getApplicationContext())+"/Termin%C3%A9e/n");
+                URL url = new URL(API_URL+"/api/Intervention/Filtre/n/"+SessionManager.getUserId(getApplicationContext())+"/Termin%C3%A9e/n");
                 http = (HttpURLConnection) url.openConnection();
                 http.setRequestProperty("Accept", "application/json");
                 http.setRequestProperty("Authorization", "Bearer " + SessionManager.getAuthToken());

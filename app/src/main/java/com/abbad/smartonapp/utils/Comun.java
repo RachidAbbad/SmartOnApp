@@ -38,6 +38,9 @@ import java.util.Locale;
 import java.util.zip.Inflater;
 
 public class Comun {
+
+    public static String API_URL = "http://smarton-001-site1.ftempurl.com/";
+
     public static MainActivity mainActivity;
 
     public static boolean firstLoadDashboard=true;

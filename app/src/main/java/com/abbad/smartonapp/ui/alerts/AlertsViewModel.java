@@ -1,5 +1,7 @@
 package com.abbad.smartonapp.ui.alerts;
 
+import static com.abbad.smartonapp.utils.Comun.API_URL;
+
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -61,7 +63,7 @@ public class AlertsViewModel extends ViewModel {
         builderClient.writeTimeout(300, TimeUnit.MINUTES);
         OkHttpClient client = builderClient.build();
         Request request = new Request.Builder()
-                .url("http://admin.smartonviatoile.com/api/Notification/Alertes/" + SessionManager.getUserId(alertsFragment.getActivity().getApplicationContext()))
+                .url(API_URL+"/api/Notification/Alertes/" + SessionManager.getUserId(alertsFragment.getActivity().getApplicationContext()))
                 .addHeader("Authorization", "Bearer " + SessionManager.getAuthToken())
                 .get().build();
         client.newCall(request).enqueue(new Callback() {
@@ -99,6 +101,7 @@ public class AlertsViewModel extends ViewModel {
                     });
 
                 }catch(Exception ex){
+                    Log.e("Alertes Exception",ex.getMessage());
                     new ResultBottomDialog("Error durant la sérialisation des alerts", 3).show(alertsFragment.getActivity().getSupportFragmentManager(), "");
                 }
                 loadingBottomDialog.dismiss();

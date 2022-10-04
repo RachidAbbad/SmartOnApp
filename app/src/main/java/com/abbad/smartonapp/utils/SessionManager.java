@@ -57,7 +57,7 @@ public class SessionManager {
         }
 
     public static String getIdSite(Context context){
-        return context.getSharedPreferences("LoginDetails", Context.MODE_PRIVATE).getString("IdCapteur",null);
+        return context.getSharedPreferences("LoginDetails", Context.MODE_PRIVATE).getString("IdSite",null);
     }
 
         public static void saveCurrentInterv(String id){

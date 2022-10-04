@@ -1,5 +1,7 @@
 package com.abbad.smartonapp.ui.notifications;
 
+import static com.abbad.smartonapp.utils.Comun.API_URL;
+
 import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
@@ -75,19 +77,21 @@ public class NotificationsViewModel extends ViewModel {
             Comun.firstLoadInterventions = false;
         }
 
+        tempListNotification = new ArrayList<>();
+
         OkHttpClient.Builder builderClient = new OkHttpClient.Builder();
         builderClient.connectTimeout(300, TimeUnit.MINUTES);
         builderClient.readTimeout(300, TimeUnit.MINUTES);
         builderClient.writeTimeout(300, TimeUnit.MINUTES);
         OkHttpClient client = builderClient.build();
         Request request = new Request.Builder()
-                .url("http://admin.smartonviatoile.com/api/Notification/user/" + SessionManager.getUserId(notificationsFragment.getActivity().getApplicationContext()))
+                .url(API_URL+"/api/Notification/user/" + SessionManager.getUserId(notificationsFragment.getActivity().getApplicationContext()))
                 .addHeader("Authorization", "Bearer " + SessionManager.getAuthToken())
                 .get().build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                new ResultBottomDialog("Echec de chargé les notifications", 3).show(notificationsFragment.getActivity().getSupportFragmentManager(), "");
+                new ResultBottomDialog("Echec de charger les notifications", 3).show(notificationsFragment.getActivity().getSupportFragmentManager(), "");
             }
 
             @Override

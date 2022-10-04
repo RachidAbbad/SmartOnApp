@@ -1,5 +1,7 @@
 package com.abbad.smartonapp.datas;
 
+import static com.abbad.smartonapp.utils.Comun.API_URL;
+
 import android.os.AsyncTask;
 import android.service.voice.VoiceInteractionService;
 import android.util.Log;
@@ -57,7 +59,7 @@ public class NotificationData {
         @Override
         protected Void doInBackground(Void... voids) {
             try{
-                URL url = new URL("http://admin.smartonviatoile.com/api/Notification/user/" + SessionManager.getUserId(pushNotificationsService.getApplicationContext()));
+                URL url = new URL(API_URL+"/api/Notification/user/" + SessionManager.getUserId(pushNotificationsService.getApplicationContext()));
                 HttpURLConnection http = (HttpURLConnection) url.openConnection();
                 http.setRequestProperty("Accept", "application/json");
                 http.setRequestProperty("Authorization", "Bearer " + SessionManager.getAuthToken());
@@ -115,7 +117,7 @@ public class NotificationData {
         @Override
         protected Void doInBackground(Void... voids) {
             try {
-                URL url = new URL("http://admin.smartonviatoile.com/api/Notification/user/" + SessionManager.getUserId(notificationsFragment.getActivity().getApplicationContext()));
+                URL url = new URL(API_URL+"/api/Notification/user/" + SessionManager.getUserId(notificationsFragment.getActivity().getApplicationContext()));
                 http = (HttpURLConnection) url.openConnection();
                 http.setRequestProperty("Accept", "application/json");
                 http.setRequestProperty("Authorization", "Bearer " + SessionManager.getAuthToken());

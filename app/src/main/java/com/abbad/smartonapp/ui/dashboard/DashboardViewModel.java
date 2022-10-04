@@ -1,27 +1,18 @@
 package com.abbad.smartonapp.ui.dashboard;
 
-import android.annotation.SuppressLint;
-import android.os.AsyncTask;
+import static com.abbad.smartonapp.utils.Comun.API_URL;
 
-import android.os.Build;
-import android.util.Log;
+
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.RequiresApi;
 import androidx.lifecycle.ViewModel;
 
 import com.abbad.smartonapp.R;
-import com.abbad.smartonapp.activities.LoginActivity;
-import com.abbad.smartonapp.activities.MainActivity;
-import com.abbad.smartonapp.classes.Report;
-import com.abbad.smartonapp.classes.Task;
 import com.abbad.smartonapp.dialogs.LoadingBottomDialog;
 import com.abbad.smartonapp.dialogs.ResultBottomDialog;
-import com.abbad.smartonapp.ui.interventions.InterventionFragment;
 import com.abbad.smartonapp.utils.Comun;
 import com.abbad.smartonapp.utils.SessionManager;
 import com.github.anastr.speedviewlib.SpeedView;
@@ -32,11 +23,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -56,7 +43,7 @@ public class DashboardViewModel extends ViewModel {
     public List<View> ballonsViews = new ArrayList<>(), silosViews = new ArrayList<>();
     JSONObject infosJson;
     JSONArray infosBallons, infosSilo;
-    LoadingBottomDialog loadingReports = new LoadingBottomDialog("Chargement de dashBoard ...");
+    LoadingBottomDialog loadingReports = new LoadingBottomDialog("Chargement Dashboard ...");
     private Timer timer = new Timer();
     public DashboardViewModel() {
 
@@ -73,7 +60,6 @@ public class DashboardViewModel extends ViewModel {
     }
 
     private void getDashboardInfo(DashboardFragment dash) {
-        Log.e("Token", SessionManager.getAuthToken());
         if (Comun.firstLoadDashboard) {
             if (!loadingReports.isAdded()) {
                 loadingReports.show(dash.getActivity().getSupportFragmentManager(), "");
@@ -95,7 +81,7 @@ public class DashboardViewModel extends ViewModel {
         builderClient.writeTimeout(300, TimeUnit.MINUTES);
         OkHttpClient client = builder.build();
         Request request = new Request.Builder()
-                .url("http://smartonviatoile.com/api/Data/currentChaudiere/" + SessionManager.getIdCapteur(dash.getActivity().getApplicationContext()) + "/1")
+                .url(API_URL+"/api/Data/currentChaudiere/" + SessionManager.getIdCapteur(dash.getActivity().getApplicationContext()) + "/1")
                 .addHeader("Authorization", "Bearer " + SessionManager.getAuthToken())
                 .get().build();
         client.newCall(request).enqueue(new Callback() {
@@ -135,9 +121,9 @@ public class DashboardViewModel extends ViewModel {
 
     private void getBallonsData(OkHttpClient.Builder builder, DashboardFragment dash) {
 
-        OkHttpClient client = builder.build();
+        OkHttpClient client = new OkHttpClient.Builder().build();
         Request request = new Request.Builder()
-                .url("http://admin.smartonviatoile.com/api/Ballon/Site/" + SessionManager.getIdOrg(dash.getContext()))
+                .url(API_URL+"/api/Ballon/Site/" + SessionManager.getIdSite(dash.getContext()))
                 .addHeader("Authorization", "Bearer " + SessionManager.getAuthToken())
                 .get().build();
         client.newCall(request).enqueue(new Callback() {
@@ -153,10 +139,10 @@ public class DashboardViewModel extends ViewModel {
                         infosBallons = new JSONObject(response.body().string()).getJSONArray("data");
                         if (Comun.firstLoadDashboard) {
                             if (infosBallons.length() == 0) {
-                                View v = LayoutInflater.from(dash.getContext()).inflate(R.layout.ballon_layout, null);
                                 dash.getActivity().runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
+                                        View v = LayoutInflater.from(dash.getActivity().getApplicationContext()).inflate(R.layout.ballon_layout, null);
                                         v.findViewById(R.id.noBalloons).setVisibility(View.VISIBLE);
                                         v.findViewById(R.id.mainLayout).setVisibility(View.GONE);
                                         dash.getContainerLayout().addView(v);
@@ -212,7 +198,7 @@ public class DashboardViewModel extends ViewModel {
                         getSilosData(builder, dash);
                     } catch (Exception ex) {
                         ex.printStackTrace();
-                        new ResultBottomDialog(ex.getMessage(), 3).show(dash.getActivity().getSupportFragmentManager(), null);
+                        //new ResultBottomDialog(ex.getMessage(), 3).show(dash.getActivity().getSupportFragmentManager(), null);
                     }
                 } else {
                     dash.getActivity().runOnUiThread(new Runnable() {
@@ -227,9 +213,9 @@ public class DashboardViewModel extends ViewModel {
     }
 
     private void getSilosData(OkHttpClient.Builder builder, DashboardFragment dash) {
-        OkHttpClient client = builder.build();
+        OkHttpClient client = new OkHttpClient.Builder().build();
         Request request = new Request.Builder()
-                .url("http://admin.smartonviatoile.com/api/Silo/Site/" + SessionManager.getIdOrg(dash.getContext()))
+                .url(API_URL+"/api/Silo/Site/" + SessionManager.getIdSite(dash.getContext()))
                 .addHeader("Authorization", "Bearer " + SessionManager.getAuthToken())
                 .get().build();
         client.newCall(request).enqueue(new Callback() {
@@ -242,8 +228,8 @@ public class DashboardViewModel extends ViewModel {
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
 
                 try {
-                    infosSilo = new JSONObject(response.body().string()).getJSONArray("data");
-                    Log.d("Response silo", infosJson.toString());
+                    String resp = response.body().string();
+                    infosSilo = new JSONObject(resp).getJSONArray("data");
                     if (Comun.firstLoadDashboard) {
                         if (infosSilo.length() == 0) {
                             View v = LayoutInflater.from(dash.getContext()).inflate(R.layout.silos_container, null);
@@ -287,12 +273,8 @@ public class DashboardViewModel extends ViewModel {
 
                         }
                         Comun.firstLoadDashboard = false;
-                        Log.e("firstLoadDashboard", String.valueOf(Comun.firstLoadDashboard));
                     } else {
-                        Log.e("Outsade if",infosSilo.length()+"");
-
                         if (infosSilo.length() != 0) {
-                            Log.e("Inside if",infosSilo.length()+"");
                             dash.getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
