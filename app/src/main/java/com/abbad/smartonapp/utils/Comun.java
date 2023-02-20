@@ -39,7 +39,7 @@ import java.util.zip.Inflater;
 
 public class Comun {
 
-    public static String API_URL = "http://smarton-001-site1.ftempurl.com/";
+    public static String API_URL = "http://smartonver2-001-site1.atempurl.com/";
 
     public static MainActivity mainActivity;
 

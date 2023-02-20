@@ -1,11 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths xmlns:android="http://schemas.android.com/apk/res/android">
-    <external-path name="FinalVideos" path="storage/emulated/0/Android/data/com.abbad.smartonapp/cache/FinalVideo" />
-    <external-path name="FinalImages" path="storage/emulated/0/Android/data/com.abbad.smartonapp/cache/FinalImage" />
-    <external-path name="FinalComments" path="storage/emulated/0/Android/data/com.abbad.smartonapp/cache/FinalComment" />
-    <external-path name="FinalAudio" path="storage/emulated/0/Android/data/com.abbad.smartonapp/cache/FinalAudio" />
-    <external-path name="Videos" path="storage/emulated/0/Android/data/com.abbad.smartonapp/cache/Videos" />
-    <external-path name="Images" path="storage/emulated/0/Android/data/com.abbad.smartonapp/cache/Images" />
-    <external-path name="Comments" path="storage/emulated/0/Android/data/com.abbad.smartonapp/cache/Comments" />
-    <external-path name="Audios" path="storage/emulated/0/Android/data/com.abbad.smartonapp/cache/Audios" />
+    <external-path name="cacheDirectory" path="." />
 </paths>

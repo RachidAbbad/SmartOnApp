@@ -30,6 +30,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.AppCompatButton;
@@ -689,15 +693,19 @@ public class TaskFragment extends Fragment {
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1002) {
             if (resultCode == Activity.RESULT_OK) {
+                if(data == null)
+                    Log.e("IntentResultStatus", "Result Ok With null data");
                 showResultDialog(getResources().getString(R.string.saveSuccessVideoMsg), 1);
                 previewVideo();
                 videoIndex++;
+                Log.e("IntentResultStatus", "Result Ok");
             } else {
                 showResultDialog(getResources().getString(R.string.saveCancelVideoMsg), 2);
+                Log.e("IntentResultStatus", "Result Failed");
             }
         }
         if (requestCode == 100) {
@@ -776,12 +784,12 @@ public class TaskFragment extends Fragment {
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        Uri fileUri;
-        // create a file to save the video
-        fileUri = Uri.fromFile(getOutputMediaFile(1, currentIntervention.getId() + "_taskNum(" + currentTaskIndex + ")_num" + (imageIndex)));
-        // set the image file name
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+        File file = getOutputMediaFile(MEDIA_TYPE_IMAGE, currentIntervention.getId() + "_taskNum(" + currentTaskIndex + ")_num" + (imageIndex));
+        Log.e("FileIntent", file.getPath());
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
+
         startActivityForResult(intent, 100);
+
     }
 
     //Video Methodes :
@@ -1042,7 +1050,6 @@ public class TaskFragment extends Fragment {
 
         } else if (type == MEDIA_TYPE_IMAGE) {
             mediaStorageDir = new File(getActivity().getExternalCacheDir(), "Images");
-            // Create the storage directory(MyCameraVideo) if it does not exist
             if (!mediaStorageDir.exists()) {
                 if (!mediaStorageDir.mkdirs()) {
                     new ResultBottomDialog(getResources().getString(R.string.saveFailedImageMsg), 3).show(getActivity().getSupportFragmentManager(), null);
